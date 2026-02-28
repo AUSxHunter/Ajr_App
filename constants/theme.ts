@@ -20,6 +20,7 @@ export const Colors = {
     success: '#22C55E',
     warning: '#F59E0B',
     danger: '#EF4444',
+    error: '#EF4444',
     info: '#3B82F6',
   },
   border: {

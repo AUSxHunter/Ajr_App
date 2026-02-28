@@ -23,6 +23,7 @@ interface IbadahActions {
   updateIbadahType: (id: string, updates: Partial<IbadahType>) => void;
   archiveIbadahType: (id: string) => void;
   restoreIbadahType: (id: string) => void;
+  deleteIbadahType: (id: string) => boolean;
   reorderIbadahTypes: (orderedIds: string[]) => void;
   getActiveIbadahTypes: () => IbadahType[];
   getIbadahTypeById: (id: string) => IbadahType | undefined;
@@ -37,6 +38,9 @@ export const useIbadahStore = create<IbadahState & IbadahActions>()(
       initializeDefaults: () => {
         const { ibadahTypes } = get();
         const now = new Date();
+
+        const DEPRECATED_DEFAULT_IDS = ['quran-ayat'];
+        const defaultIds = DEFAULT_IBADAH_TYPES.map((d) => d.id);
 
         if (ibadahTypes.length === 0) {
           const defaultTypes: IbadahType[] = DEFAULT_IBADAH_TYPES.map((type) => ({
@@ -70,6 +74,16 @@ export const useIbadahStore = create<IbadahState & IbadahActions>()(
             }
             return type;
           });
+
+          const deprecatedToRemove = updatedTypes.filter(
+            (t) => t.isDefault && DEPRECATED_DEFAULT_IDS.includes(t.id) && !defaultIds.includes(t.id)
+          );
+          if (deprecatedToRemove.length > 0) {
+            needsUpdate = true;
+            updatedTypes = updatedTypes.filter(
+              (t) => !(t.isDefault && DEPRECATED_DEFAULT_IDS.includes(t.id) && !defaultIds.includes(t.id))
+            );
+          }
 
           const existingIds = updatedTypes.map((t) => t.id);
           const newDefaults = DEFAULT_IBADAH_TYPES.filter((d) => !existingIds.includes(d.id));
@@ -130,6 +144,17 @@ export const useIbadahStore = create<IbadahState & IbadahActions>()(
             type.id === id ? { ...type, isArchived: false, updatedAt: new Date() } : type
           ),
         }));
+      },
+
+      deleteIbadahType: (id) => {
+        const type = get().ibadahTypes.find((t) => t.id === id);
+        if (!type || type.isDefault) {
+          return false;
+        }
+        set((state) => ({
+          ibadahTypes: state.ibadahTypes.filter((t) => t.id !== id),
+        }));
+        return true;
       },
 
       reorderIbadahTypes: (orderedIds) => {

@@ -45,6 +45,7 @@ const COLOR_OPTIONS = [
 
 export default function ManageIbadahScreen() {
   const [addModalVisible, setAddModalVisible] = useState(false);
+  const [archiveConfirmId, setArchiveConfirmId] = useState<string | null>(null);
   const [deleteConfirmId, setDeleteConfirmId] = useState<string | null>(null);
   const [newName, setNewName] = useState('');
   const [newNameArabic, setNewNameArabic] = useState('');
@@ -56,6 +57,7 @@ export default function ManageIbadahScreen() {
   const addIbadahType = useIbadahStore((state) => state.addIbadahType);
   const archiveIbadahType = useIbadahStore((state) => state.archiveIbadahType);
   const restoreIbadahType = useIbadahStore((state) => state.restoreIbadahType);
+  const deleteIbadahType = useIbadahStore((state) => state.deleteIbadahType);
   const ibadahTypes = useMemo(
     () =>
       ibadahTypesRaw.filter((type) => !type.isArchived).sort((a, b) => a.sortOrder - b.sortOrder),
@@ -83,6 +85,10 @@ export default function ManageIbadahScreen() {
   };
 
   const handleArchive = (id: string) => {
+    setArchiveConfirmId(id);
+  };
+
+  const handleDelete = (id: string) => {
     setDeleteConfirmId(id);
   };
 
@@ -113,12 +119,20 @@ export default function ManageIbadahScreen() {
                     <Text style={styles.ibadahUnit}>{type.unit}</Text>
                   </View>
                   {!type.isDefault && (
-                    <TouchableOpacity
-                      onPress={() => handleArchive(type.id)}
-                      style={styles.archiveButton}
-                    >
-                      <Feather name="archive" size={18} color={Colors.text.muted} />
-                    </TouchableOpacity>
+                    <View style={styles.actionButtons}>
+                      <TouchableOpacity
+                        onPress={() => handleArchive(type.id)}
+                        style={styles.actionButton}
+                      >
+                        <Feather name="archive" size={18} color={Colors.text.muted} />
+                      </TouchableOpacity>
+                      <TouchableOpacity
+                        onPress={() => handleDelete(type.id)}
+                        style={styles.actionButton}
+                      >
+                        <Feather name="trash-2" size={18} color={Colors.semantic.error} />
+                      </TouchableOpacity>
+                    </View>
                   )}
                 </View>
               </Card>
@@ -155,12 +169,22 @@ export default function ManageIbadahScreen() {
                       <View style={styles.ibadahInfo}>
                         <Text style={[styles.ibadahName, { opacity: 0.5 }]}>{type.name}</Text>
                       </View>
-                      <TouchableOpacity
-                        onPress={() => restoreIbadahType(type.id)}
-                        style={styles.archiveButton}
-                      >
-                        <Feather name="refresh-cw" size={18} color={Colors.accent.primary} />
-                      </TouchableOpacity>
+                      <View style={styles.actionButtons}>
+                        <TouchableOpacity
+                          onPress={() => restoreIbadahType(type.id)}
+                          style={styles.actionButton}
+                        >
+                          <Feather name="refresh-cw" size={18} color={Colors.accent.primary} />
+                        </TouchableOpacity>
+                        {!type.isDefault && (
+                          <TouchableOpacity
+                            onPress={() => handleDelete(type.id)}
+                            style={styles.actionButton}
+                          >
+                            <Feather name="trash-2" size={18} color={Colors.semantic.error} />
+                          </TouchableOpacity>
+                        )}
+                      </View>
                     </View>
                   </Card>
                 ))}
@@ -258,17 +282,31 @@ export default function ManageIbadahScreen() {
         </Modal>
 
         <ConfirmModal
-          visible={deleteConfirmId !== null}
-          onClose={() => setDeleteConfirmId(null)}
+          visible={archiveConfirmId !== null}
+          onClose={() => setArchiveConfirmId(null)}
           onConfirm={() => {
-            if (deleteConfirmId) {
-              archiveIbadahType(deleteConfirmId);
+            if (archiveConfirmId) {
+              archiveIbadahType(archiveConfirmId);
             }
           }}
           title="Archive Ibadah"
           message="This will hide this ibadah type from your tracking. You can restore it later."
           confirmText="Archive"
           variant="default"
+        />
+
+        <ConfirmModal
+          visible={deleteConfirmId !== null}
+          onClose={() => setDeleteConfirmId(null)}
+          onConfirm={() => {
+            if (deleteConfirmId) {
+              deleteIbadahType(deleteConfirmId);
+            }
+          }}
+          title="Delete Ibadah"
+          message="This will permanently delete this custom ibadah type and cannot be undone. Any logged sets will remain in your history."
+          confirmText="Delete"
+          variant="danger"
         />
       </SafeAreaView>
     </>
@@ -329,7 +367,12 @@ const styles = StyleSheet.create({
     color: Colors.accent.primary,
     marginTop: 2,
   },
-  archiveButton: {
+  actionButtons: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: Spacing.xs,
+  },
+  actionButton: {
     padding: Spacing.sm,
   },
   modalContent: {

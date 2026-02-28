@@ -15,18 +15,6 @@ export const DEFAULT_IBADAH_TYPES: Omit<IbadahType, 'createdAt' | 'updatedAt'>[]
     sortOrder: 0,
   },
   {
-    id: 'quran-ayat',
-    name: 'Quran Ayat',
-    nameArabic: 'آيات القرآن',
-    unit: 'ayat',
-    icon: 'book',
-    color: Colors.ibadah.quran,
-    weight: 0.3,
-    isDefault: true,
-    isArchived: false,
-    sortOrder: 1,
-  },
-  {
     id: 'qiyam',
     name: 'Qiyam',
     nameArabic: 'قيام الليل',
@@ -36,7 +24,7 @@ export const DEFAULT_IBADAH_TYPES: Omit<IbadahType, 'createdAt' | 'updatedAt'>[]
     weight: 4,
     isDefault: true,
     isArchived: false,
-    sortOrder: 2,
+    sortOrder: 1,
   },
   {
     id: 'dhikr',
@@ -48,7 +36,7 @@ export const DEFAULT_IBADAH_TYPES: Omit<IbadahType, 'createdAt' | 'updatedAt'>[]
     weight: 0.1,
     isDefault: true,
     isArchived: false,
-    sortOrder: 3,
+    sortOrder: 2,
   },
   {
     id: 'sadaqah',
@@ -60,7 +48,7 @@ export const DEFAULT_IBADAH_TYPES: Omit<IbadahType, 'createdAt' | 'updatedAt'>[]
     weight: 8,
     isDefault: true,
     isArchived: false,
-    sortOrder: 4,
+    sortOrder: 3,
   },
   {
     id: 'fasting',
@@ -72,7 +60,7 @@ export const DEFAULT_IBADAH_TYPES: Omit<IbadahType, 'createdAt' | 'updatedAt'>[]
     weight: 100,
     isDefault: true,
     isArchived: false,
-    sortOrder: 5,
+    sortOrder: 4,
   },
   {
     id: 'dua',
@@ -84,7 +72,7 @@ export const DEFAULT_IBADAH_TYPES: Omit<IbadahType, 'createdAt' | 'updatedAt'>[]
     weight: 2,
     isDefault: true,
     isArchived: false,
-    sortOrder: 6,
+    sortOrder: 5,
   },
 ];
 
