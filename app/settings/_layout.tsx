@@ -1,5 +1,6 @@
 import { Stack } from 'expo-router';
 import { Colors, Typography } from '../../constants/theme';
+import { HeaderBackButton } from '../../components/ui';
 
 export default function SettingsLayout() {
   return (
@@ -14,6 +15,7 @@ export default function SettingsLayout() {
           fontSize: Typography.fontSize.h3,
         },
         headerShadowVisible: false,
+        headerLeft: () => <HeaderBackButton />,
         contentStyle: {
           backgroundColor: Colors.background.primary,
         },

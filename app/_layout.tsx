@@ -6,6 +6,7 @@ import { View, StyleSheet } from 'react-native';
 import 'react-native-reanimated';
 
 import { Colors } from '../constants/theme';
+import { HeaderBackButton } from '../components/ui';
 import { useIbadahStore } from '../store/ibadahStore';
 import { useSettingsStore } from '../store/settingsStore';
 
@@ -69,6 +70,7 @@ export default function RootLayout() {
           options={{
             title: 'Session Details',
             presentation: 'card',
+            headerLeft: () => <HeaderBackButton />,
           }}
         />
         <Stack.Screen
