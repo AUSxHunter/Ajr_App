@@ -5,13 +5,14 @@ import { Feather } from '@expo/vector-icons';
 import { format, subDays } from 'date-fns';
 import { Colors, Typography, Spacing, BorderRadius } from '../../constants/theme';
 import { Card, EmptyState } from '../../components/ui';
-import { SessionCard, AddSetModal } from '../../components/session';
+import { SessionCard, AddSetModal, ManageIbadahModal } from '../../components/session';
 import { useSessionStore } from '../../store/sessionStore';
 import { useIbadahStore } from '../../store/ibadahStore';
 import { IbadahType, SessionSet } from '../../types';
 
 export default function TodayScreen() {
   const [addSetModalVisible, setAddSetModalVisible] = useState(false);
+  const [manageModalVisible, setManageModalVisible] = useState(false);
   const [selectedIbadah, setSelectedIbadah] = useState<IbadahType | null>(null);
   const [editingSet, setEditingSet] = useState<SessionSet | null>(null);
   const hasCheckedExpiry = useRef(false);
@@ -24,12 +25,17 @@ export default function TodayScreen() {
   const startSession = useSessionStore((state) => state.startSession);
   const continueSession = useSessionStore((state) => state.continueSession);
   const endSession = useSessionStore((state) => state.endSession);
+  const hiddenIbadahTypeIds = useSessionStore((state) => state.hiddenIbadahTypeIds);
 
   const ibadahTypesRaw = useIbadahStore((state) => state.ibadahTypes);
-  const ibadahTypes = useMemo(
+  const allActiveIbadahTypes = useMemo(
     () =>
       ibadahTypesRaw.filter((type) => !type.isArchived).sort((a, b) => a.sortOrder - b.sortOrder),
     [ibadahTypesRaw]
+  );
+  const ibadahTypes = useMemo(
+    () => allActiveIbadahTypes.filter((type) => !hiddenIbadahTypeIds.includes(type.id)),
+    [allActiveIbadahTypes, hiddenIbadahTypeIds]
   );
 
   useEffect(() => {
@@ -167,12 +173,22 @@ export default function TodayScreen() {
             <Text style={styles.greeting}>Today</Text>
             <Text style={styles.date}>{todayDate}</Text>
           </View>
-          {hasActiveSession && (
-            <TouchableOpacity style={styles.endSessionButton} onPress={handleEndSession}>
-              <Feather name="check-circle" size={16} color={Colors.semantic.error} />
-              <Text style={styles.endSessionText}>End</Text>
-            </TouchableOpacity>
-          )}
+          <View style={styles.headerButtons}>
+            {hasActiveSession && (
+              <TouchableOpacity
+                style={styles.manageButton}
+                onPress={() => setManageModalVisible(true)}
+              >
+                <Feather name="sliders" size={16} color={Colors.accent.primary} />
+              </TouchableOpacity>
+            )}
+            {hasActiveSession && (
+              <TouchableOpacity style={styles.endSessionButton} onPress={handleEndSession}>
+                <Feather name="check-circle" size={16} color={Colors.semantic.error} />
+                <Text style={styles.endSessionText}>End</Text>
+              </TouchableOpacity>
+            )}
+          </View>
         </View>
 
         {hasActiveSession && (
@@ -297,6 +313,12 @@ export default function TodayScreen() {
         initialValue={editingSet?.value}
         isEditing={!!editingSet}
       />
+
+      <ManageIbadahModal
+        visible={manageModalVisible}
+        onClose={() => setManageModalVisible(false)}
+        ibadahTypes={allActiveIbadahTypes}
+      />
     </SafeAreaView>
   );
 }
@@ -319,6 +341,11 @@ const styles = StyleSheet.create({
     alignItems: 'flex-start',
     marginBottom: Spacing.lg,
   },
+  headerButtons: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: Spacing.sm,
+  },
   greeting: {
     fontSize: Typography.fontSize.h1,
     fontWeight: '700',
@@ -328,6 +355,14 @@ const styles = StyleSheet.create({
     fontSize: Typography.fontSize.body,
     color: Colors.text.secondary,
     marginTop: Spacing.xs,
+  },
+  manageButton: {
+    width: 40,
+    height: 40,
+    borderRadius: BorderRadius.md,
+    backgroundColor: `${Colors.accent.primary}15`,
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   endSessionButton: {
     flexDirection: 'row',

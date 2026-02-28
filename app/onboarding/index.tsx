@@ -119,14 +119,6 @@ export default function OnboardingScreen() {
         </View>
 
         <View style={styles.buttons}>
-          {step > 0 && (
-            <Button
-              title="Back"
-              variant="ghost"
-              onPress={() => setStep(step - 1)}
-              style={styles.backButton}
-            />
-          )}
           <Button
             title={step === steps.length - 1 ? 'Get Started' : 'Next'}
             variant="primary"
@@ -137,9 +129,16 @@ export default function OnboardingScreen() {
                 setStep(step + 1);
               }
             }}
-            fullWidth={step === 0}
-            style={step > 0 ? styles.nextButton : undefined}
+            fullWidth
           />
+          {step > 0 && (
+            <Button
+              title="Back"
+              variant="ghost"
+              onPress={() => setStep(step - 1)}
+              fullWidth
+            />
+          )}
         </View>
       </View>
     </SafeAreaView>
@@ -251,13 +250,7 @@ const styles = StyleSheet.create({
     width: 24,
   },
   buttons: {
-    flexDirection: 'row',
-    gap: Spacing.md,
-  },
-  backButton: {
-    flex: 1,
-  },
-  nextButton: {
-    flex: 2,
+    flexDirection: 'column',
+    gap: Spacing.sm,
   },
 });

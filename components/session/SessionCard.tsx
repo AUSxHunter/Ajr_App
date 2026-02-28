@@ -4,10 +4,12 @@ import { Feather } from '@expo/vector-icons';
 import Animated, { useAnimatedStyle, useSharedValue, withTiming } from 'react-native-reanimated';
 import { Card, ConfirmModal } from '../ui';
 import { SetRow } from './SetRow';
+import { QiyamAyatTracker } from './QiyamAyatTracker';
 import { Colors, Typography, Spacing, BorderRadius } from '../../constants/theme';
 import { IbadahType, SessionSet } from '../../types';
 import { UNIT_LABELS } from '../../constants/defaults';
 import { useSettingsStore } from '../../store/settingsStore';
+import { useSessionStore } from '../../store/sessionStore';
 
 interface SessionCardProps {
   ibadahType: IbadahType;
@@ -32,9 +34,13 @@ export const SessionCard: React.FC<SessionCardProps> = ({
   const unitLabel = UNIT_LABELS[ibadahType.unit];
   const isBinary = ibadahType.unit === 'binary';
   const hasFasted = isBinary && totalValue >= 1;
+  const isQiyam = ibadahType.id === 'qiyam';
 
   const mvdValue = useSettingsStore((state) => state.getMinimumViableDay(ibadahType.id));
   const mvdMet = mvdValue !== undefined && totalValue >= mvdValue;
+
+  const qiyamAyatCount = useSessionStore((state) => state.qiyamAyatCount);
+  const setQiyamAyatCount = useSessionStore((state) => state.setQiyamAyatCount);
 
   const toggleExpand = () => {
     if (isBinary) return;
@@ -185,6 +191,13 @@ export const SessionCard: React.FC<SessionCardProps> = ({
             <Feather name="plus" size={18} color={Colors.accent.primary} />
             <Text style={styles.addButtonText}>Add Set</Text>
           </TouchableOpacity>
+
+          {isQiyam && (
+            <QiyamAyatTracker
+              ayatCount={qiyamAyatCount}
+              onAyatCountChange={setQiyamAyatCount}
+            />
+          )}
         </View>
       )}
 

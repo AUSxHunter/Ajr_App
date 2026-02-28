@@ -21,9 +21,6 @@ export const SessionListItem: React.FC<SessionListItemProps> = ({
   onPress,
   onDelete,
 }) => {
-  // #region agent log
-  console.log('[DEBUG-2913ce] SessionListItem render', { sessionId: session.id, hasOnDelete: !!onDelete });
-  // #endregion
   const sessionDate = parseISO(session.sessionDate);
   const dateLabel = format(sessionDate, 'EEEE, MMMM d');
 
@@ -79,7 +76,7 @@ export const SessionListItem: React.FC<SessionListItemProps> = ({
               }} 
               style={styles.deleteButton}
             >
-              <Feather name="trash-2" size={18} color={Colors.semantic.error} />
+              <Feather name="trash-2" size={18} color={Colors.semantic.danger} />
             </TouchableOpacity>
           )}
           <Feather name="chevron-right" size={20} color={Colors.text.muted} />

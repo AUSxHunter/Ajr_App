@@ -11,9 +11,6 @@ import { useSessionStore } from '../../store/sessionStore';
 import { useIbadahStore } from '../../store/ibadahStore';
 
 export default function HistoryScreen() {
-  // #region agent log
-  console.log('[DEBUG-2913ce] HistoryScreen render - new code with delete');
-  // #endregion
   const [selectedDate, setSelectedDate] = useState(new Date());
 
   const sessions = useSessionStore((state) => state.sessions);

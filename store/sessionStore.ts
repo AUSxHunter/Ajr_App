@@ -10,6 +10,8 @@ interface SessionState {
   sessions: Session[];
   sessionSets: SessionSet[];
   activeSessionId: string | null;
+  hiddenIbadahTypeIds: string[];
+  qiyamAyatCount: number;
   isLoaded: boolean;
 }
 
@@ -36,6 +38,14 @@ interface SessionActions {
   calculateSessionVolume: (sessionId: string) => number;
   getAllSessions: () => Session[];
   clearAllSessions: () => void;
+  hideIbadahType: (ibadahTypeId: string) => void;
+  showIbadahType: (ibadahTypeId: string) => void;
+  toggleIbadahTypeVisibility: (ibadahTypeId: string) => void;
+  isIbadahTypeHidden: (ibadahTypeId: string) => boolean;
+  resetHiddenIbadahTypes: () => void;
+  setQiyamAyatCount: (count: number) => void;
+  addQiyamAyat: (count: number) => void;
+  resetQiyamAyatCount: () => void;
 }
 
 const getTodayDateString = () => format(new Date(), 'yyyy-MM-dd');
@@ -55,6 +65,8 @@ export const useSessionStore = create<SessionState & SessionActions>()(
       sessions: [],
       sessionSets: [],
       activeSessionId: null,
+      hiddenIbadahTypeIds: [],
+      qiyamAyatCount: 0,
       isLoaded: false,
 
       startSession: () => {
@@ -295,6 +307,48 @@ export const useSessionStore = create<SessionState & SessionActions>()(
       clearAllSessions: () => {
         set({ sessions: [], sessionSets: [], activeSessionId: null });
       },
+
+      hideIbadahType: (ibadahTypeId) => {
+        set((state) => ({
+          hiddenIbadahTypeIds: state.hiddenIbadahTypeIds.includes(ibadahTypeId)
+            ? state.hiddenIbadahTypeIds
+            : [...state.hiddenIbadahTypeIds, ibadahTypeId],
+        }));
+      },
+
+      showIbadahType: (ibadahTypeId) => {
+        set((state) => ({
+          hiddenIbadahTypeIds: state.hiddenIbadahTypeIds.filter((id) => id !== ibadahTypeId),
+        }));
+      },
+
+      toggleIbadahTypeVisibility: (ibadahTypeId) => {
+        set((state) => ({
+          hiddenIbadahTypeIds: state.hiddenIbadahTypeIds.includes(ibadahTypeId)
+            ? state.hiddenIbadahTypeIds.filter((id) => id !== ibadahTypeId)
+            : [...state.hiddenIbadahTypeIds, ibadahTypeId],
+        }));
+      },
+
+      isIbadahTypeHidden: (ibadahTypeId) => {
+        return get().hiddenIbadahTypeIds.includes(ibadahTypeId);
+      },
+
+      resetHiddenIbadahTypes: () => {
+        set({ hiddenIbadahTypeIds: [] });
+      },
+
+      setQiyamAyatCount: (count) => {
+        set({ qiyamAyatCount: Math.max(0, count) });
+      },
+
+      addQiyamAyat: (count) => {
+        set((state) => ({ qiyamAyatCount: state.qiyamAyatCount + count }));
+      },
+
+      resetQiyamAyatCount: () => {
+        set({ qiyamAyatCount: 0 });
+      },
     }),
     {
       name: 'ajr-session-storage',
@@ -302,6 +356,8 @@ export const useSessionStore = create<SessionState & SessionActions>()(
       partialize: (state) => ({
         sessions: state.sessions,
         sessionSets: state.sessionSets,
+        hiddenIbadahTypeIds: state.hiddenIbadahTypeIds,
+        qiyamAyatCount: state.qiyamAyatCount,
       }),
     }
   )
