@@ -1,4 +1,4 @@
-export type IbadahUnit = 'pages' | 'minutes' | 'count' | 'currency' | 'binary' | 'ayat';
+export type IbadahUnit = 'pages' | 'minutes' | 'count' | 'currency' | 'binary' | 'ayat' | 'adhkar';
 
 export interface IbadahType {
   id: string;

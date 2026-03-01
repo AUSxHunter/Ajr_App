@@ -39,6 +39,18 @@ export const DEFAULT_IBADAH_TYPES: Omit<IbadahType, 'createdAt' | 'updatedAt'>[]
     sortOrder: 2,
   },
   {
+    id: 'adhkar',
+    name: 'Adhkar',
+    nameArabic: 'الأذكار',
+    unit: 'adhkar',
+    icon: 'sun',
+    color: Colors.ibadah.adhkar,
+    weight: 5,
+    isDefault: true,
+    isArchived: false,
+    sortOrder: 2.5,
+  },
+  {
     id: 'sadaqah',
     name: 'Sadaqah',
     nameArabic: 'الصدقة',
@@ -96,6 +108,7 @@ export const UNIT_LABELS: Record<
   currency: { singular: 'AED', plural: 'AED', abbreviation: 'AED' },
   binary: { singular: 'day', plural: 'days', abbreviation: '' },
   ayat: { singular: 'ayah', plural: 'ayat', abbreviation: 'ayat' },
+  adhkar: { singular: 'session', plural: 'sessions', abbreviation: '' },
 };
 
 export const BURNOUT_THRESHOLD = 0.7;

@@ -5,7 +5,7 @@ import { Feather } from '@expo/vector-icons';
 import { format, subDays } from 'date-fns';
 import { Colors, Typography, Spacing, BorderRadius } from '../../constants/theme';
 import { Card, EmptyState } from '../../components/ui';
-import { SessionCard, AddSetModal, ManageIbadahModal } from '../../components/session';
+import { SessionCard, AddSetModal, ManageIbadahModal, AdhkarSessionCard } from '../../components/session';
 import { useSessionStore } from '../../store/sessionStore';
 import { useIbadahStore } from '../../store/ibadahStore';
 import { IbadahType, SessionSet } from '../../types';
@@ -253,6 +253,15 @@ export default function TodayScreen() {
         ) : (
           <View style={styles.cardsContainer}>
             {ibadahTypes.map((ibadahType) => {
+              if (ibadahType.unit === 'adhkar') {
+                return (
+                  <AdhkarSessionCard
+                    key={ibadahType.id}
+                    ibadahType={ibadahType}
+                  />
+                );
+              }
+              
               const sets = ibadahSetsMap.get(ibadahType.id) || [];
               return (
                 <SessionCard
@@ -276,19 +285,21 @@ export default function TodayScreen() {
               showsHorizontalScrollIndicator={false}
               contentContainerStyle={styles.quickAddButtons}
             >
-              {ibadahTypes.map((ibadahType) => (
-                <TouchableOpacity
-                  key={ibadahType.id}
-                  style={[styles.quickAddButton, { backgroundColor: `${ibadahType.color}20` }]}
-                  onPress={() => handleAddSet(ibadahType)}
-                >
-                  <Feather
-                    name={ibadahType.icon as keyof typeof Feather.glyphMap}
-                    size={18}
-                    color={ibadahType.color}
-                  />
-                </TouchableOpacity>
-              ))}
+              {ibadahTypes
+                .filter((type) => type.unit !== 'adhkar')
+                .map((ibadahType) => (
+                  <TouchableOpacity
+                    key={ibadahType.id}
+                    style={[styles.quickAddButton, { backgroundColor: `${ibadahType.color}20` }]}
+                    onPress={() => handleAddSet(ibadahType)}
+                  >
+                    <Feather
+                      name={ibadahType.icon as keyof typeof Feather.glyphMap}
+                      size={18}
+                      color={ibadahType.color}
+                    />
+                  </TouchableOpacity>
+                ))}
             </ScrollView>
           </View>
         )}

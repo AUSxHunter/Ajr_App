@@ -6,6 +6,7 @@ import {
   ActivityIndicator,
   ViewStyle,
   TextStyle,
+  StyleProp,
   TouchableOpacityProps,
 } from 'react-native';
 import { Colors, Typography, Spacing, BorderRadius } from '../../constants/theme';
@@ -37,7 +38,7 @@ export const Button: React.FC<ButtonProps> = ({
 }) => {
   const isDisabled = disabled || loading;
 
-  const buttonStyles: ViewStyle[] = [
+  const buttonStyles: StyleProp<ViewStyle> = [
     styles.base,
     styles[`variant_${variant}`],
     styles[`size_${size}`],
@@ -46,7 +47,7 @@ export const Button: React.FC<ButtonProps> = ({
     style as ViewStyle,
   ];
 
-  const textStyles: TextStyle[] = [
+  const textStyles: StyleProp<TextStyle> = [
     styles.text,
     styles[`text_${variant}`],
     styles[`text_${size}`],

@@ -35,6 +35,7 @@ export const Colors = {
     sadaqah: '#EC4899',
     fasting: '#06B6D4',
     dua: '#14B8A6',
+    adhkar: '#F97316',
     custom: '#6366F1',
   },
 };
