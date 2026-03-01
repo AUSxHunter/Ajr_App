@@ -35,17 +35,28 @@ const { width: SCREEN_WIDTH } = Dimensions.get('window');
 
 interface AdhkarItemCardProps {
   adhkar: Adhkar;
-  currentCount: number;
+  adhkarType: AdhkarType;
   onIncrement: () => void;
-  isCompleted: boolean;
 }
 
-const AdhkarItemCard: React.FC<AdhkarItemCardProps> = ({
+const AdhkarItemCard = React.memo(({
   adhkar,
-  currentCount,
+  adhkarType,
   onIncrement,
-  isCompleted,
-}) => {
+}: AdhkarItemCardProps) => {
+  const currentCount = useAdhkarStore(
+    useCallback(
+      (s) => {
+        const progress = adhkarType === 'sabah'
+          ? s.dailyState.sabahProgress
+          : s.dailyState.masaaProgress;
+        return progress[adhkar.id] || 0;
+      },
+      [adhkarType, adhkar.id]
+    )
+  );
+  const isCompleted = currentCount >= adhkar.count;
+
   const scale = useSharedValue(1);
   const checkScale = useSharedValue(isCompleted ? 1 : 0);
 
@@ -134,7 +145,7 @@ const AdhkarItemCard: React.FC<AdhkarItemCardProps> = ({
       </TouchableOpacity>
     </Animated.View>
   );
-};
+});
 
 export default function AdhkarReaderScreen() {
   const { type } = useLocalSearchParams<{ type: string }>();
@@ -163,13 +174,6 @@ export default function AdhkarReaderScreen() {
   const [currentIndex, setCurrentIndex] = useState(0);
 
   const progressPercent = total > 0 ? (completed / total) * 100 : 0;
-
-  const completedAdhkarCount = useMemo(() => {
-    return adhkarList.filter((adhkar) => {
-      const count = getProgress(adhkarType, adhkar.id);
-      return count >= adhkar.count;
-    }).length;
-  }, [adhkarList, adhkarType, getProgress, completed]);
 
   const handleComplete = useCallback(() => {
     markComplete(adhkarType);
@@ -229,6 +233,11 @@ export default function AdhkarReaderScreen() {
     [adhkarType, adhkarList, getProgress, incrementCount, isSessionCompleted, handleComplete]
   );
 
+  const incrementHandlers = useMemo(
+    () => new Map(adhkarList.map(a => [a.id, () => handleIncrement(a.id, a.count)])),
+    [adhkarList, handleIncrement]
+  );
+
   const handleScroll = (event: any) => {
     const offsetY = event.nativeEvent.contentOffset.y;
     const cardHeight = 400;
@@ -255,14 +264,11 @@ export default function AdhkarReaderScreen() {
           <View style={styles.progressInfo}>
             <Text style={styles.progressLabel}>Progress</Text>
             <Text style={styles.progressCount}>
-              {completedAdhkarCount}/{adhkarList.length} adhkar
+              {completed}/{total} adhkar · {Math.round(progressPercent)}%
             </Text>
           </View>
-          <View style={styles.progressBarContainer}>
-            <View style={styles.progressBar}>
-              <View style={[styles.progressFill, { width: `${progressPercent}%` }]} />
-            </View>
-            <Text style={styles.progressPercent}>{Math.round(progressPercent)}%</Text>
+          <View style={styles.progressBar}>
+            <View style={[styles.progressFill, { width: `${progressPercent}%` }]} />
           </View>
         </View>
 
@@ -274,24 +280,18 @@ export default function AdhkarReaderScreen() {
           onScroll={handleScroll}
           scrollEventThrottle={16}
         >
-          {adhkarList.map((adhkar, index) => {
-            const currentCount = getProgress(adhkarType, adhkar.id);
-            const isItemCompleted = currentCount >= adhkar.count;
-
-            return (
-              <View key={adhkar.id} style={styles.cardWrapper}>
-                <View style={styles.indexBadge}>
-                  <Text style={styles.indexText}>{index + 1}</Text>
-                </View>
-                <AdhkarItemCard
-                  adhkar={adhkar}
-                  currentCount={currentCount}
-                  onIncrement={() => handleIncrement(adhkar.id, adhkar.count)}
-                  isCompleted={isItemCompleted}
-                />
+          {adhkarList.map((adhkar, index) => (
+            <View key={adhkar.id} style={styles.cardWrapper}>
+              <View style={styles.indexBadge}>
+                <Text style={styles.indexText}>{index + 1}</Text>
               </View>
-            );
-          })}
+              <AdhkarItemCard
+                adhkar={adhkar}
+                adhkarType={adhkarType}
+                onIncrement={incrementHandlers.get(adhkar.id)!}
+              />
+            </View>
+          ))}
 
           {isSessionCompleted && (
             <View style={styles.completionMessage}>
@@ -304,7 +304,7 @@ export default function AdhkarReaderScreen() {
           )}
         </ScrollView>
 
-        {!isSessionCompleted && completedAdhkarCount === adhkarList.length && (
+        {!isSessionCompleted && completed === total && (
           <TouchableOpacity style={styles.completeButton} onPress={handleComplete}>
             <Feather name="check-circle" size={20} color={Colors.text.primary} />
             <Text style={styles.completeButtonText}>Mark as Complete</Text>
@@ -352,29 +352,17 @@ const styles = StyleSheet.create({
     fontWeight: '600',
     color: Colors.text.primary,
   },
-  progressBarContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: Spacing.sm,
-  },
   progressBar: {
-    flex: 1,
     height: 8,
     backgroundColor: Colors.background.elevated,
     borderRadius: 4,
     overflow: 'hidden',
+    marginTop: Spacing.sm,
   },
   progressFill: {
     height: '100%',
     backgroundColor: Colors.ibadah.adhkar,
     borderRadius: 4,
-  },
-  progressPercent: {
-    fontSize: Typography.fontSize.caption,
-    fontWeight: '600',
-    color: Colors.ibadah.adhkar,
-    width: 40,
-    textAlign: 'right',
   },
   scrollView: {
     flex: 1,
