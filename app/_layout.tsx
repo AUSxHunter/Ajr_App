@@ -74,6 +74,12 @@ export default function RootLayout() {
           }}
         />
         <Stack.Screen
+          name="adhkar"
+          options={{
+            headerShown: false,
+          }}
+        />
+        <Stack.Screen
           name="settings"
           options={{
             headerShown: false,
