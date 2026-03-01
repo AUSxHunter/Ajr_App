@@ -4,3 +4,4 @@ export { AddSetModal } from './AddSetModal';
 export { ManageIbadahModal } from './ManageIbadahModal';
 export { QiyamAyatTracker } from './QiyamAyatTracker';
 export { AdhkarSessionCard } from './AdhkarSessionCard';
+export { IbadahStreakDots } from './IbadahStreakDots';

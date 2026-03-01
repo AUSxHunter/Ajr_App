@@ -8,6 +8,7 @@ import { Colors, Typography, Spacing, BorderRadius } from '../../constants/theme
 import { IbadahType } from '../../types';
 import { useAdhkarStore } from '../../store/adhkarStore';
 import { AdhkarType } from '../../constants/adhkar';
+import { IbadahStreakDots } from './IbadahStreakDots';
 
 interface AdhkarSessionCardProps {
   ibadahType: IbadahType;
@@ -107,6 +108,8 @@ export const AdhkarSessionCard: React.FC<AdhkarSessionCardProps> = ({ ibadahType
           </View>
         )}
       </View>
+
+      <IbadahStreakDots ibadahTypeId={ibadahType.id} color={ibadahType.color} />
 
       <View style={styles.divider} />
 

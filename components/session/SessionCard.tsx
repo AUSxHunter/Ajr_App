@@ -10,6 +10,7 @@ import { IbadahType, SessionSet } from '../../types';
 import { UNIT_LABELS } from '../../constants/defaults';
 import { useSettingsStore } from '../../store/settingsStore';
 import { useSessionStore } from '../../store/sessionStore';
+import { IbadahStreakDots } from './IbadahStreakDots';
 
 interface SessionCardProps {
   ibadahType: IbadahType;
@@ -111,6 +112,8 @@ export const SessionCard: React.FC<SessionCardProps> = ({
           </TouchableOpacity>
         </View>
 
+        <IbadahStreakDots ibadahTypeId={ibadahType.id} color={ibadahType.color} />
+
         <ConfirmModal
           visible={deleteConfirmId !== null}
           onClose={() => setDeleteConfirmId(null)}
@@ -169,6 +172,8 @@ export const SessionCard: React.FC<SessionCardProps> = ({
           </Animated.View>
         </View>
       </TouchableOpacity>
+
+      <IbadahStreakDots ibadahTypeId={ibadahType.id} color={ibadahType.color} />
 
       {isExpanded && (
         <View style={styles.content}>
