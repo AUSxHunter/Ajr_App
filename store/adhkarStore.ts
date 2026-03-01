@@ -58,17 +58,13 @@ export const useAdhkarStore = create<AdhkarStore>()(
         const progress = type === 'sabah'
           ? get().dailyState.sabahProgress
           : get().dailyState.masaaProgress;
-        
-        let completed = 0;
-        let total = 0;
-        
-        adhkarList.forEach((adhkar) => {
+
+        const total = adhkarList.length;
+        const completed = adhkarList.filter((adhkar) => {
           const currentCount = progress[adhkar.id] || 0;
-          const completedCount = Math.min(currentCount, adhkar.count);
-          completed += completedCount;
-          total += adhkar.count;
-        });
-        
+          return currentCount >= adhkar.count;
+        }).length;
+
         return { completed, total };
       },
 

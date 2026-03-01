@@ -171,27 +171,6 @@ export default function AdhkarReaderScreen() {
     }).length;
   }, [adhkarList, adhkarType, getProgress, completed]);
 
-  const handleIncrement = useCallback(
-    (adhkarId: string, requiredCount: number) => {
-      incrementCount(adhkarType, adhkarId);
-      
-      const newCount = getProgress(adhkarType, adhkarId) + 1;
-      
-      if (newCount >= requiredCount) {
-        const newCompletedCount = adhkarList.filter((a) => {
-          if (a.id === adhkarId) return true;
-          const count = getProgress(adhkarType, a.id);
-          return count >= a.count;
-        }).length;
-
-        if (newCompletedCount === adhkarList.length && !isSessionCompleted) {
-          handleComplete();
-        }
-      }
-    },
-    [adhkarType, adhkarList, getProgress, incrementCount, isSessionCompleted]
-  );
-
   const handleComplete = useCallback(() => {
     markComplete(adhkarType);
 
@@ -228,6 +207,27 @@ export default function AdhkarReaderScreen() {
       ]
     );
   }, [adhkarType, markComplete, sessions, startSession, addSet, title.english, router]);
+
+  const handleIncrement = useCallback(
+    (adhkarId: string, requiredCount: number) => {
+      incrementCount(adhkarType, adhkarId);
+
+      const newCount = getProgress(adhkarType, adhkarId);
+
+      if (newCount >= requiredCount) {
+        const newCompletedCount = adhkarList.filter((a) => {
+          if (a.id === adhkarId) return true;
+          const count = getProgress(adhkarType, a.id);
+          return count >= a.count;
+        }).length;
+
+        if (newCompletedCount === adhkarList.length && !isSessionCompleted) {
+          handleComplete();
+        }
+      }
+    },
+    [adhkarType, adhkarList, getProgress, incrementCount, isSessionCompleted, handleComplete]
+  );
 
   const handleScroll = (event: any) => {
     const offsetY = event.nativeEvent.contentOffset.y;
