@@ -1,13 +1,11 @@
-import React, { useState } from 'react';
-import { View, Text, StyleSheet, ScrollView, Switch, TouchableOpacity, Alert } from 'react-native';
+import React from 'react';
+import { View, Text, StyleSheet, ScrollView, Switch, TouchableOpacity } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { router } from 'expo-router';
 import { Feather } from '@expo/vector-icons';
 import { Colors, Typography, Spacing, BorderRadius } from '../../constants/theme';
 import { Card } from '../../components/ui';
 import { useSettingsStore } from '../../store/settingsStore';
-import { useSessionStore } from '../../store/sessionStore';
-import { exportAllData, importData } from '../../utils/dataExport';
 
 interface SettingRowProps {
   icon: keyof typeof Feather.glyphMap;
@@ -40,51 +38,8 @@ const SettingRow: React.FC<SettingRowProps> = ({ icon, label, value, onPress, ri
 );
 
 export default function SettingsScreen() {
-  const [isExporting, setIsExporting] = useState(false);
-  const [isImporting, setIsImporting] = useState(false);
-
   const notificationsEnabled = useSettingsStore((state) => state.notificationsEnabled);
-  const privacyModeEnabled = useSettingsStore((state) => state.privacyModeEnabled);
   const setNotificationsEnabled = useSettingsStore((state) => state.setNotificationsEnabled);
-  const setPrivacyModeEnabled = useSettingsStore((state) => state.setPrivacyModeEnabled);
-
-  const handleExport = async () => {
-    if (isExporting) return;
-    setIsExporting(true);
-    try {
-      await exportAllData();
-    } finally {
-      setIsExporting(false);
-    }
-  };
-
-  const handleImport = async () => {
-    if (isImporting) return;
-    setIsImporting(true);
-    try {
-      await importData();
-    } finally {
-      setIsImporting(false);
-    }
-  };
-
-  const handleClearSessions = () => {
-    Alert.alert(
-      'Clear All Sessions',
-      'This will delete all your session history. This cannot be undone.',
-      [
-        { text: 'Cancel', style: 'cancel' },
-        {
-          text: 'Clear All',
-          style: 'destructive',
-          onPress: () => {
-            useSessionStore.getState().clearAllSessions();
-            Alert.alert('Done', 'All sessions have been cleared.');
-          },
-        },
-      ]
-    );
-  };
 
   return (
     <SafeAreaView style={styles.container} edges={['bottom']}>
@@ -125,22 +80,6 @@ export default function SettingsScreen() {
               />
             }
           />
-          <View style={styles.separator} />
-          <SettingRow
-            icon="lock"
-            label="Privacy Mode"
-            rightElement={
-              <Switch
-                value={privacyModeEnabled}
-                onValueChange={setPrivacyModeEnabled}
-                trackColor={{
-                  false: Colors.background.elevated,
-                  true: Colors.accent.muted,
-                }}
-                thumbColor={privacyModeEnabled ? Colors.accent.primary : Colors.text.muted}
-              />
-            }
-          />
         </Card>
 
         <Text style={styles.sectionTitle}>Account</Text>
@@ -149,27 +88,6 @@ export default function SettingsScreen() {
             icon="cloud"
             label="Account & Sync"
             onPress={() => router.push('/settings/account')}
-          />
-        </Card>
-
-        <Text style={styles.sectionTitle}>Data</Text>
-        <Card padding="none">
-          <SettingRow
-            icon="download"
-            label={isExporting ? 'Exporting...' : 'Export Data'}
-            onPress={handleExport}
-          />
-          <View style={styles.separator} />
-          <SettingRow
-            icon="upload"
-            label={isImporting ? 'Importing...' : 'Import Data'}
-            onPress={handleImport}
-          />
-          <View style={styles.separator} />
-          <SettingRow
-            icon="trash-2"
-            label="Clear All Sessions"
-            onPress={handleClearSessions}
           />
         </Card>
 

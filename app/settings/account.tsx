@@ -1,25 +1,12 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { View, Text, StyleSheet, ScrollView } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Stack } from 'expo-router';
 import { Feather } from '@expo/vector-icons';
 import { Colors, Typography, Spacing, BorderRadius } from '../../constants/theme';
-import { Card, Button } from '../../components/ui';
-import { exportAllData } from '../../utils/dataExport';
+import { Card } from '../../components/ui';
 
 export default function AccountScreen() {
-  const [isExporting, setIsExporting] = useState(false);
-
-  const handleExport = async () => {
-    if (isExporting) return;
-    setIsExporting(true);
-    try {
-      await exportAllData();
-    } finally {
-      setIsExporting(false);
-    }
-  };
-
   return (
     <>
       <Stack.Screen options={{ title: 'Account & Sync' }} />
@@ -72,14 +59,6 @@ export default function AccountScreen() {
             </View>
           </Card>
 
-          <Button
-            title={isExporting ? 'Exporting...' : 'Export Data (Local)'}
-            variant="secondary"
-            icon={<Feather name="download" size={18} color={Colors.text.primary} />}
-            fullWidth
-            onPress={handleExport}
-            disabled={isExporting}
-          />
         </ScrollView>
       </SafeAreaView>
     </>

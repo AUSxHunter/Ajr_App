@@ -37,7 +37,6 @@ interface SessionActions {
   getSessionsByDateRange: (startDate: string, endDate: string) => Session[];
   calculateSessionVolume: (sessionId: string) => number;
   getAllSessions: () => Session[];
-  clearAllSessions: () => void;
   hideIbadahType: (ibadahTypeId: string) => void;
   showIbadahType: (ibadahTypeId: string) => void;
   toggleIbadahTypeVisibility: (ibadahTypeId: string) => void;
@@ -302,10 +301,6 @@ export const useSessionStore = create<SessionState & SessionActions>()(
 
       getAllSessions: () => {
         return get().sessions.sort((a, b) => b.sessionDate.localeCompare(a.sessionDate));
-      },
-
-      clearAllSessions: () => {
-        set({ sessions: [], sessionSets: [], activeSessionId: null });
       },
 
       hideIbadahType: (ibadahTypeId) => {

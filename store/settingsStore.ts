@@ -11,7 +11,6 @@ interface SettingsActions {
   setOnboardingCompleted: (completed: boolean) => void;
   setNotificationsEnabled: (enabled: boolean) => void;
   setNotificationTime: (time: string) => void;
-  setPrivacyModeEnabled: (enabled: boolean) => void;
   setMinimumViableDay: (ibadahTypeId: string, minimumValue: number) => void;
   removeMinimumViableDay: (ibadahTypeId: string) => void;
   getMinimumViableDay: (ibadahTypeId: string) => number | undefined;
@@ -22,7 +21,6 @@ const DEFAULT_SETTINGS: UserSettings = {
   minimumViableDays: [],
   notificationsEnabled: false,
   notificationTime: undefined,
-  privacyModeEnabled: false,
   onboardingCompleted: false,
 };
 
@@ -42,10 +40,6 @@ export const useSettingsStore = create<SettingsState & SettingsActions>()(
 
       setNotificationTime: (time) => {
         set({ notificationTime: time });
-      },
-
-      setPrivacyModeEnabled: (enabled) => {
-        set({ privacyModeEnabled: enabled });
       },
 
       setMinimumViableDay: (ibadahTypeId, minimumValue) => {
@@ -90,7 +84,6 @@ export const useSettingsStore = create<SettingsState & SettingsActions>()(
         minimumViableDays: state.minimumViableDays,
         notificationsEnabled: state.notificationsEnabled,
         notificationTime: state.notificationTime,
-        privacyModeEnabled: state.privacyModeEnabled,
         onboardingCompleted: state.onboardingCompleted,
       }),
     }

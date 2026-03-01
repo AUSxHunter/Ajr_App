@@ -59,7 +59,6 @@ export interface UserSettings {
   minimumViableDays: MinimumViableDay[];
   notificationsEnabled: boolean;
   notificationTime?: string;
-  privacyModeEnabled: boolean;
   onboardingCompleted: boolean;
 }
 
