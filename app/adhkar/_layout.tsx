@@ -1,5 +1,6 @@
 import { Stack } from 'expo-router';
 import { Colors } from '../../constants/theme';
+import { HeaderBackButton } from '../../components/ui';
 
 export default function AdhkarLayout() {
   return (
@@ -19,7 +20,7 @@ export default function AdhkarLayout() {
         name="[type]"
         options={{
           headerTitle: '',
-          headerBackTitle: 'Back',
+          headerLeft: () => <HeaderBackButton />,
         }}
       />
     </Stack>

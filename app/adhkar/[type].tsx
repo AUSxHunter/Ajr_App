@@ -263,6 +263,7 @@ export default function AdhkarReaderScreen() {
         <View style={styles.progressHeader}>
           <View style={styles.progressInfo}>
             <Text style={styles.progressLabel}>Progress</Text>
+            <Text style={styles.progressDot}>·</Text>
             <Text style={styles.progressCount}>
               {completed}/{total} adhkar · {Math.round(progressPercent)}%
             </Text>
@@ -339,11 +340,14 @@ const styles = StyleSheet.create({
   },
   progressInfo: {
     flexDirection: 'row',
-    justifyContent: 'space-between',
     alignItems: 'center',
-    marginBottom: Spacing.sm,
+    gap: Spacing.sm,
   },
   progressLabel: {
+    fontSize: Typography.fontSize.bodySmall,
+    color: Colors.text.muted,
+  },
+  progressDot: {
     fontSize: Typography.fontSize.bodySmall,
     color: Colors.text.muted,
   },

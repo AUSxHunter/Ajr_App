@@ -155,7 +155,25 @@ export const useAdhkarStore = create<AdhkarStore>()(
     }),
     {
       name: 'adhkar-storage',
-      storage: createJSONStorage(() => AsyncStorage),
+      storage: createJSONStorage(() => {
+        let timeoutId: ReturnType<typeof setTimeout> | null = null;
+        let pendingKey = '';
+        let pendingValue = '';
+        return {
+          getItem: (key: string) => AsyncStorage.getItem(key),
+          setItem: (key: string, value: string) => {
+            pendingKey = key;
+            pendingValue = value;
+            if (timeoutId) clearTimeout(timeoutId);
+            timeoutId = setTimeout(() => {
+              AsyncStorage.setItem(pendingKey, pendingValue);
+              timeoutId = null;
+            }, 500);
+            return Promise.resolve();
+          },
+          removeItem: (key: string) => AsyncStorage.removeItem(key),
+        };
+      }),
     }
   )
 );
