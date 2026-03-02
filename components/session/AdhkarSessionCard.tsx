@@ -9,6 +9,7 @@ import { IbadahType } from '../../types';
 import { useAdhkarStore } from '../../store/adhkarStore';
 import { AdhkarType } from '../../constants/adhkar';
 import { IbadahStreakDots } from './IbadahStreakDots';
+import { useTranslation } from '../../hooks/useTranslation';
 
 interface AdhkarSessionCardProps {
   ibadahType: IbadahType;
@@ -22,6 +23,7 @@ interface AdhkarRowProps {
 }
 
 const AdhkarRow: React.FC<AdhkarRowProps> = ({ type, label, labelArabic, icon }) => {
+  const { t, isRTL } = useTranslation();
   const router = useRouter();
   const isCompleted = useAdhkarStore((state) => state.isCompleted(type));
   const { completed, total } = useAdhkarStore(useShallow((state) => state.getTotalProgress(type)));
@@ -44,8 +46,8 @@ const AdhkarRow: React.FC<AdhkarRowProps> = ({ type, label, labelArabic, icon })
           />
         </View>
         <View style={styles.rowInfo}>
-          <Text style={styles.rowLabel}>{label}</Text>
-          <Text style={styles.rowLabelArabic}>{labelArabic}</Text>
+          <Text style={styles.rowLabel}>{isRTL ? labelArabic : label}</Text>
+          {!isRTL && <Text style={styles.rowLabelArabic}>{labelArabic}</Text>}
         </View>
       </View>
       
@@ -53,7 +55,7 @@ const AdhkarRow: React.FC<AdhkarRowProps> = ({ type, label, labelArabic, icon })
         {isCompleted ? (
           <View style={styles.completedBadge}>
             <Feather name="check" size={14} color={Colors.semantic.success} />
-            <Text style={styles.completedText}>Done</Text>
+            <Text style={styles.completedText}>{t('adhkarCard.done')}</Text>
           </View>
         ) : hasStarted ? (
           <View style={styles.progressContainer}>
@@ -65,16 +67,17 @@ const AdhkarRow: React.FC<AdhkarRowProps> = ({ type, label, labelArabic, icon })
         ) : (
           <View style={styles.startButton}>
             <Feather name="play" size={14} color={Colors.ibadah.adhkar} />
-            <Text style={styles.startText}>Start</Text>
+            <Text style={styles.startText}>{t('adhkarCard.start')}</Text>
           </View>
         )}
-        <Feather name="chevron-right" size={20} color={Colors.text.muted} />
+        <Feather name={isRTL ? 'chevron-left' : 'chevron-right'} size={20} color={Colors.text.muted} />
       </View>
     </TouchableOpacity>
   );
 };
 
 export const AdhkarSessionCard: React.FC<AdhkarSessionCardProps> = ({ ibadahType }) => {
+  const { t, isRTL } = useTranslation();
   const checkAndResetIfNewDay = useAdhkarStore((state) => state.checkAndResetIfNewDay);
   const sabahCompleted = useAdhkarStore((state) => state.isCompleted('sabah'));
   const masaaCompleted = useAdhkarStore((state) => state.isCompleted('masaa'));
@@ -85,7 +88,7 @@ export const AdhkarSessionCard: React.FC<AdhkarSessionCardProps> = ({ ibadahType
   }, []);
 
   return (
-    <Card padding="none" variant="outlined" style={styles.card}>
+    <Card padding="none" variant="outlined" style={[styles.card, { direction: isRTL ? 'rtl' : 'ltr' }]}>
       <View style={styles.header}>
         <View style={styles.headerLeft}>
           <View style={[styles.iconContainer, { backgroundColor: `${ibadahType.color}20` }]}>
@@ -96,15 +99,19 @@ export const AdhkarSessionCard: React.FC<AdhkarSessionCardProps> = ({ ibadahType
             />
           </View>
           <View style={styles.headerInfo}>
-            <Text style={styles.ibadahName}>{ibadahType.name}</Text>
-            <Text style={styles.ibadahNameArabic}>{ibadahType.nameArabic}</Text>
+            <Text style={styles.ibadahName}>
+              {isRTL ? (ibadahType.nameArabic || ibadahType.name) : ibadahType.name}
+            </Text>
+            {!isRTL && ibadahType.nameArabic && (
+              <Text style={styles.ibadahNameArabic}>{ibadahType.nameArabic}</Text>
+            )}
           </View>
         </View>
 
         {bothCompleted && (
           <View style={styles.allCompleteBadge}>
             <Feather name="check-circle" size={14} color={Colors.semantic.success} />
-            <Text style={styles.allCompleteText}>Complete</Text>
+            <Text style={styles.allCompleteText}>{t('adhkarCard.complete')}</Text>
           </View>
         )}
       </View>
@@ -116,14 +123,14 @@ export const AdhkarSessionCard: React.FC<AdhkarSessionCardProps> = ({ ibadahType
       <View style={styles.adhkarList}>
         <AdhkarRow
           type="sabah"
-          label="Morning"
+          label={t('adhkarCard.morning')}
           labelArabic="أذكار الصباح"
           icon="sunrise"
         />
         <View style={styles.rowDivider} />
         <AdhkarRow
           type="masaa"
-          label="Evening"
+          label={t('adhkarCard.evening')}
           labelArabic="أذكار المساء"
           icon="sunset"
         />

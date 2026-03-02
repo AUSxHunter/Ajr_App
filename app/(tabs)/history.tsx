@@ -9,8 +9,10 @@ import { EmptyState } from '../../components/ui';
 import { CalendarStrip, SessionListItem } from '../../components/history';
 import { useSessionStore } from '../../store/sessionStore';
 import { useIbadahStore } from '../../store/ibadahStore';
+import { useTranslation } from '../../hooks/useTranslation';
 
 export default function HistoryScreen() {
+  const { t, isRTL } = useTranslation();
   const [selectedDate, setSelectedDate] = useState(new Date());
 
   const sessions = useSessionStore((state) => state.sessions);
@@ -55,12 +57,12 @@ export default function HistoryScreen() {
 
   const handleDeleteSession = (sessionId: string, dateLabel: string) => {
     Alert.alert(
-      'Delete Session',
-      `Are you sure you want to delete the session from ${dateLabel}? This will remove all sets from this session.`,
+      t('history.deleteSessionTitle'),
+      t('history.deleteSessionMessage', { date: dateLabel }),
       [
-        { text: 'Cancel', style: 'cancel' },
+        { text: t('common.cancel'), style: 'cancel' },
         {
-          text: 'Delete',
+          text: t('common.delete'),
           style: 'destructive',
           onPress: () => {
             useSessionStore.getState().deleteSession(sessionId);
@@ -79,11 +81,11 @@ export default function HistoryScreen() {
       >
         <View style={styles.weekNavigation}>
           <TouchableOpacity onPress={navigatePrevWeek} style={styles.navButton}>
-            <Feather name="chevron-left" size={24} color={Colors.text.secondary} />
+            <Feather name={isRTL ? 'chevron-right' : 'chevron-left'} size={24} color={Colors.text.secondary} />
           </TouchableOpacity>
           <Text style={styles.weekLabel}>{weekLabel}</Text>
           <TouchableOpacity onPress={navigateNextWeek} style={styles.navButton}>
-            <Feather name="chevron-right" size={24} color={Colors.text.secondary} />
+            <Feather name={isRTL ? 'chevron-left' : 'chevron-right'} size={24} color={Colors.text.secondary} />
           </TouchableOpacity>
         </View>
 
@@ -94,13 +96,13 @@ export default function HistoryScreen() {
         />
 
         <View style={styles.sessionSection}>
-          <Text style={styles.sectionTitle}>Sessions ({filteredSessions.length})</Text>
+          <Text style={styles.sectionTitle}>{t('history.sessions')} ({filteredSessions.length})</Text>
 
           {filteredSessions.length === 0 ? (
             <EmptyState
               icon="calendar"
-              title="No Sessions This Week"
-              description="Sessions you complete will appear here."
+              title={t('history.noSessionsTitle')}
+              description={t('history.noSessionsDesc')}
             />
           ) : (
             <View style={styles.sessionList}>

@@ -60,6 +60,7 @@ export interface UserSettings {
   notificationsEnabled: boolean;
   notificationTime?: string;
   onboardingCompleted: boolean;
+  language: 'en' | 'ar';
 }
 
 export interface SessionWithSets extends Session {
@@ -94,6 +95,7 @@ export interface WeeklyStats {
 export interface OverloadSuggestion {
   ibadahTypeId: string;
   ibadahName: string;
+  ibadahNameArabic?: string;
   currentAverage: number;
   suggestedValue: number;
   reason: string;

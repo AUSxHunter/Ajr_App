@@ -5,6 +5,7 @@ import { format, parseISO } from 'date-fns';
 import { Card } from '../ui';
 import { Colors, Typography, Spacing, BorderRadius } from '../../constants/theme';
 import { Session, SessionSet, IbadahType } from '../../types';
+import { useTranslation } from '../../hooks/useTranslation';
 
 interface SessionListItemProps {
   session: Session;
@@ -21,6 +22,7 @@ export const SessionListItem: React.FC<SessionListItemProps> = ({
   onPress,
   onDelete,
 }) => {
+  const { t, isRTL } = useTranslation();
   const sessionDate = parseISO(session.sessionDate);
   const dateLabel = format(sessionDate, 'EEEE, MMMM d');
 
@@ -34,12 +36,12 @@ export const SessionListItem: React.FC<SessionListItemProps> = ({
         <View>
           <Text style={styles.date}>{dateLabel}</Text>
           <Text style={styles.setCount}>
-            {sets.length} {sets.length === 1 ? 'set' : 'sets'} logged
+            {sets.length} {sets.length === 1 ? t('sessionCard.set') : t('sessionCard.sets')} {t('history.logged')}
           </Text>
         </View>
         <View style={styles.volumeContainer}>
           <Text style={styles.volume}>{session.totalVolume}</Text>
-          <Text style={styles.volumeLabel}>volume</Text>
+          <Text style={styles.volumeLabel}>{t('today.volume')}</Text>
         </View>
       </View>
 
@@ -79,7 +81,7 @@ export const SessionListItem: React.FC<SessionListItemProps> = ({
               <Feather name="trash-2" size={18} color={Colors.semantic.danger} />
             </TouchableOpacity>
           )}
-          <Feather name="chevron-right" size={20} color={Colors.text.muted} />
+          <Feather name={isRTL ? 'chevron-left' : 'chevron-right'} size={20} color={Colors.text.muted} />
         </View>
       </View>
     </Card>

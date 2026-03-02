@@ -12,6 +12,7 @@ import { Feather } from '@expo/vector-icons';
 import { Colors, Typography, Spacing, BorderRadius } from '../../constants/theme';
 import { IbadahType } from '../../types';
 import { useSessionStore } from '../../store/sessionStore';
+import { useTranslation } from '../../hooks/useTranslation';
 
 interface ManageIbadahModalProps {
   visible: boolean;
@@ -24,6 +25,7 @@ export const ManageIbadahModal: React.FC<ManageIbadahModalProps> = ({
   onClose,
   ibadahTypes,
 }) => {
+  const { t, isRTL } = useTranslation();
   const hiddenIbadahTypeIds = useSessionStore((state) => state.hiddenIbadahTypeIds);
   const toggleIbadahTypeVisibility = useSessionStore((state) => state.toggleIbadahTypeVisibility);
   const resetHiddenIbadahTypes = useSessionStore((state) => state.resetHiddenIbadahTypes);
@@ -40,9 +42,9 @@ export const ManageIbadahModal: React.FC<ManageIbadahModalProps> = ({
       <View style={styles.container}>
         <View style={styles.header}>
           <View>
-            <Text style={styles.title}>Manage Ibadah</Text>
+            <Text style={styles.title}>{t('manageModal.title')}</Text>
             <Text style={styles.subtitle}>
-              {visibleCount} of {ibadahTypes.length} showing
+              {t('manageModal.subtitle', { visible: visibleCount, total: ibadahTypes.length })}
             </Text>
           </View>
           <TouchableOpacity style={styles.closeButton} onPress={onClose}>
@@ -50,9 +52,7 @@ export const ManageIbadahModal: React.FC<ManageIbadahModalProps> = ({
           </TouchableOpacity>
         </View>
 
-        <Text style={styles.description}>
-          Toggle which ibadah types appear on your session. Hidden types won't show in the main view but remain available in settings.
-        </Text>
+        <Text style={styles.description}>{t('manageModal.description')}</Text>
 
         <ScrollView style={styles.list} showsVerticalScrollIndicator={false}>
           {ibadahTypes.map((ibadahType) => {
@@ -80,9 +80,9 @@ export const ManageIbadahModal: React.FC<ManageIbadahModalProps> = ({
                   </View>
                   <View>
                     <Text style={[styles.itemName, !isVisible && styles.itemNameHidden]}>
-                      {ibadahType.name}
+                      {isRTL ? (ibadahType.nameArabic || ibadahType.name) : ibadahType.name}
                     </Text>
-                    {ibadahType.nameArabic && (
+                    {!isRTL && ibadahType.nameArabic && (
                       <Text style={styles.itemArabic}>{ibadahType.nameArabic}</Text>
                     )}
                   </View>
@@ -101,7 +101,7 @@ export const ManageIbadahModal: React.FC<ManageIbadahModalProps> = ({
         {hiddenIbadahTypeIds.length > 0 && (
           <TouchableOpacity style={styles.resetButton} onPress={resetHiddenIbadahTypes}>
             <Feather name="refresh-cw" size={16} color={Colors.accent.primary} />
-            <Text style={styles.resetButtonText}>Show All</Text>
+            <Text style={styles.resetButtonText}>{t('manageModal.showAll')}</Text>
           </TouchableOpacity>
         )}
       </View>

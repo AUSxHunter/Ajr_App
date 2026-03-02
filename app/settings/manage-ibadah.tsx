@@ -7,6 +7,7 @@ import { Colors, Typography, Spacing, BorderRadius } from '../../constants/theme
 import { Card, Button, Modal, Input, ConfirmModal } from '../../components/ui';
 import { useIbadahStore } from '../../store/ibadahStore';
 import { IbadahUnit } from '../../types';
+import { useTranslation } from '../../hooks/useTranslation';
 
 const UNIT_OPTIONS: { value: IbadahUnit; label: string }[] = [
   { value: 'pages', label: 'Pages' },
@@ -44,6 +45,7 @@ const COLOR_OPTIONS = [
 ];
 
 export default function ManageIbadahScreen() {
+  const { t, isRTL } = useTranslation();
   const [addModalVisible, setAddModalVisible] = useState(false);
   const [archiveConfirmId, setArchiveConfirmId] = useState<string | null>(null);
   const [deleteConfirmId, setDeleteConfirmId] = useState<string | null>(null);
@@ -94,14 +96,14 @@ export default function ManageIbadahScreen() {
 
   return (
     <>
-      <Stack.Screen options={{ title: 'Manage Ibadah Types' }} />
+      <Stack.Screen options={{ title: t('manageIbadah.title') }} />
       <SafeAreaView style={styles.container} edges={['bottom']}>
         <ScrollView
           style={styles.scrollView}
           contentContainerStyle={styles.content}
           showsVerticalScrollIndicator={false}
         >
-          <Text style={styles.sectionTitle}>Active Ibadah Types</Text>
+          <Text style={styles.sectionTitle}>{t('manageIbadah.activeTypes')}</Text>
           <View style={styles.list}>
             {ibadahTypes.map((type) => (
               <Card key={type.id} style={styles.ibadahCard}>
@@ -114,8 +116,12 @@ export default function ManageIbadahScreen() {
                     />
                   </View>
                   <View style={styles.ibadahInfo}>
-                    <Text style={styles.ibadahName}>{type.name}</Text>
-                    {type.nameArabic && <Text style={styles.ibadahArabic}>{type.nameArabic}</Text>}
+                    <Text style={styles.ibadahName}>
+                      {isRTL ? (type.nameArabic || type.name) : type.name}
+                    </Text>
+                    {!isRTL && type.nameArabic && (
+                      <Text style={styles.ibadahArabic}>{type.nameArabic}</Text>
+                    )}
                     <Text style={styles.ibadahUnit}>{type.unit}</Text>
                   </View>
                   {!type.isDefault && (
@@ -140,7 +146,7 @@ export default function ManageIbadahScreen() {
           </View>
 
           <Button
-            title="Add Custom Ibadah"
+            title={t('manageIbadah.addCustom')}
             variant="secondary"
             icon={<Feather name="plus" size={18} color={Colors.text.primary} />}
             onPress={() => setAddModalVisible(true)}
@@ -149,7 +155,7 @@ export default function ManageIbadahScreen() {
 
           {archivedTypes.length > 0 && (
             <>
-              <Text style={styles.sectionTitle}>Archived</Text>
+              <Text style={styles.sectionTitle}>{t('manageIbadah.archived')}</Text>
               <View style={styles.list}>
                 {archivedTypes.map((type) => (
                   <Card key={type.id} style={styles.ibadahCard}>
@@ -167,7 +173,9 @@ export default function ManageIbadahScreen() {
                         />
                       </View>
                       <View style={styles.ibadahInfo}>
-                        <Text style={[styles.ibadahName, { opacity: 0.5 }]}>{type.name}</Text>
+                        <Text style={[styles.ibadahName, { opacity: 0.5 }]}>
+                          {isRTL ? (type.nameArabic || type.name) : type.name}
+                        </Text>
                       </View>
                       <View style={styles.actionButtons}>
                         <TouchableOpacity
@@ -196,24 +204,24 @@ export default function ManageIbadahScreen() {
         <Modal
           visible={addModalVisible}
           onClose={() => setAddModalVisible(false)}
-          title="Add Custom Ibadah"
+          title={t('manageIbadah.addCustomTitle')}
           position="bottom"
         >
           <View style={styles.modalContent}>
             <Input
-              label="Name"
+              label={t('manageIbadah.name')}
               value={newName}
               onChangeText={setNewName}
               placeholder="e.g., Tahajjud"
             />
             <Input
-              label="Arabic Name (optional)"
+              label={t('manageIbadah.arabicName')}
               value={newNameArabic}
               onChangeText={setNewNameArabic}
               placeholder="e.g., التهجد"
             />
 
-            <Text style={styles.fieldLabel}>Unit</Text>
+            <Text style={styles.fieldLabel}>{t('manageIbadah.unit')}</Text>
             <View style={styles.optionsRow}>
               {UNIT_OPTIONS.map((option) => (
                 <TouchableOpacity
@@ -233,7 +241,7 @@ export default function ManageIbadahScreen() {
               ))}
             </View>
 
-            <Text style={styles.fieldLabel}>Icon</Text>
+            <Text style={styles.fieldLabel}>{t('manageIbadah.icon')}</Text>
             <ScrollView
               horizontal
               showsHorizontalScrollIndicator={false}
@@ -254,7 +262,7 @@ export default function ManageIbadahScreen() {
               ))}
             </ScrollView>
 
-            <Text style={styles.fieldLabel}>Color</Text>
+            <Text style={styles.fieldLabel}>{t('manageIbadah.color')}</Text>
             <View style={styles.colorGrid}>
               {COLOR_OPTIONS.map((color) => (
                 <TouchableOpacity
@@ -272,7 +280,7 @@ export default function ManageIbadahScreen() {
             </View>
 
             <Button
-              title="Add Ibadah"
+              title={t('manageIbadah.addIbadah')}
               variant="primary"
               fullWidth
               onPress={handleAddIbadah}
@@ -289,9 +297,9 @@ export default function ManageIbadahScreen() {
               archiveIbadahType(archiveConfirmId);
             }
           }}
-          title="Archive Ibadah"
-          message="This will hide this ibadah type from your tracking. You can restore it later."
-          confirmText="Archive"
+          title={t('manageIbadah.archiveTitle')}
+          message={t('manageIbadah.archiveMessage')}
+          confirmText={t('manageIbadah.archive')}
           variant="default"
         />
 
@@ -303,9 +311,9 @@ export default function ManageIbadahScreen() {
               deleteIbadahType(deleteConfirmId);
             }
           }}
-          title="Delete Ibadah"
-          message="This will permanently delete this custom ibadah type and cannot be undone. Any logged sets will remain in your history."
-          confirmText="Delete"
+          title={t('manageIbadah.deleteTitle')}
+          message={t('manageIbadah.deleteMessage')}
+          confirmText={t('common.delete')}
           variant="danger"
         />
       </SafeAreaView>

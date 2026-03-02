@@ -5,11 +5,13 @@ import { Stack } from 'expo-router';
 import { Feather } from '@expo/vector-icons';
 import { Colors, Typography, Spacing, BorderRadius } from '../../constants/theme';
 import { Card } from '../../components/ui';
+import { useTranslation } from '../../hooks/useTranslation';
 
 export default function AccountScreen() {
+  const { t } = useTranslation();
   return (
     <>
-      <Stack.Screen options={{ title: 'Account & Sync' }} />
+      <Stack.Screen options={{ title: t('account.title') }} />
       <SafeAreaView style={styles.container} edges={['bottom']}>
         <ScrollView
           style={styles.scrollView}
@@ -20,41 +22,36 @@ export default function AccountScreen() {
             <View style={styles.iconContainer}>
               <Feather name="cloud-off" size={48} color={Colors.text.muted} />
             </View>
-            <Text style={styles.title}>Cloud Sync</Text>
-            <Text style={styles.description}>
-              Sign in to sync your data across devices and back up your progress.
-            </Text>
+            <Text style={styles.title}>{t('account.cloudSync')}</Text>
+            <Text style={styles.description}>{t('account.cloudSyncDesc')}</Text>
           </View>
 
           <Card style={styles.comingSoonCard}>
             <Feather name="clock" size={24} color={Colors.accent.primary} />
             <View style={styles.comingSoonText}>
-              <Text style={styles.comingSoonTitle}>Coming Soon</Text>
-              <Text style={styles.comingSoonDescription}>
-                Cloud sync and account features are currently in development. Your data is safely
-                stored on your device.
-              </Text>
+              <Text style={styles.comingSoonTitle}>{t('account.comingSoon')}</Text>
+              <Text style={styles.comingSoonDescription}>{t('account.comingSoonDesc')}</Text>
             </View>
           </Card>
 
           <Card style={styles.featuresCard}>
-            <Text style={styles.featuresTitle}>Planned Features</Text>
+            <Text style={styles.featuresTitle}>{t('account.plannedFeatures')}</Text>
             <View style={styles.featuresList}>
               <View style={styles.featureRow}>
                 <Feather name="check" size={16} color={Colors.semantic.success} />
-                <Text style={styles.featureText}>Sync across devices</Text>
+                <Text style={styles.featureText}>{t('account.syncAcrossDevices')}</Text>
               </View>
               <View style={styles.featureRow}>
                 <Feather name="check" size={16} color={Colors.semantic.success} />
-                <Text style={styles.featureText}>Automatic backup</Text>
+                <Text style={styles.featureText}>{t('account.automaticBackup')}</Text>
               </View>
               <View style={styles.featureRow}>
                 <Feather name="check" size={16} color={Colors.semantic.success} />
-                <Text style={styles.featureText}>Data export/import</Text>
+                <Text style={styles.featureText}>{t('account.dataExport')}</Text>
               </View>
               <View style={styles.featureRow}>
                 <Feather name="check" size={16} color={Colors.semantic.success} />
-                <Text style={styles.featureText}>End-to-end encryption</Text>
+                <Text style={styles.featureText}>{t('account.encryption')}</Text>
               </View>
             </View>
           </Card>

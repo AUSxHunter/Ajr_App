@@ -4,7 +4,7 @@ import { Feather } from '@expo/vector-icons';
 import { Card } from '../ui';
 import { Colors, Typography, Spacing, BorderRadius } from '../../constants/theme';
 import { IbadahType, SessionSet } from '../../types';
-import { UNIT_LABELS } from '../../constants/defaults';
+import { useTranslation } from '../../hooks/useTranslation';
 
 interface IbadahBreakdownProps {
   ibadahTypes: IbadahType[];
@@ -20,6 +20,7 @@ interface BreakdownItem {
 }
 
 export const IbadahBreakdown: React.FC<IbadahBreakdownProps> = ({ ibadahTypes, sessionSets }) => {
+  const { t, tUnit, isRTL } = useTranslation();
   const breakdown: BreakdownItem[] = ibadahTypes
     .map((type) => {
       const sets = sessionSets.filter((s) => s.ibadahTypeId === type.id);
@@ -45,24 +46,23 @@ export const IbadahBreakdown: React.FC<IbadahBreakdownProps> = ({ ibadahTypes, s
   if (breakdown.length === 0) {
     return (
       <Card style={styles.emptyContainer}>
-        <Text style={styles.emptyText}>Log some ibadah to see your breakdown</Text>
+        <Text style={styles.emptyText}>{t('analytics.noDataBreakdown')}</Text>
       </Card>
     );
   }
 
   return (
     <Card style={styles.container}>
-      <Text style={styles.title}>By Ibadah Type</Text>
+      <Text style={styles.title}>{t('analytics.byIbadahType')}</Text>
       <View style={styles.list}>
         {breakdown.map((item) => {
-          const unitLabel = UNIT_LABELS[item.ibadahType.unit];
           let displayValue: string;
           if (item.ibadahType.unit === 'currency') {
             displayValue = `${item.totalValue.toFixed(0)} AED`;
           } else if (item.ibadahType.unit === 'binary') {
-            displayValue = `${item.totalValue} ${item.totalValue === 1 ? 'day' : 'days'}`;
+            displayValue = `${item.totalValue} ${tUnit('binary', item.totalValue)}`;
           } else {
-            displayValue = `${item.totalValue} ${unitLabel.abbreviation}`;
+            displayValue = `${item.totalValue} ${tUnit(item.ibadahType.unit, item.totalValue)}`;
           }
 
           return (
@@ -78,9 +78,11 @@ export const IbadahBreakdown: React.FC<IbadahBreakdownProps> = ({ ibadahTypes, s
                   />
                 </View>
                 <View>
-                  <Text style={styles.ibadahName}>{item.ibadahType.name}</Text>
+                  <Text style={styles.ibadahName}>
+                    {isRTL ? (item.ibadahType.nameArabic || item.ibadahType.name) : item.ibadahType.name}
+                  </Text>
                   <Text style={styles.setCount}>
-                    {item.setCount} {item.setCount === 1 ? 'set' : 'sets'}
+                    {item.setCount} {item.setCount === 1 ? t('sessionCard.set') : t('sessionCard.sets')}
                   </Text>
                 </View>
               </View>

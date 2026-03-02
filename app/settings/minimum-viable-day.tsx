@@ -7,9 +7,10 @@ import { Colors, Typography, Spacing, BorderRadius } from '../../constants/theme
 import { Card, NumberInput, Button } from '../../components/ui';
 import { useIbadahStore } from '../../store/ibadahStore';
 import { useSettingsStore } from '../../store/settingsStore';
-import { UNIT_LABELS } from '../../constants/defaults';
+import { useTranslation } from '../../hooks/useTranslation';
 
 export default function MinimumViableDayScreen() {
+  const { t, tUnit } = useTranslation();
   const ibadahTypesRaw = useIbadahStore((state) => state.ibadahTypes);
   const ibadahTypes = useMemo(
     () =>
@@ -44,7 +45,7 @@ export default function MinimumViableDayScreen() {
 
   return (
     <>
-      <Stack.Screen options={{ title: 'Minimum Viable Day' }} />
+      <Stack.Screen options={{ title: t('mvd.title') }} />
       <SafeAreaView style={styles.container} edges={['bottom']}>
         <ScrollView
           style={styles.scrollView}
@@ -54,20 +55,16 @@ export default function MinimumViableDayScreen() {
           <Card style={styles.infoCard}>
             <View style={styles.infoHeader}>
               <Feather name="info" size={20} color={Colors.accent.primary} />
-              <Text style={styles.infoTitle}>What is MVD?</Text>
+              <Text style={styles.infoTitle}>{t('mvd.whatIsMVD')}</Text>
             </View>
-            <Text style={styles.infoText}>
-              Your Minimum Viable Day is the absolute minimum ibadah you commit to, even on your
-              worst days. This ensures consistency even when motivation is low.
-            </Text>
+            <Text style={styles.infoText}>{t('mvd.mvdExplanation')}</Text>
           </Card>
 
-          <Text style={styles.sectionTitle}>Set Your Minimums</Text>
+          <Text style={styles.sectionTitle}>{t('mvd.setYourMinimums')}</Text>
 
           <View style={styles.list}>
             {ibadahTypes.map((type) => {
               const currentMVD = getMinimumViableDay(type.id);
-              const unitLabel = UNIT_LABELS[type.unit];
               const inputValue = values[type.id] ?? (currentMVD?.toString() || '');
 
               return (
@@ -90,9 +87,9 @@ export default function MinimumViableDayScreen() {
                       placeholder="0"
                       containerStyle={styles.inputWrapper}
                     />
-                    <Text style={styles.unitLabel}>{unitLabel.plural}</Text>
+                    <Text style={styles.unitLabel}>{tUnit(type.unit, 2)}</Text>
                     <Button
-                      title="Save"
+                      title={t('mvd.save')}
                       variant="ghost"
                       size="sm"
                       onPress={() => handleSave(type.id)}
@@ -101,7 +98,7 @@ export default function MinimumViableDayScreen() {
 
                   {currentMVD && (
                     <Text style={styles.currentValue}>
-                      Current: {currentMVD} {unitLabel.plural}
+                      {t('mvd.current', { value: currentMVD, unit: tUnit(type.unit, currentMVD) })}
                     </Text>
                   )}
                 </Card>
@@ -111,10 +108,7 @@ export default function MinimumViableDayScreen() {
 
           <Card style={styles.tipCard}>
             <Feather name="sun" size={20} color={Colors.semantic.warning} />
-            <Text style={styles.tipText}>
-              Tip: Start small. It's better to set achievable minimums and build consistency than to
-              set ambitious goals you can't maintain.
-            </Text>
+            <Text style={styles.tipText}>{t('mvd.tip')}</Text>
           </Card>
         </ScrollView>
       </SafeAreaView>

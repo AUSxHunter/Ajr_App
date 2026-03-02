@@ -3,9 +3,11 @@ import { Tabs } from 'expo-router';
 import { Feather } from '@expo/vector-icons';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Colors, Typography } from '../../constants/theme';
+import { useTranslation } from '../../hooks/useTranslation';
 
 export default function TabLayout() {
   const insets = useSafeAreaInsets();
+  const { t } = useTranslation();
 
   return (
     <Tabs
@@ -38,28 +40,28 @@ export default function TabLayout() {
       <Tabs.Screen
         name="index"
         options={{
-          title: 'Today',
+          title: t('tabs.today'),
           tabBarIcon: ({ color, size }) => <Feather name="sun" size={size} color={color} />,
         }}
       />
       <Tabs.Screen
         name="history"
         options={{
-          title: 'History',
+          title: t('tabs.history'),
           tabBarIcon: ({ color, size }) => <Feather name="calendar" size={size} color={color} />,
         }}
       />
       <Tabs.Screen
         name="analytics"
         options={{
-          title: 'Analytics',
+          title: t('tabs.analytics'),
           tabBarIcon: ({ color, size }) => <Feather name="trending-up" size={size} color={color} />,
         }}
       />
       <Tabs.Screen
         name="settings"
         options={{
-          title: 'Settings',
+          title: t('tabs.settings'),
           tabBarIcon: ({ color, size }) => <Feather name="settings" size={size} color={color} />,
         }}
       />

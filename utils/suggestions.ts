@@ -106,6 +106,7 @@ export const generateOverloadSuggestions = (data: SessionData): OverloadSuggesti
         suggestions.push({
           ibadahTypeId: ibadahType.id,
           ibadahName: ibadahType.name,
+          ibadahNameArabic: ibadahType.nameArabic,
           currentAverage: Math.round(average * 10) / 10,
           suggestedValue,
           reason: `You've been consistent with ${ibadahType.name}. Consider a small increase.`,

@@ -1,5 +1,5 @@
 import React, { useState, useMemo } from 'react';
-import { View, Text, StyleSheet, Dimensions } from 'react-native';
+import { View, Text, StyleSheet, Dimensions, TouchableOpacity } from 'react-native';
 import { router } from 'expo-router';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Feather } from '@expo/vector-icons';
@@ -7,6 +7,7 @@ import { Colors, Typography, Spacing, BorderRadius } from '../../constants/theme
 import { Button, Card } from '../../components/ui';
 import { useSettingsStore } from '../../store/settingsStore';
 import { useIbadahStore } from '../../store/ibadahStore';
+import { useTranslation } from '../../hooks/useTranslation';
 
 const { width } = Dimensions.get('window');
 
@@ -14,6 +15,8 @@ export default function OnboardingScreen() {
   const [step, setStep] = useState(0);
 
   const setOnboardingCompleted = useSettingsStore((state) => state.setOnboardingCompleted);
+  const language = useSettingsStore((state) => state.language);
+  const setLanguage = useSettingsStore((state) => state.setLanguage);
   const ibadahTypesRaw = useIbadahStore((state) => state.ibadahTypes);
   const archiveIbadahType = useIbadahStore((state) => state.archiveIbadahType);
   const restoreIbadahType = useIbadahStore((state) => state.restoreIbadahType);
@@ -22,6 +25,7 @@ export default function OnboardingScreen() {
       ibadahTypesRaw.filter((type) => !type.isArchived).sort((a, b) => a.sortOrder - b.sortOrder),
     [ibadahTypesRaw]
   );
+  const { t } = useTranslation();
 
   const [selectedIbadah, setSelectedIbadah] = useState<string[]>(() =>
     ibadahTypes.map((type) => type.id)
@@ -43,32 +47,100 @@ export default function OnboardingScreen() {
     setSelectedIbadah((prev) => (prev.includes(id) ? prev.filter((i) => i !== id) : [...prev, id]));
   };
 
-  const steps = [
+  // Step 0 = language picker; steps 1-3 = onboarding content
+  const contentSteps = [
     {
-      title: 'Welcome to Ajr',
-      description:
-        'Track your daily ibadah with intention and consistency. Build spiritual habits that last.',
+      title: t('onboarding.step1Title'),
+      description: t('onboarding.step1Desc'),
       icon: 'sun' as const,
     },
     {
-      title: 'Progressive Growth',
-      description:
-        'Just like physical training, spiritual growth happens gradually. Small increases compound into significant progress.',
+      title: t('onboarding.step2Title'),
+      description: t('onboarding.step2Desc'),
       icon: 'trending-up' as const,
     },
     {
-      title: 'Choose Your Ibadah',
-      description: 'Select the types of worship you want to track. You can always add more later.',
+      title: t('onboarding.step3Title'),
+      description: t('onboarding.step3Desc'),
       icon: 'check-square' as const,
     },
   ];
 
-  const currentStep = steps[step];
+  const totalSteps = 1 + contentSteps.length; // language step + 3 content steps
+  const isLastStep = step === totalSteps - 1;
+
+  const handleNext = () => {
+    if (isLastStep) {
+      handleComplete();
+    } else {
+      setStep(step + 1);
+    }
+  };
+
+  // Step 0: Language selection
+  if (step === 0) {
+    return (
+      <SafeAreaView style={styles.container}>
+        <View style={styles.content}>
+          <View style={styles.welcomeContent}>
+            <View style={styles.iconContainer}>
+              <Feather name="globe" size={64} color={Colors.accent.primary} />
+            </View>
+            <Text style={styles.title}>{t('onboarding.step0Title')}</Text>
+            <Text style={styles.description}>{t('onboarding.step0Desc')}</Text>
+            <View style={styles.langCards}>
+              <TouchableOpacity
+                style={[styles.langCard, language === 'en' && styles.langCardSelected]}
+                onPress={() => setLanguage('en')}
+                activeOpacity={0.8}
+              >
+                <Text style={styles.langCardFlag}>🇬🇧</Text>
+                <Text style={styles.langCardText}>{t('onboarding.english')}</Text>
+                {language === 'en' && (
+                  <View style={styles.langCheckmark}>
+                    <Feather name="check" size={16} color={Colors.text.primary} />
+                  </View>
+                )}
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={[styles.langCard, language === 'ar' && styles.langCardSelected]}
+                onPress={() => setLanguage('ar')}
+                activeOpacity={0.8}
+              >
+                <Text style={styles.langCardFlag}>🇸🇦</Text>
+                <Text style={styles.langCardText}>{t('onboarding.arabic')}</Text>
+                {language === 'ar' && (
+                  <View style={styles.langCheckmark}>
+                    <Feather name="check" size={16} color={Colors.text.primary} />
+                  </View>
+                )}
+              </TouchableOpacity>
+            </View>
+          </View>
+        </View>
+
+        <View style={styles.footer}>
+          <View style={styles.dots}>
+            {Array.from({ length: totalSteps }).map((_, index) => (
+              <View key={index} style={[styles.dot, index === step && styles.dotActive]} />
+            ))}
+          </View>
+          <View style={styles.buttons}>
+            <Button title={t('onboarding.next')} variant="primary" onPress={handleNext} fullWidth />
+          </View>
+        </View>
+      </SafeAreaView>
+    );
+  }
+
+  // Steps 1-3: content steps
+  const currentStep = contentSteps[step - 1];
+  const isIbadahStep = step === totalSteps - 1;
 
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.content}>
-        {step < 2 ? (
+        {!isIbadahStep ? (
           <View style={styles.welcomeContent}>
             <View style={styles.iconContainer}>
               <Feather name={currentStep.icon} size={64} color={Colors.accent.primary} />
@@ -113,27 +185,21 @@ export default function OnboardingScreen() {
 
       <View style={styles.footer}>
         <View style={styles.dots}>
-          {steps.map((_, index) => (
+          {Array.from({ length: totalSteps }).map((_, index) => (
             <View key={index} style={[styles.dot, index === step && styles.dotActive]} />
           ))}
         </View>
 
         <View style={styles.buttons}>
           <Button
-            title={step === steps.length - 1 ? 'Get Started' : 'Next'}
+            title={isLastStep ? t('onboarding.getStarted') : t('onboarding.next')}
             variant="primary"
-            onPress={() => {
-              if (step === steps.length - 1) {
-                handleComplete();
-              } else {
-                setStep(step + 1);
-              }
-            }}
+            onPress={handleNext}
             fullWidth
           />
           {step > 0 && (
             <Button
-              title="Back"
+              title={t('onboarding.back')}
               variant="ghost"
               onPress={() => setStep(step - 1)}
               fullWidth
@@ -186,6 +252,45 @@ const styles = StyleSheet.create({
     maxWidth: 300,
     alignSelf: 'center',
     marginBottom: Spacing.lg,
+  },
+  langCards: {
+    flexDirection: 'row',
+    gap: Spacing.md,
+    marginTop: Spacing.md,
+  },
+  langCard: {
+    flex: 1,
+    alignItems: 'center',
+    paddingVertical: Spacing.lg,
+    paddingHorizontal: Spacing.md,
+    borderRadius: BorderRadius.lg,
+    backgroundColor: Colors.background.card,
+    borderWidth: 2,
+    borderColor: 'transparent',
+    position: 'relative',
+    gap: Spacing.sm,
+  },
+  langCardSelected: {
+    borderColor: Colors.accent.primary,
+  },
+  langCardFlag: {
+    fontSize: 32,
+  },
+  langCardText: {
+    fontSize: Typography.fontSize.body,
+    fontWeight: '600',
+    color: Colors.text.primary,
+  },
+  langCheckmark: {
+    position: 'absolute',
+    top: Spacing.sm,
+    right: Spacing.sm,
+    width: 24,
+    height: 24,
+    borderRadius: 12,
+    backgroundColor: Colors.accent.primary,
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   ibadahGrid: {
     flexDirection: 'row',

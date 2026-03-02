@@ -13,8 +13,10 @@ import { calculateStreak, findPersonalRecords } from '../../utils/calculations';
 import { generateOverloadSuggestions } from '../../utils/suggestions';
 import { detectBurnout } from '../../utils/burnout';
 import { DailyStats } from '../../types';
+import { useTranslation } from '../../hooks/useTranslation';
 
 export default function AnalyticsScreen() {
+  const { t } = useTranslation();
   const [dismissedSuggestions, setDismissedSuggestions] = useState<string[]>([]);
   const [dismissedBurnout, setDismissedBurnout] = useState(false);
 
@@ -128,35 +130,35 @@ export default function AnalyticsScreen() {
           <Card style={styles.statCard}>
             <Feather name="zap" size={24} color={Colors.semantic.warning} />
             <Text style={styles.statValue}>{streak}</Text>
-            <Text style={styles.statLabel}>Day Streak</Text>
+            <Text style={styles.statLabel}>{t('analytics.dayStreak')}</Text>
           </Card>
 
           <Card style={styles.statCard}>
             <Feather name="calendar" size={24} color={Colors.accent.primary} />
             <Text style={styles.statValue}>{totalSessions}</Text>
-            <Text style={styles.statLabel}>Sessions</Text>
+            <Text style={styles.statLabel}>{t('analytics.sessions')}</Text>
           </Card>
 
           <Card style={styles.statCard}>
             <Feather name="activity" size={24} color={Colors.semantic.success} />
             <Text style={styles.statValue}>{totalVolume}</Text>
-            <Text style={styles.statLabel}>Total Volume</Text>
+            <Text style={styles.statLabel}>{t('analytics.totalVolume')}</Text>
           </Card>
 
           <Card style={styles.statCard}>
             <Feather name="target" size={24} color={Colors.ibadah.qiyam} />
             <Text style={styles.statValue}>{averageDailyVolume}</Text>
-            <Text style={styles.statLabel}>Avg/Day</Text>
+            <Text style={styles.statLabel}>{t('analytics.avgPerDay')}</Text>
           </Card>
         </View>
 
-        <WeeklyChart dailyStats={weeklyStats} title="This Week" />
+        <WeeklyChart dailyStats={weeklyStats} title={t('analytics.thisWeek')} />
 
         <IbadahBreakdown ibadahTypes={ibadahTypes} sessionSets={sessionSets} />
 
         {dailyVolumeRecords.length > 0 && (
           <View style={styles.prSection}>
-            <Text style={styles.sectionTitle}>Personal Records</Text>
+            <Text style={styles.sectionTitle}>{t('analytics.personalRecords')}</Text>
             <View style={styles.prList}>
               {dailyVolumeRecords.slice(0, 5).map((record) => {
                 const ibadahType = ibadahTypes.find((t) => t.id === record.ibadahTypeId);
@@ -170,16 +172,16 @@ export default function AnalyticsScreen() {
         <Card style={styles.insightCard}>
           <View style={styles.insightHeader}>
             <Feather name="info" size={20} color={Colors.accent.primary} />
-            <Text style={styles.insightTitle}>Insight</Text>
+            <Text style={styles.insightTitle}>{t('analytics.insight')}</Text>
           </View>
           <Text style={styles.insightText}>
             {streak >= 7
-              ? `Amazing! You've maintained a ${streak}-day streak. Keep up the excellent consistency.`
+              ? t('analytics.insightStreak7', { streak })
               : streak >= 3
-                ? `Good progress! ${7 - streak} more days to reach a week-long streak.`
+                ? t('analytics.insightStreak3', { remaining: 7 - streak })
                 : totalSessions > 0
-                  ? 'Start building your streak by logging ibadah consistently.'
-                  : 'Begin your journey by starting your first session today.'}
+                  ? t('analytics.insightStartStreak')
+                  : t('analytics.insightBeginJourney')}
           </Text>
         </Card>
       </ScrollView>

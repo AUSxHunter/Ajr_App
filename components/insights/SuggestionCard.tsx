@@ -4,6 +4,7 @@ import { Feather } from '@expo/vector-icons';
 import { Card } from '../ui';
 import { Colors, Typography, Spacing, BorderRadius } from '../../constants/theme';
 import { OverloadSuggestion } from '../../types';
+import { useTranslation } from '../../hooks/useTranslation';
 
 interface SuggestionCardProps {
   suggestion: OverloadSuggestion;
@@ -16,6 +17,10 @@ export const SuggestionCard: React.FC<SuggestionCardProps> = ({
   onApply,
   onDismiss,
 }) => {
+  const { t, isRTL } = useTranslation();
+  const displayName = isRTL
+    ? (suggestion.ibadahNameArabic || suggestion.ibadahName)
+    : suggestion.ibadahName;
   return (
     <Card style={styles.container}>
       <View style={styles.header}>
@@ -23,8 +28,8 @@ export const SuggestionCard: React.FC<SuggestionCardProps> = ({
           <Feather name="trending-up" size={18} color={Colors.semantic.success} />
         </View>
         <View style={styles.headerText}>
-          <Text style={styles.title}>Progressive Overload</Text>
-          <Text style={styles.ibadahName}>{suggestion.ibadahName}</Text>
+          <Text style={styles.title}>{t('suggestions.progressiveOverload')}</Text>
+          <Text style={styles.ibadahName}>{displayName}</Text>
         </View>
         {onDismiss && (
           <TouchableOpacity onPress={onDismiss} style={styles.dismissButton}>
@@ -37,12 +42,12 @@ export const SuggestionCard: React.FC<SuggestionCardProps> = ({
 
       <View style={styles.comparisonRow}>
         <View style={styles.valueBox}>
-          <Text style={styles.valueLabel}>Current Avg</Text>
+          <Text style={styles.valueLabel}>{t('suggestions.currentAvg')}</Text>
           <Text style={styles.currentValue}>{suggestion.currentAverage}</Text>
         </View>
         <Feather name="arrow-right" size={20} color={Colors.text.muted} />
         <View style={styles.valueBox}>
-          <Text style={styles.valueLabel}>Suggested</Text>
+          <Text style={styles.valueLabel}>{t('suggestions.suggested')}</Text>
           <Text style={styles.suggestedValue}>{suggestion.suggestedValue}</Text>
         </View>
       </View>
@@ -52,7 +57,7 @@ export const SuggestionCard: React.FC<SuggestionCardProps> = ({
           style={styles.applyButton}
           onPress={() => onApply(suggestion.suggestedValue)}
         >
-          <Text style={styles.applyButtonText}>Try Today</Text>
+          <Text style={styles.applyButtonText}>{t('suggestions.tryToday')}</Text>
         </TouchableOpacity>
       )}
     </Card>

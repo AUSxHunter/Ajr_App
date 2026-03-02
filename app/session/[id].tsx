@@ -10,9 +10,10 @@ import { AddSetModal } from '../../components/session';
 import { useSessionStore } from '../../store/sessionStore';
 import { useIbadahStore } from '../../store/ibadahStore';
 import { SessionSet, IbadahType } from '../../types';
-import { UNIT_LABELS } from '../../constants/defaults';
+import { useTranslation } from '../../hooks/useTranslation';
 
 export default function SessionDetailScreen() {
+  const { t, tUnit } = useTranslation();
   const { id } = useLocalSearchParams<{ id: string }>();
   const [editModalVisible, setEditModalVisible] = useState(false);
   const [deleteModalVisible, setDeleteModalVisible] = useState(false);
@@ -72,8 +73,8 @@ export default function SessionDetailScreen() {
       <SafeAreaView style={styles.container}>
         <EmptyState
           icon="alert-circle"
-          title="Session Not Found"
-          description="This session could not be found."
+          title={t('sessionDetail.sessionNotFound')}
+          description={t('sessionDetail.sessionNotFoundDesc')}
         />
       </SafeAreaView>
     );
@@ -87,34 +88,33 @@ export default function SessionDetailScreen() {
         showsVerticalScrollIndicator={false}
       >
         <Card style={styles.headerCard}>
-          <Text style={styles.dateLabel}>Session Date</Text>
+          <Text style={styles.dateLabel}>{t('sessionDetail.sessionDate')}</Text>
           <Text style={styles.dateValue}>{formattedDate}</Text>
           <View style={styles.statsRow}>
             <View style={styles.stat}>
               <Text style={styles.statValue}>{session.totalVolume}</Text>
-              <Text style={styles.statLabel}>Total Volume</Text>
+              <Text style={styles.statLabel}>{t('sessionDetail.totalVolume')}</Text>
             </View>
             <View style={styles.stat}>
               <Text style={styles.statValue}>{sets.length}</Text>
-              <Text style={styles.statLabel}>Sets</Text>
+              <Text style={styles.statLabel}>{t('sessionDetail.sets')}</Text>
             </View>
           </View>
         </Card>
 
-        <Text style={styles.sectionTitle}>Sets</Text>
+        <Text style={styles.sectionTitle}>{t('sessionDetail.sets')}</Text>
         {sets.length === 0 ? (
           <Card>
-            <Text style={styles.emptyText}>No sets logged for this session</Text>
+            <Text style={styles.emptyText}>{t('sessionDetail.noSets')}</Text>
           </Card>
         ) : (
           <View style={styles.setsList}>
             {sets.map((set, index) => {
               const ibadahType = getIbadahTypeById(set.ibadahTypeId);
-              const unitLabel = ibadahType ? UNIT_LABELS[ibadahType.unit] : null;
               const displayValue =
                 ibadahType?.unit === 'currency'
-                  ? `$${set.value.toFixed(2)}`
-                  : `${set.value} ${unitLabel ? (set.value === 1 ? unitLabel.singular : unitLabel.plural) : ''}`;
+                  ? `${set.value.toFixed(0)} AED`
+                  : `${set.value} ${ibadahType ? tUnit(ibadahType.unit, set.value) : ''}`;
 
               return (
                 <Card key={set.id} style={styles.setCard}>
@@ -126,7 +126,7 @@ export default function SessionDetailScreen() {
                           { backgroundColor: ibadahType?.color || Colors.accent.primary },
                         ]}
                       />
-                      <Text style={styles.setNumber}>Set {index + 1}</Text>
+                      <Text style={styles.setNumber}>{t('sessionDetail.setNumber', { number: index + 1 })}</Text>
                     </View>
                     <View style={styles.setActions}>
                       <TouchableOpacity
@@ -143,7 +143,7 @@ export default function SessionDetailScreen() {
                       </TouchableOpacity>
                     </View>
                   </View>
-                  <Text style={styles.ibadahName}>{ibadahType?.name || 'Unknown'}</Text>
+                  <Text style={styles.ibadahName}>{ibadahType?.name || t('common.unknown')}</Text>
                   <Text style={styles.setValue}>{displayValue}</Text>
                   {set.notes && <Text style={styles.setNotes}>{set.notes}</Text>}
                 </Card>
@@ -154,7 +154,7 @@ export default function SessionDetailScreen() {
 
         {session.notes && (
           <>
-            <Text style={styles.sectionTitle}>Notes</Text>
+            <Text style={styles.sectionTitle}>{t('sessionDetail.notes')}</Text>
             <Card>
               <Text style={styles.notesText}>{session.notes}</Text>
             </Card>
@@ -177,9 +177,9 @@ export default function SessionDetailScreen() {
 
       <ConfirmModal
         visible={deleteModalVisible}
-        title="Delete Set"
-        message="Are you sure you want to delete this set? This action cannot be undone."
-        confirmText="Delete"
+        title={t('sessionDetail.deleteSet')}
+        message={t('sessionDetail.deleteSetMessage')}
+        confirmText={t('common.delete')}
         variant="danger"
         onConfirm={handleConfirmDelete}
         onClose={() => {

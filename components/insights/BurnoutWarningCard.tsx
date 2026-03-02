@@ -4,31 +4,34 @@ import { Feather } from '@expo/vector-icons';
 import { Card } from '../ui';
 import { Colors, Typography, Spacing, BorderRadius } from '../../constants/theme';
 import { BurnoutWarning } from '../../types';
+import { useTranslation } from '../../hooks/useTranslation';
 
 interface BurnoutWarningCardProps {
   warning: BurnoutWarning;
   onDismiss?: () => void;
 }
 
-const SEVERITY_CONFIG = {
-  mild: {
-    color: Colors.semantic.info,
-    icon: 'info' as const,
-    title: 'Take It Easy',
-  },
-  moderate: {
-    color: Colors.semantic.warning,
-    icon: 'alert-triangle' as const,
-    title: 'Recovery Recommended',
-  },
-  severe: {
-    color: Colors.semantic.danger,
-    icon: 'alert-circle' as const,
-    title: 'Deload Week Suggested',
-  },
-};
-
 export const BurnoutWarningCard: React.FC<BurnoutWarningCardProps> = ({ warning, onDismiss }) => {
+  const { t } = useTranslation();
+
+  const SEVERITY_CONFIG = {
+    mild: {
+      color: Colors.semantic.info,
+      icon: 'info' as const,
+      title: t('burnout.mildTitle'),
+    },
+    moderate: {
+      color: Colors.semantic.warning,
+      icon: 'alert-triangle' as const,
+      title: t('burnout.moderateTitle'),
+    },
+    severe: {
+      color: Colors.semantic.danger,
+      icon: 'alert-circle' as const,
+      title: t('burnout.severeTitle'),
+    },
+  };
+
   const config = SEVERITY_CONFIG[warning.severity];
 
   return (
@@ -61,7 +64,7 @@ export const BurnoutWarningCard: React.FC<BurnoutWarningCardProps> = ({ warning,
         <View style={styles.deloadInfo}>
           <Feather name="trending-down" size={16} color={Colors.text.muted} />
           <Text style={styles.deloadText}>
-            Consider reducing your targets by {warning.suggestedDeloadPercentage}% for a few days
+            {t('burnout.deloadText', { percentage: warning.suggestedDeloadPercentage })}
           </Text>
         </View>
       )}

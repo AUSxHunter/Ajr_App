@@ -9,8 +9,10 @@ import { SessionCard, AddSetModal, ManageIbadahModal, AdhkarSessionCard } from '
 import { useSessionStore } from '../../store/sessionStore';
 import { useIbadahStore } from '../../store/ibadahStore';
 import { IbadahType, SessionSet } from '../../types';
+import { useTranslation } from '../../hooks/useTranslation';
 
 export default function TodayScreen() {
+  const { t } = useTranslation();
   const [addSetModalVisible, setAddSetModalVisible] = useState(false);
   const [manageModalVisible, setManageModalVisible] = useState(false);
   const [selectedIbadah, setSelectedIbadah] = useState<IbadahType | null>(null);
@@ -103,14 +105,14 @@ export default function TodayScreen() {
 
   const handleEndSession = () => {
     if (!todaySession) return;
-    
+
     Alert.alert(
-      'End Session',
-      'Are you sure you want to end this session? You can start a new one anytime.',
+      t('today.endSessionTitle'),
+      t('today.endSessionMessage'),
       [
-        { text: 'Cancel', style: 'cancel' },
+        { text: t('common.cancel'), style: 'cancel' },
         {
-          text: 'End Session',
+          text: t('today.endSession'),
           style: 'destructive',
           onPress: () => {
             endSession(todaySession.id);
@@ -170,7 +172,7 @@ export default function TodayScreen() {
       >
         <View style={styles.header}>
           <View>
-            <Text style={styles.greeting}>Today</Text>
+            <Text style={styles.greeting}>{t('today.greeting')}</Text>
             <Text style={styles.date}>{todayDate}</Text>
           </View>
           <View style={styles.headerButtons}>
@@ -185,7 +187,7 @@ export default function TodayScreen() {
             {hasActiveSession && (
               <TouchableOpacity style={styles.endSessionButton} onPress={handleEndSession}>
                 <Feather name="check-circle" size={16} color={Colors.semantic.error} />
-                <Text style={styles.endSessionText}>End</Text>
+                <Text style={styles.endSessionText}>{t('today.end')}</Text>
               </TouchableOpacity>
             )}
           </View>
@@ -198,7 +200,7 @@ export default function TodayScreen() {
                 <Feather name="activity" size={20} color={Colors.accent.primary} />
                 <View>
                   <Text style={styles.summaryValue}>{Math.round(totalVolume)}</Text>
-                  <Text style={styles.summaryLabel}>Volume</Text>
+                  <Text style={styles.summaryLabel}>{t('today.volume')}</Text>
                 </View>
               </View>
               <View style={styles.divider} />
@@ -206,7 +208,7 @@ export default function TodayScreen() {
                 <Feather name="layers" size={20} color={Colors.semantic.success} />
                 <View>
                   <Text style={styles.summaryValue}>{totalSets}</Text>
-                  <Text style={styles.summaryLabel}>Sets</Text>
+                  <Text style={styles.summaryLabel}>{t('today.sets')}</Text>
                 </View>
               </View>
             </View>
@@ -223,7 +225,11 @@ export default function TodayScreen() {
                     { color: volumeDiff >= 0 ? Colors.semantic.success : Colors.semantic.warning },
                   ]}
                 >
-                  {volumeDiff >= 0 ? '+' : ''}{volumeDiff.toFixed(0)}% vs yesterday ({Math.round(yesterdayVolume)})
+                  {volumeDiff >= 0 ? '+' : ''}
+                  {t('today.vsYesterday', {
+                    diff: volumeDiff.toFixed(0),
+                    volume: Math.round(yesterdayVolume),
+                  })}
                 </Text>
               </View>
             )}
@@ -235,17 +241,19 @@ export default function TodayScreen() {
             {canContinueSession ? (
               <EmptyState
                 icon="play"
-                title="Continue Your Session"
-                description={`You've logged ${Math.round(completedTodaySession?.totalVolume || 0)} volume today. Continue to add more ibadah.`}
-                actionLabel="Continue Session"
+                title={t('today.continueSessionTitle')}
+                description={t('today.continueSessionDesc', {
+                  volume: Math.round(completedTodaySession?.totalVolume || 0),
+                })}
+                actionLabel={t('today.continueSession')}
                 onAction={handleContinueSession}
               />
             ) : (
               <EmptyState
                 icon="sun"
-                title="Ready to Begin"
-                description="Start today's session to track your ibadah and build consistent spiritual habits."
-                actionLabel="Begin Session"
+                title={t('today.readyToBegin')}
+                description={t('today.readyToBeginDesc')}
+                actionLabel={t('today.beginSession')}
                 onAction={handleStartSession}
               />
             )}
@@ -279,7 +287,7 @@ export default function TodayScreen() {
 
         {hasActiveSession && (
           <View style={styles.quickAddSection}>
-            <Text style={styles.quickAddTitle}>Quick Add</Text>
+            <Text style={styles.quickAddTitle}>{t('today.quickAdd')}</Text>
             <ScrollView
               horizontal
               showsHorizontalScrollIndicator={false}
@@ -307,7 +315,7 @@ export default function TodayScreen() {
         {hasActiveSession && (
           <TouchableOpacity style={styles.finishSessionButton} onPress={handleEndSession}>
             <Feather name="check-circle" size={20} color={Colors.text.primary} />
-            <Text style={styles.finishSessionText}>Finish Session</Text>
+            <Text style={styles.finishSessionText}>{t('today.finishSession')}</Text>
           </TouchableOpacity>
         )}
       </ScrollView>

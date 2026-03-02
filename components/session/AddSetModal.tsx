@@ -4,7 +4,7 @@ import { Feather } from '@expo/vector-icons';
 import { Modal, Button, NumberInput } from '../ui';
 import { Colors, Typography, Spacing, BorderRadius } from '../../constants/theme';
 import { IbadahType } from '../../types';
-import { UNIT_LABELS } from '../../constants/defaults';
+import { useTranslation } from '../../hooks/useTranslation';
 
 interface AddSetModalProps {
   visible: boolean;
@@ -46,9 +46,10 @@ export const AddSetModal: React.FC<AddSetModalProps> = ({
     }
   }, [visible, initialValue, timerSeconds, ibadahType]);
 
+  const { t, tUnit } = useTranslation();
+
   if (!ibadahType) return null;
 
-  const unitLabel = UNIT_LABELS[ibadahType.unit];
   const isBinary = ibadahType.unit === 'binary';
 
   const handleSave = () => {
@@ -77,11 +78,11 @@ export const AddSetModal: React.FC<AddSetModalProps> = ({
       <Modal
         visible={visible}
         onClose={onClose}
-        title={`Log ${ibadahType.name}`}
+        title={t('addSetModal.logTitle', { name: ibadahType.name })}
         position="bottom"
       >
         <View style={styles.content}>
-          <Text style={styles.binaryQuestion}>Did you fast today?</Text>
+          <Text style={styles.binaryQuestion}>{t('addSetModal.didYouFast')}</Text>
           <View style={styles.binaryOptions}>
             <TouchableOpacity
               style={styles.binaryButton}
@@ -93,7 +94,7 @@ export const AddSetModal: React.FC<AddSetModalProps> = ({
                 color={Colors.semantic.success}
               />
               <Text style={[styles.binaryButtonText, styles.binaryButtonTextActive]}>
-                Yes
+                {t('common.yes')}
               </Text>
             </TouchableOpacity>
             <TouchableOpacity
@@ -106,7 +107,7 @@ export const AddSetModal: React.FC<AddSetModalProps> = ({
                 color={Colors.semantic.error}
               />
               <Text style={[styles.binaryButtonText, styles.binaryButtonTextInactive]}>
-                No
+                {t('common.no')}
               </Text>
             </TouchableOpacity>
           </View>
@@ -119,7 +120,7 @@ export const AddSetModal: React.FC<AddSetModalProps> = ({
     <Modal
       visible={visible}
       onClose={onClose}
-      title={isEditing ? 'Edit Set' : `Log ${ibadahType.name}`}
+      title={isEditing ? t('addSetModal.editTitle') : t('addSetModal.logTitle', { name: ibadahType.name })}
       position="bottom"
     >
       <View style={styles.content}>
@@ -143,7 +144,7 @@ export const AddSetModal: React.FC<AddSetModalProps> = ({
                 placeholder="0"
                 min={0}
               />
-              <Text style={styles.unitLabel}>{unitLabel.plural}</Text>
+              <Text style={styles.unitLabel}>{tUnit(ibadahType.unit, 2)}</Text>
             </View>
 
             <TouchableOpacity
@@ -181,13 +182,16 @@ export const AddSetModal: React.FC<AddSetModalProps> = ({
           <View style={styles.timerInfo}>
             <Feather name="clock" size={16} color={Colors.text.muted} />
             <Text style={styles.timerText}>
-              Timer: {Math.floor(timerSeconds / 60)}m {timerSeconds % 60}s
+              {t('addSetModal.timer', {
+                minutes: Math.floor(timerSeconds / 60),
+                seconds: timerSeconds % 60,
+              })}
             </Text>
           </View>
         )}
 
         <Button
-          title={isEditing ? 'Update Set' : 'Log Set'}
+          title={isEditing ? t('addSetModal.updateSet') : t('addSetModal.logSet')}
           variant="primary"
           size="lg"
           fullWidth

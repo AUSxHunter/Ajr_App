@@ -11,6 +11,7 @@ interface SettingsActions {
   setOnboardingCompleted: (completed: boolean) => void;
   setNotificationsEnabled: (enabled: boolean) => void;
   setNotificationTime: (time: string) => void;
+  setLanguage: (language: 'en' | 'ar') => void;
   setMinimumViableDay: (ibadahTypeId: string, minimumValue: number) => void;
   removeMinimumViableDay: (ibadahTypeId: string) => void;
   getMinimumViableDay: (ibadahTypeId: string) => number | undefined;
@@ -22,6 +23,7 @@ const DEFAULT_SETTINGS: UserSettings = {
   notificationsEnabled: false,
   notificationTime: undefined,
   onboardingCompleted: false,
+  language: 'en',
 };
 
 export const useSettingsStore = create<SettingsState & SettingsActions>()(
@@ -40,6 +42,10 @@ export const useSettingsStore = create<SettingsState & SettingsActions>()(
 
       setNotificationTime: (time) => {
         set({ notificationTime: time });
+      },
+
+      setLanguage: (language) => {
+        set({ language });
       },
 
       setMinimumViableDay: (ibadahTypeId, minimumValue) => {
@@ -85,6 +91,7 @@ export const useSettingsStore = create<SettingsState & SettingsActions>()(
         notificationsEnabled: state.notificationsEnabled,
         notificationTime: state.notificationTime,
         onboardingCompleted: state.onboardingCompleted,
+        language: state.language,
       }),
     }
   )

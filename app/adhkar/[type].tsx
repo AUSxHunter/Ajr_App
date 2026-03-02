@@ -30,8 +30,19 @@ import {
   getAdhkarTitle,
   Adhkar,
 } from '../../constants/adhkar';
+import { useTranslation } from '../../hooks/useTranslation';
 
 const { width: SCREEN_WIDTH } = Dimensions.get('window');
+
+function addAyahNumbers(arabic: string): string {
+  let count = 0;
+  return arabic.replace(/۝/g, () => {
+    count++;
+    const digits = ['٠', '١', '٢', '٣', '٤', '٥', '٦', '٧', '٨', '٩'];
+    const num = String(count).split('').map(c => digits[parseInt(c)] ?? c).join('');
+    return '۝' + num;
+  });
+}
 
 interface AdhkarItemCardProps {
   adhkar: Adhkar;
@@ -44,6 +55,7 @@ const AdhkarItemCard = React.memo(({
   adhkarType,
   onIncrement,
 }: AdhkarItemCardProps) => {
+  const { t, isRTL } = useTranslation();
   const currentCount = useAdhkarStore(
     useCallback(
       (s) => {
@@ -100,16 +112,20 @@ const AdhkarItemCard = React.memo(({
             contentContainerStyle={styles.arabicScrollContent}
             showsVerticalScrollIndicator={false}
           >
-            <Text style={styles.arabicText}>{adhkar.arabic}</Text>
+            <View style={styles.arabicWrapper}>
+              <Text style={styles.arabicText}>{addAyahNumbers(adhkar.arabic)}</Text>
+            </View>
           </ScrollView>
 
-          <View style={styles.translationContainer}>
-            <Text style={styles.translationText} numberOfLines={3}>
-              {adhkar.translation}
-            </Text>
-          </View>
+          {!isRTL && (
+            <View style={styles.translationContainer}>
+              <Text style={styles.translationText} numberOfLines={3}>
+                {adhkar.translation}
+              </Text>
+            </View>
+          )}
 
-          {adhkar.source && (
+          {!isRTL && adhkar.source && (
             <Text style={styles.sourceText}>{adhkar.source}</Text>
           )}
 
@@ -117,7 +133,7 @@ const AdhkarItemCard = React.memo(({
             {isCompleted ? (
               <Animated.View style={[styles.completedContainer, checkAnimatedStyle]}>
                 <Feather name="check-circle" size={32} color={Colors.semantic.success} />
-                <Text style={styles.completedText}>Completed</Text>
+                <Text style={styles.completedText}>{t('adhkarReader.completed')}</Text>
               </Animated.View>
             ) : (
               <>
@@ -127,13 +143,16 @@ const AdhkarItemCard = React.memo(({
                   <Text style={styles.counterTotal}>{adhkar.count}</Text>
                 </View>
                 <Text style={styles.tapHint}>
-                  Tap {remainingCount} more {remainingCount === 1 ? 'time' : 'times'}
+                  {t('adhkarReader.tapHint', {
+                    count: remainingCount,
+                    times: remainingCount === 1 ? t('adhkarReader.tapHintTime') : t('adhkarReader.tapHintTimes'),
+                  })}
                 </Text>
               </>
             )}
           </View>
 
-          {adhkar.virtue && !isCompleted && (
+          {!isRTL && adhkar.virtue && !isCompleted && (
             <View style={styles.virtueContainer}>
               <Feather name="star" size={12} color={Colors.semantic.warning} />
               <Text style={styles.virtueText} numberOfLines={2}>
@@ -148,6 +167,7 @@ const AdhkarItemCard = React.memo(({
 });
 
 export default function AdhkarReaderScreen() {
+  const { t, tUnit, isRTL } = useTranslation();
   const { type } = useLocalSearchParams<{ type: string }>();
   const router = useRouter();
   const scrollViewRef = useRef<ScrollView>(null);
@@ -196,16 +216,16 @@ export default function AdhkarReaderScreen() {
         sessionId: todaySession.id,
         ibadahTypeId: 'adhkar',
         value: 1,
-        notes: adhkarType === 'sabah' ? 'Morning Adhkar' : 'Evening Adhkar',
+        notes: adhkarType === 'sabah' ? t('adhkarReader.morningAdhkar') : t('adhkarReader.eveningAdhkar'),
       });
     }
 
     Alert.alert(
-      'Masha Allah!',
-      `You have completed ${title.english}. May Allah accept it from you.`,
+      t('adhkarReader.mashaAllah'),
+      t('adhkarReader.completionMessage', { title: isRTL ? title.arabic : title.english }),
       [
         {
-          text: 'Ameen',
+          text: t('adhkarReader.ameen'),
           onPress: () => router.back(),
         },
       ]
@@ -253,19 +273,21 @@ export default function AdhkarReaderScreen() {
         options={{
           headerTitle: () => (
             <View style={styles.headerTitle}>
-              <Text style={styles.headerTitleText}>{title.english}</Text>
-              <Text style={styles.headerTitleArabic}>{title.arabic}</Text>
+              <Text style={styles.headerTitleText}>
+                {isRTL ? title.arabic : title.english}
+              </Text>
+              {!isRTL && <Text style={styles.headerTitleArabic}>{title.arabic}</Text>}
             </View>
           ),
         }}
       />
-      <SafeAreaView style={styles.container} edges={['bottom']}>
+      <SafeAreaView style={[styles.container, { direction: isRTL ? 'rtl' : 'ltr' }]} edges={['bottom']}>
         <View style={styles.progressHeader}>
           <View style={styles.progressInfo}>
-            <Text style={styles.progressLabel}>Progress</Text>
+            <Text style={styles.progressLabel}>{t('adhkarReader.progress')}</Text>
             <Text style={styles.progressDot}>·</Text>
             <Text style={styles.progressCount}>
-              {completed}/{total} adhkar · {Math.round(progressPercent)}%
+              {completed}/{total} {tUnit('adhkar', total)} · {Math.round(progressPercent)}%
             </Text>
           </View>
           <View style={styles.progressBar}>
@@ -297,9 +319,9 @@ export default function AdhkarReaderScreen() {
           {isSessionCompleted && (
             <View style={styles.completionMessage}>
               <Feather name="award" size={48} color={Colors.semantic.success} />
-              <Text style={styles.completionTitle}>All Done!</Text>
+              <Text style={styles.completionTitle}>{t('adhkarReader.allDone')}</Text>
               <Text style={styles.completionSubtitle}>
-                You've completed {title.english} for today
+                {t('adhkarReader.allDoneSubtitle', { title: isRTL ? title.arabic : title.english })}
               </Text>
             </View>
           )}
@@ -308,7 +330,7 @@ export default function AdhkarReaderScreen() {
         {!isSessionCompleted && completed === total && (
           <TouchableOpacity style={styles.completeButton} onPress={handleComplete}>
             <Feather name="check-circle" size={20} color={Colors.text.primary} />
-            <Text style={styles.completeButtonText}>Mark as Complete</Text>
+            <Text style={styles.completeButtonText}>{t('adhkarReader.markComplete')}</Text>
           </TouchableOpacity>
         )}
       </SafeAreaView>
@@ -381,7 +403,7 @@ const styles = StyleSheet.create({
   indexBadge: {
     position: 'absolute',
     top: -8,
-    left: -8,
+    start: -8,
     width: 28,
     height: 28,
     borderRadius: 14,
@@ -410,11 +432,16 @@ const styles = StyleSheet.create({
   arabicScrollContent: {
     flexGrow: 1,
   },
+  arabicWrapper: {
+    width: '100%',
+    direction: 'rtl',
+  },
   arabicText: {
     fontSize: 22,
     lineHeight: 38,
     color: Colors.text.primary,
     textAlign: 'right',
+    writingDirection: 'rtl',
     fontFamily: 'System',
   },
   translationContainer: {

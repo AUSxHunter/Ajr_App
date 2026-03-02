@@ -58,12 +58,14 @@ export const useIbadahStore = create<IbadahState & IbadahActions>()(
             if (defaultType) {
               const hasWeight = type.weight !== undefined && type.weight !== null;
               const needsUnitUpdate = type.id === 'fasting' && type.unit !== 'binary';
-              if (!hasWeight || needsUnitUpdate) {
+              const needsNameArabic = !type.nameArabic && defaultType.nameArabic;
+              if (!hasWeight || needsUnitUpdate || needsNameArabic) {
                 needsUpdate = true;
                 return {
                   ...type,
                   weight: defaultType.weight,
                   unit: defaultType.unit,
+                  nameArabic: type.nameArabic || defaultType.nameArabic,
                   updatedAt: now,
                 };
               }

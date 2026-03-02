@@ -7,10 +7,10 @@ import { SetRow } from './SetRow';
 import { QiyamAyatTracker } from './QiyamAyatTracker';
 import { Colors, Typography, Spacing, BorderRadius } from '../../constants/theme';
 import { IbadahType, SessionSet } from '../../types';
-import { UNIT_LABELS } from '../../constants/defaults';
 import { useSettingsStore } from '../../store/settingsStore';
 import { useSessionStore } from '../../store/sessionStore';
 import { IbadahStreakDots } from './IbadahStreakDots';
+import { useTranslation } from '../../hooks/useTranslation';
 
 interface SessionCardProps {
   ibadahType: IbadahType;
@@ -27,12 +27,12 @@ export const SessionCard: React.FC<SessionCardProps> = ({
   onEditSet,
   onDeleteSet,
 }) => {
+  const { t, tUnit, isRTL } = useTranslation();
   const [isExpanded, setIsExpanded] = useState(sets.length > 0);
   const [deleteConfirmId, setDeleteConfirmId] = useState<string | null>(null);
   const rotation = useSharedValue(sets.length > 0 ? 1 : 0);
 
   const totalValue = sets.reduce((sum, set) => sum + set.value, 0);
-  const unitLabel = UNIT_LABELS[ibadahType.unit];
   const isBinary = ibadahType.unit === 'binary';
   const hasFasted = isBinary && totalValue >= 1;
   const isQiyam = ibadahType.id === 'qiyam';
@@ -58,9 +58,9 @@ export const SessionCard: React.FC<SessionCardProps> = ({
       return `${totalValue.toFixed(0)} AED`;
     }
     if (ibadahType.unit === 'binary') {
-      return totalValue >= 1 ? 'Fasted' : 'Not logged';
+      return totalValue >= 1 ? t('sessionCard.fasted') : t('sessionCard.notLogged');
     }
-    return `${totalValue} ${totalValue === 1 ? unitLabel.singular : unitLabel.plural}`;
+    return `${totalValue} ${tUnit(ibadahType.unit, totalValue)}`;
   };
 
   const handleBinaryToggle = () => {
@@ -84,8 +84,12 @@ export const SessionCard: React.FC<SessionCardProps> = ({
               />
             </View>
             <View style={styles.headerInfo}>
-              <Text style={styles.ibadahName}>{ibadahType.name}</Text>
-              <Text style={styles.ibadahNameArabic}>{ibadahType.nameArabic}</Text>
+              <Text style={styles.ibadahName}>
+                {isRTL ? (ibadahType.nameArabic || ibadahType.name) : ibadahType.name}
+              </Text>
+              {!isRTL && ibadahType.nameArabic && (
+                <Text style={styles.ibadahNameArabic}>{ibadahType.nameArabic}</Text>
+              )}
             </View>
           </View>
 
@@ -107,7 +111,7 @@ export const SessionCard: React.FC<SessionCardProps> = ({
                 hasFasted && styles.binaryToggleTextActive,
               ]}
             >
-              {hasFasted ? 'Fasted' : 'Log'}
+              {hasFasted ? t('sessionCard.fasted') : t('sessionCard.log')}
             </Text>
           </TouchableOpacity>
         </View>
@@ -123,9 +127,9 @@ export const SessionCard: React.FC<SessionCardProps> = ({
               setDeleteConfirmId(null);
             }
           }}
-          title="Remove Fasting"
-          message="Are you sure you want to remove today's fasting log?"
-          confirmText="Remove"
+          title={t('sessionCard.removeFasting')}
+          message={t('sessionCard.removeFastingMessage')}
+          confirmText={t('common.remove')}
           variant="danger"
         />
       </Card>
@@ -144,8 +148,12 @@ export const SessionCard: React.FC<SessionCardProps> = ({
             />
           </View>
           <View style={styles.headerInfo}>
-            <Text style={styles.ibadahName}>{ibadahType.name}</Text>
-            <Text style={styles.ibadahNameArabic}>{ibadahType.nameArabic}</Text>
+            <Text style={styles.ibadahName}>
+              {isRTL ? (ibadahType.nameArabic || ibadahType.name) : ibadahType.name}
+            </Text>
+            {!isRTL && ibadahType.nameArabic && (
+              <Text style={styles.ibadahNameArabic}>{ibadahType.nameArabic}</Text>
+            )}
           </View>
         </View>
 
@@ -158,12 +166,12 @@ export const SessionCard: React.FC<SessionCardProps> = ({
                   <Feather name="check-circle" size={12} color={Colors.semantic.success} />
                 )}
                 <Text style={[styles.mvdTarget, mvdMet && styles.mvdTargetMet]}>
-                  Min: {mvdValue} {mvdValue === 1 ? unitLabel.singular : unitLabel.plural}
+                  {t('sessionCard.min', { value: mvdValue, unit: tUnit(ibadahType.unit, mvdValue) })}
                 </Text>
               </View>
             ) : (
               <Text style={styles.setCount}>
-                {sets.length} {sets.length === 1 ? 'set' : 'sets'}
+                {sets.length} {sets.length === 1 ? t('sessionCard.set') : t('sessionCard.sets')}
               </Text>
             )}
           </View>
@@ -194,7 +202,7 @@ export const SessionCard: React.FC<SessionCardProps> = ({
 
           <TouchableOpacity style={styles.addButton} onPress={onAddSet}>
             <Feather name="plus" size={18} color={Colors.accent.primary} />
-            <Text style={styles.addButtonText}>Add Set</Text>
+            <Text style={styles.addButtonText}>{t('sessionCard.addSet')}</Text>
           </TouchableOpacity>
 
           {isQiyam && (
@@ -214,9 +222,9 @@ export const SessionCard: React.FC<SessionCardProps> = ({
             onDeleteSet(deleteConfirmId);
           }
         }}
-        title="Delete Set"
-        message="Are you sure you want to delete this set?"
-        confirmText="Delete"
+        title={t('sessionCard.deleteSet')}
+        message={t('sessionCard.deleteSetMessage')}
+        confirmText={t('common.delete')}
         variant="danger"
       />
     </Card>

@@ -5,7 +5,7 @@ import { format, parseISO } from 'date-fns';
 import { Card } from '../ui';
 import { Colors, Typography, Spacing, BorderRadius } from '../../constants/theme';
 import { PersonalRecord, IbadahType } from '../../types';
-import { UNIT_LABELS } from '../../constants/defaults';
+import { useTranslation } from '../../hooks/useTranslation';
 
 interface PRCardProps {
   record: PersonalRecord;
@@ -13,13 +13,13 @@ interface PRCardProps {
 }
 
 export const PRCard: React.FC<PRCardProps> = ({ record, ibadahType }) => {
-  const unitLabel = UNIT_LABELS[ibadahType.unit];
+  const { t, tUnit, isRTL } = useTranslation();
   const formattedValue =
     ibadahType.unit === 'currency'
-      ? `$${record.value.toFixed(2)}`
-      : `${record.value} ${record.value === 1 ? unitLabel.singular : unitLabel.plural}`;
+      ? `${record.value.toFixed(0)} AED`
+      : `${record.value} ${tUnit(ibadahType.unit, record.value)}`;
 
-  const recordTypeLabel = record.recordType === 'daily_volume' ? 'Best Day' : 'Best Set';
+  const recordTypeLabel = record.recordType === 'daily_volume' ? t('analytics.bestDay') : t('analytics.bestSet');
 
   return (
     <Card style={styles.container}>
@@ -32,7 +32,9 @@ export const PRCard: React.FC<PRCardProps> = ({ record, ibadahType }) => {
           />
         </View>
         <View style={styles.headerText}>
-          <Text style={styles.ibadahName}>{ibadahType.name}</Text>
+          <Text style={styles.ibadahName}>
+            {isRTL ? (ibadahType.nameArabic || ibadahType.name) : ibadahType.name}
+          </Text>
           <Text style={styles.recordType}>{recordTypeLabel}</Text>
         </View>
         <Feather name="award" size={20} color={Colors.semantic.warning} />

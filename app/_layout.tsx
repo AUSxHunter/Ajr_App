@@ -2,13 +2,15 @@ import { useEffect, useState, useRef } from 'react';
 import { StatusBar } from 'expo-status-bar';
 import { Stack, router } from 'expo-router';
 import * as SplashScreen from 'expo-splash-screen';
-import { View, StyleSheet } from 'react-native';
+import { View, StyleSheet, I18nManager } from 'react-native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import 'react-native-reanimated';
 
 import { Colors } from '../constants/theme';
 import { HeaderBackButton } from '../components/ui';
 import { useIbadahStore } from '../store/ibadahStore';
 import { useSettingsStore } from '../store/settingsStore';
+import { useTranslation } from '../hooks/useTranslation';
 
 export { ErrorBoundary } from 'expo-router';
 
@@ -22,12 +24,25 @@ export default function RootLayout() {
   const [isReady, setIsReady] = useState(false);
   const hasInitialized = useRef(false);
   const onboardingCompleted = useSettingsStore((state) => state.onboardingCompleted);
+  const { t, isRTL } = useTranslation();
 
   useEffect(() => {
     if (hasInitialized.current) return;
     hasInitialized.current = true;
 
     const prepare = async () => {
+      try {
+        const raw = await AsyncStorage.getItem('ajr-settings-storage');
+        if (raw) {
+          const parsed = JSON.parse(raw);
+          const lang = parsed?.state?.language;
+          const rtl = lang === 'ar';
+          I18nManager.allowRTL(true);
+          I18nManager.forceRTL(rtl);
+        }
+      } catch {
+        // ignore storage errors
+      }
       useIbadahStore.getState().initializeDefaults();
       setIsReady(true);
       await SplashScreen.hideAsync();
@@ -47,7 +62,7 @@ export default function RootLayout() {
   }
 
   return (
-    <View style={styles.container}>
+    <View style={[styles.container, { direction: isRTL ? 'rtl' : 'ltr' }]}>
       <StatusBar style="light" />
       <Stack
         screenOptions={{
@@ -68,7 +83,7 @@ export default function RootLayout() {
         <Stack.Screen
           name="session/[id]"
           options={{
-            title: 'Session Details',
+            title: t('sessionDetail.title'),
             presentation: 'card',
             headerLeft: () => <HeaderBackButton />,
           }}
