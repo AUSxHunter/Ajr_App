@@ -10,7 +10,7 @@ import { useSettingsStore } from '../../store/settingsStore';
 import { useTranslation } from '../../hooks/useTranslation';
 
 export default function MinimumViableDayScreen() {
-  const { t, tUnit } = useTranslation();
+  const { t, tUnit, isRTL } = useTranslation();
   const ibadahTypesRaw = useIbadahStore((state) => state.ibadahTypes);
   const ibadahTypes = useMemo(
     () =>
@@ -77,7 +77,9 @@ export default function MinimumViableDayScreen() {
                         color={type.color}
                       />
                     </View>
-                    <Text style={styles.ibadahName}>{type.name}</Text>
+                    <Text style={styles.ibadahName}>
+                      {isRTL ? (type.nameArabic || type.name) : type.name}
+                    </Text>
                   </View>
 
                   <View style={styles.inputRow}>

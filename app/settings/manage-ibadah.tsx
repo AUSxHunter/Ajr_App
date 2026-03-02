@@ -9,13 +9,6 @@ import { useIbadahStore } from '../../store/ibadahStore';
 import { IbadahUnit } from '../../types';
 import { useTranslation } from '../../hooks/useTranslation';
 
-const UNIT_OPTIONS: { value: IbadahUnit; label: string }[] = [
-  { value: 'pages', label: 'Pages' },
-  { value: 'minutes', label: 'Minutes' },
-  { value: 'count', label: 'Count' },
-  { value: 'currency', label: 'Currency' },
-];
-
 const ICON_OPTIONS = [
   'book-open',
   'moon',
@@ -46,6 +39,14 @@ const COLOR_OPTIONS = [
 
 export default function ManageIbadahScreen() {
   const { t, isRTL } = useTranslation();
+
+  const UNIT_OPTIONS: { value: IbadahUnit; label: string }[] = [
+    { value: 'pages', label: t('manageIbadah.unitLabels.pages') },
+    { value: 'minutes', label: t('manageIbadah.unitLabels.minutes') },
+    { value: 'count', label: t('manageIbadah.unitLabels.count') },
+    { value: 'currency', label: t('manageIbadah.unitLabels.currency') },
+    { value: 'yesno', label: t('manageIbadah.unitLabels.yesno') },
+  ];
   const [addModalVisible, setAddModalVisible] = useState(false);
   const [archiveConfirmId, setArchiveConfirmId] = useState<string | null>(null);
   const [deleteConfirmId, setDeleteConfirmId] = useState<string | null>(null);
@@ -218,7 +219,7 @@ export default function ManageIbadahScreen() {
               label={t('manageIbadah.arabicName')}
               value={newNameArabic}
               onChangeText={setNewNameArabic}
-              placeholder="e.g., التهجد"
+              placeholder="مثلاً، التهجد"
             />
 
             <Text style={styles.fieldLabel}>{t('manageIbadah.unit')}</Text>
@@ -284,7 +285,7 @@ export default function ManageIbadahScreen() {
               variant="primary"
               fullWidth
               onPress={handleAddIbadah}
-              disabled={!newName.trim()}
+              disabled={!newName.trim() || !newNameArabic.trim()}
             />
           </View>
         </Modal>

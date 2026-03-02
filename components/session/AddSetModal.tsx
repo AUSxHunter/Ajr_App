@@ -30,7 +30,7 @@ export const AddSetModal: React.FC<AddSetModalProps> = ({
 
   useEffect(() => {
     if (visible) {
-      if (ibadahType?.unit === 'binary') {
+      if (ibadahType?.unit === 'binary' || ibadahType?.unit === 'yesno') {
         setBinaryValue(initialValue === 1 ? true : null);
         setValue('');
       } else if (initialValue) {
@@ -51,9 +51,10 @@ export const AddSetModal: React.FC<AddSetModalProps> = ({
   if (!ibadahType) return null;
 
   const isBinary = ibadahType.unit === 'binary';
+  const isYesNo = ibadahType.unit === 'yesno';
 
   const handleSave = () => {
-    if (isBinary) {
+    if (isBinary || isYesNo) {
       if (binaryValue === true) {
         onSave(1, undefined, timerSeconds);
         onClose();
@@ -68,7 +69,7 @@ export const AddSetModal: React.FC<AddSetModalProps> = ({
 
   const presetValues = getPresetValues(ibadahType.unit);
 
-  if (isBinary) {
+  if (isBinary || isYesNo) {
     const handleYes = () => {
       onSave(1, undefined, timerSeconds);
       onClose();
@@ -82,7 +83,9 @@ export const AddSetModal: React.FC<AddSetModalProps> = ({
         position="bottom"
       >
         <View style={styles.content}>
-          <Text style={styles.binaryQuestion}>{t('addSetModal.didYouFast')}</Text>
+          <Text style={styles.binaryQuestion}>
+            {isYesNo ? t('addSetModal.didYouComplete') : t('addSetModal.didYouFast')}
+          </Text>
           <View style={styles.binaryOptions}>
             <TouchableOpacity
               style={styles.binaryButton}
@@ -216,6 +219,7 @@ const getPresetValues = (unit: string): number[] => {
     case 'ayat':
       return [10, 50, 100, 200, 500, 1000];
     case 'binary':
+    case 'yesno':
       return [];
     default:
       return [1, 5, 10, 20, 50, 100];

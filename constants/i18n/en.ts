@@ -100,7 +100,7 @@ export const en = {
     addCustom: 'Add Custom Ibadah',
     addCustomTitle: 'Add Custom Ibadah',
     name: 'Name',
-    arabicName: 'Arabic Name (optional)',
+    arabicName: 'Arabic Name',
     unit: 'Unit',
     icon: 'Icon',
     color: 'Color',
@@ -112,6 +112,13 @@ export const en = {
     deleteTitle: 'Delete Ibadah',
     deleteMessage:
       'This will permanently delete this custom ibadah type and cannot be undone. Any logged sets will remain in your history.',
+    unitLabels: {
+      pages: 'Pages',
+      minutes: 'Minutes',
+      count: 'Count',
+      currency: 'Currency',
+      yesno: 'Yes / No',
+    },
   },
   mvd: {
     title: 'Minimum Viable Day',
@@ -181,6 +188,8 @@ export const en = {
     fasted: 'Fasted',
     notLogged: 'Not logged',
     log: 'Log',
+    yes: 'Yes',
+    no: 'No',
     min: 'Min: {value} {unit}',
     set: 'set',
     sets: 'sets',
@@ -193,6 +202,7 @@ export const en = {
     logTitle: 'Log {name}',
     editTitle: 'Edit Set',
     didYouFast: 'Did you fast today?',
+    didYouComplete: 'Did you complete this today?',
     logSet: 'Log Set',
     updateSet: 'Update Set',
     timer: 'Timer: {minutes}m {seconds}s',
@@ -224,6 +234,7 @@ export const en = {
     binary: { singular: 'day', plural: 'days' },
     ayat: { singular: 'ayah', plural: 'ayat' },
     adhkar: { singular: 'session', plural: 'sessions' },
+    yesno: { singular: 'time', plural: 'times' },
   },
   languageChange: {
     title: 'Restart Required',

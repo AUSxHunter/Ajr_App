@@ -34,7 +34,9 @@ export const SessionCard: React.FC<SessionCardProps> = ({
 
   const totalValue = sets.reduce((sum, set) => sum + set.value, 0);
   const isBinary = ibadahType.unit === 'binary';
+  const isYesNo = ibadahType.unit === 'yesno';
   const hasFasted = isBinary && totalValue >= 1;
+  const hasAnsweredYes = isYesNo && totalValue >= 1;
   const isQiyam = ibadahType.id === 'qiyam';
 
   const mvdValue = useSettingsStore((state) => state.getMinimumViableDay(ibadahType.id));
@@ -44,7 +46,7 @@ export const SessionCard: React.FC<SessionCardProps> = ({
   const setQiyamAyatCount = useSessionStore((state) => state.setQiyamAyatCount);
 
   const toggleExpand = () => {
-    if (isBinary) return;
+    if (isBinary || isYesNo) return;
     setIsExpanded(!isExpanded);
     rotation.value = withTiming(isExpanded ? 0 : 1, { duration: 200 });
   };
@@ -60,6 +62,9 @@ export const SessionCard: React.FC<SessionCardProps> = ({
     if (ibadahType.unit === 'binary') {
       return totalValue >= 1 ? t('sessionCard.fasted') : t('sessionCard.notLogged');
     }
+    if (ibadahType.unit === 'yesno') {
+      return totalValue >= 1 ? t('sessionCard.yes') : t('sessionCard.notLogged');
+    }
     return `${totalValue} ${tUnit(ibadahType.unit, totalValue)}`;
   };
 
@@ -70,6 +75,79 @@ export const SessionCard: React.FC<SessionCardProps> = ({
       onAddSet();
     }
   };
+
+  const handleYesNoToggle = () => {
+    if (hasAnsweredYes && sets.length > 0) {
+      setDeleteConfirmId(sets[0].id);
+    } else {
+      onAddSet();
+    }
+  };
+
+  if (isYesNo) {
+    return (
+      <Card padding="none" variant="outlined" style={styles.card}>
+        <View style={styles.header}>
+          <View style={styles.headerLeft}>
+            <View style={[styles.iconContainer, { backgroundColor: `${ibadahType.color}20` }]}>
+              <Feather
+                name={ibadahType.icon as keyof typeof Feather.glyphMap}
+                size={20}
+                color={ibadahType.color}
+              />
+            </View>
+            <View style={styles.headerInfo}>
+              <Text style={styles.ibadahName}>
+                {isRTL ? (ibadahType.nameArabic || ibadahType.name) : ibadahType.name}
+              </Text>
+              {!isRTL && ibadahType.nameArabic && (
+                <Text style={styles.ibadahNameArabic}>{ibadahType.nameArabic}</Text>
+              )}
+            </View>
+          </View>
+
+          <TouchableOpacity
+            style={[
+              styles.binaryToggle,
+              hasAnsweredYes && styles.binaryToggleActive,
+            ]}
+            onPress={handleYesNoToggle}
+          >
+            <Feather
+              name={hasAnsweredYes ? 'check' : 'plus'}
+              size={18}
+              color={hasAnsweredYes ? Colors.semantic.success : Colors.text.muted}
+            />
+            <Text
+              style={[
+                styles.binaryToggleText,
+                hasAnsweredYes && styles.binaryToggleTextActive,
+              ]}
+            >
+              {hasAnsweredYes ? t('sessionCard.yes') : t('sessionCard.no')}
+            </Text>
+          </TouchableOpacity>
+        </View>
+
+        <IbadahStreakDots ibadahTypeId={ibadahType.id} color={ibadahType.color} />
+
+        <ConfirmModal
+          visible={deleteConfirmId !== null}
+          onClose={() => setDeleteConfirmId(null)}
+          onConfirm={() => {
+            if (deleteConfirmId) {
+              onDeleteSet(deleteConfirmId);
+              setDeleteConfirmId(null);
+            }
+          }}
+          title={t('sessionCard.deleteSet')}
+          message={t('sessionCard.deleteSetMessage')}
+          confirmText={t('common.remove')}
+          variant="danger"
+        />
+      </Card>
+    );
+  }
 
   if (isBinary) {
     return (

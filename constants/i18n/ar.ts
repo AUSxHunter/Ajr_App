@@ -99,7 +99,7 @@ export const ar: Translations = {
     addCustom: 'إضافة عبادة مخصصة',
     addCustomTitle: 'إضافة عبادة مخصصة',
     name: 'الاسم',
-    arabicName: 'الاسم بالعربية (اختياري)',
+    arabicName: 'الاسم بالعربية',
     unit: 'الوحدة',
     icon: 'الأيقونة',
     color: 'اللون',
@@ -110,6 +110,13 @@ export const ar: Translations = {
     deleteTitle: 'حذف العبادة',
     deleteMessage:
       'سيؤدي هذا إلى حذف نوع العبادة المخصص هذا بشكل دائم ولا يمكن التراجع عنه. ستبقى الجلسات المسجلة في سجلك.',
+    unitLabels: {
+      pages: 'صفحات',
+      minutes: 'دقائق',
+      count: 'عدد',
+      currency: 'عملة',
+      yesno: 'نعم / لا',
+    },
   },
   mvd: {
     title: 'الحد الأدنى اليومي',
@@ -177,6 +184,8 @@ export const ar: Translations = {
     fasted: 'صائم',
     notLogged: 'لم يُسجَّل',
     log: 'تسجيل',
+    yes: 'نعم',
+    no: 'لا',
     min: 'الحد الأدنى: {value} {unit}',
     set: 'جلسة',
     sets: 'جلسات',
@@ -189,6 +198,7 @@ export const ar: Translations = {
     logTitle: 'تسجيل {name}',
     editTitle: 'تعديل الجلسة',
     didYouFast: 'هل صمت اليوم؟',
+    didYouComplete: 'هل أتممت ذلك اليوم؟',
     logSet: 'تسجيل الجلسة',
     updateSet: 'تحديث الجلسة',
     timer: 'المؤقت: {minutes}د {seconds}ث',
@@ -220,6 +230,7 @@ export const ar: Translations = {
     binary: { singular: 'يوم', plural: 'أيام' },
     ayat: { singular: 'آية', plural: 'آيات' },
     adhkar: { singular: 'ذكر', plural: 'أذكار' },
+    yesno: { singular: 'مرة', plural: 'مرات' },
   },
   languageChange: {
     title: 'إعادة تشغيل مطلوبة',

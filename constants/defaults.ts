@@ -66,7 +66,7 @@ export const DEFAULT_IBADAH_TYPES: Omit<IbadahType, 'createdAt' | 'updatedAt'>[]
     id: 'fasting',
     name: 'Fasting',
     nameArabic: 'الصيام',
-    unit: 'binary',
+    unit: 'yesno',
     icon: 'sunrise',
     color: Colors.ibadah.fasting,
     weight: 100,
@@ -109,6 +109,7 @@ export const UNIT_LABELS: Record<
   binary: { singular: 'day', plural: 'days', abbreviation: '' },
   ayat: { singular: 'ayah', plural: 'ayat', abbreviation: 'ayat' },
   adhkar: { singular: 'session', plural: 'sessions', abbreviation: '' },
+  yesno: { singular: 'time', plural: 'times', abbreviation: '' },
 };
 
 export const BURNOUT_THRESHOLD = 0.7;

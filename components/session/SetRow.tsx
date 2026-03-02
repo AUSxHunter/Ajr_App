@@ -5,6 +5,7 @@ import { Colors, Typography, Spacing, BorderRadius } from '../../constants/theme
 import { SessionSet, IbadahType } from '../../types';
 import { formatDuration } from '../../utils/calculations';
 import { UNIT_LABELS } from '../../constants/defaults';
+import { useTranslation } from '../../hooks/useTranslation';
 
 interface SetRowProps {
   set: SessionSet;
@@ -15,13 +16,16 @@ interface SetRowProps {
 }
 
 export const SetRow: React.FC<SetRowProps> = ({ set, ibadahType, index, onEdit, onDelete }) => {
+  const { t } = useTranslation();
   const unitLabel = UNIT_LABELS[ibadahType.unit];
-  
+
   let displayValue: string;
   if (ibadahType.unit === 'currency') {
     displayValue = `${set.value.toFixed(0)} AED`;
   } else if (ibadahType.unit === 'binary') {
     displayValue = set.value >= 1 ? 'Fasted' : 'Not fasted';
+  } else if (ibadahType.unit === 'yesno') {
+    displayValue = set.value >= 1 ? t('common.yes') : t('common.no');
   } else {
     displayValue = `${set.value} ${set.value === 1 ? unitLabel.singular : unitLabel.plural}`;
   }

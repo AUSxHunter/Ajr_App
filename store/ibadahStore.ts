@@ -57,7 +57,7 @@ export const useIbadahStore = create<IbadahState & IbadahActions>()(
             const defaultType = DEFAULT_IBADAH_TYPES.find((d) => d.id === type.id);
             if (defaultType) {
               const hasWeight = type.weight !== undefined && type.weight !== null;
-              const needsUnitUpdate = type.id === 'fasting' && type.unit !== 'binary';
+              const needsUnitUpdate = type.id === 'fasting' && type.unit !== 'yesno';
               const needsNameArabic = !type.nameArabic && defaultType.nameArabic;
               if (!hasWeight || needsUnitUpdate || needsNameArabic) {
                 needsUpdate = true;
