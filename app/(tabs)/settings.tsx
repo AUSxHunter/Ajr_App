@@ -144,7 +144,9 @@ export default function SettingsScreen() {
         <Card padding="none">
           <SettingRow icon="info" label={t('settings.version')} value="1.0.0" />
           <View style={styles.separator} />
-          <SettingRow icon="heart" label={t('settings.aboutAjr')} onPress={() => {}} />
+          <SettingRow icon="heart" label={t('settings.aboutAjr')} onPress={() => router.push('/settings/about')} />
+          <View style={styles.separator} />
+          <SettingRow icon="shield" label={t('settings.privacyPolicy')} onPress={() => router.push('/settings/privacy')} />
         </Card>
       </ScrollView>
     </SafeAreaView>
@@ -182,6 +184,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     gap: Spacing.md,
+    flex: 1,
   },
   iconContainer: {
     width: 32,

@@ -78,6 +78,7 @@ export const ar: Translations = {
     about: 'حول',
     version: 'الإصدار',
     aboutAjr: 'حول أجر',
+    privacyPolicy: 'سياسة الخصوصية',
   },
   sessionDetail: {
     title: 'تفاصيل الجلسة',
@@ -237,5 +238,36 @@ export const ar: Translations = {
     message: 'يحتاج التطبيق إلى إعادة التشغيل لتطبيق تغيير اللغة.',
     cancel: 'إلغاء',
     restartNow: 'أعد التشغيل الآن',
+  },
+  about: {
+    title: 'حول أجر',
+    tagline: 'تتبّع رحلتك الروحية',
+    description:
+      'أجر هو تطبيق شخصي لتتبّع العبادة، صُمِّم لمساعدتك على بناء عادات روحية ثابتة من خلال التتبّع الواعي والنمو التدريجي.',
+    developerLabel: 'المطوّر',
+    developerName: '[اسم المطوّر]',
+    contactLabel: 'التواصل',
+    contactEmail: '[support@example.com]',
+    privacyPolicy: 'سياسة الخصوصية',
+  },
+  privacy: {
+    title: 'سياسة الخصوصية',
+    lastUpdated: 'آخر تحديث: مارس 2026',
+    intro: 'خصوصيتك تهمّنا. تشرح هذه السياسة كيفية تعامل أجر مع بياناتك.',
+    noCollectionTitle: 'لا جمع للبيانات',
+    noCollectionBody:
+      'لا يجمع أجر أي بيانات شخصية ولا ينقلها ولا يشاركها. جميع المعلومات التي تدخلها تبقى على جهازك.',
+    localStorageTitle: 'تخزين محلي فقط',
+    localStorageBody:
+      'يتم تخزين سجلات العبادة والجلسات والإعدادات محليًا على جهازك ولا تُرسَل إلى أي خوادم خارجية.',
+    noTrackingTitle: 'لا تتبّع ولا تحليلات',
+    noTrackingBody:
+      'لا نستخدم أي خدمات تحليلية أو أدوات تتبّع أو إعلانات.',
+    noInternetTitle: 'لا يحتاج إنترنت',
+    noInternetBody:
+      'لا يتطلب التطبيق اتصالاً بالإنترنت. جميع الميزات تعمل بشكل كامل دون اتصال.',
+    contactTitle: 'لديك سؤال؟',
+    contactBody: 'إذا كان لديك أي استفسار حول سياسة الخصوصية، تواصل معنا على:',
+    contactEmail: '[support@example.com]',
   },
 };

@@ -79,6 +79,7 @@ export const en = {
     about: 'About',
     version: 'Version',
     aboutAjr: 'About Ajr',
+    privacyPolicy: 'Privacy Policy',
   },
   sessionDetail: {
     title: 'Session Details',
@@ -241,6 +242,38 @@ export const en = {
     message: 'The app needs to restart to apply the language change.',
     cancel: 'Cancel',
     restartNow: 'Restart Now',
+  },
+  about: {
+    title: 'About Ajr',
+    tagline: 'Track your spiritual journey',
+    description:
+      'Ajr is a personal ibadah tracker designed to help you build consistent spiritual habits through mindful tracking and progressive growth.',
+    developerLabel: 'Developer',
+    developerName: '[Developer Name]',
+    contactLabel: 'Contact',
+    contactEmail: '[support@example.com]',
+    privacyPolicy: 'Privacy Policy',
+  },
+  privacy: {
+    title: 'Privacy Policy',
+    lastUpdated: 'Last Updated: March 2026',
+    intro:
+      'Your privacy is important to us. This policy explains how Ajr handles your data.',
+    noCollectionTitle: 'No Data Collection',
+    noCollectionBody:
+      'Ajr does not collect, transmit, or share any personal data. All information you enter stays on your device.',
+    localStorageTitle: 'Local Storage Only',
+    localStorageBody:
+      'Your ibadah logs, sessions, and settings are stored locally on your device. This data is never sent to external servers.',
+    noTrackingTitle: 'No Tracking or Analytics',
+    noTrackingBody:
+      'We do not use any analytics services, advertising SDKs, or tracking tools.',
+    noInternetTitle: 'No Internet Required',
+    noInternetBody:
+      'The app does not require internet access. All features work fully offline.',
+    contactTitle: 'Questions?',
+    contactBody: 'If you have any questions about this privacy policy, contact us at:',
+    contactEmail: '[support@example.com]',
   },
 };
 
