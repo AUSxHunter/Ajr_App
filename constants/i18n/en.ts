@@ -69,7 +69,8 @@ export const en = {
   },
   settings: {
     ibadah: 'Ibadah',
-    manageIbadahTypes: 'Manage Ibadah Types',
+    manageIbadahTypes: 'Manage Ibadah',
+    addCustomIbadah: 'Add Custom Ibadah',
     minimumViableDay: 'Minimum Viable Day',
     preferences: 'Preferences',
     notifications: 'Notifications',
@@ -95,7 +96,7 @@ export const en = {
     deleteSetMessage: 'Are you sure you want to delete this set? This action cannot be undone.',
   },
   manageIbadah: {
-    title: 'Manage Ibadah Types',
+    title: 'Manage Ibadah',
     activeTypes: 'Active Ibadah Types',
     archived: 'Archived',
     addCustom: 'Add Custom Ibadah',

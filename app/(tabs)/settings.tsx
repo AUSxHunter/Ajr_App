@@ -79,6 +79,12 @@ export default function SettingsScreen() {
           />
           <View style={styles.separator} />
           <SettingRow
+            icon="plus-circle"
+            label={t('settings.addCustomIbadah')}
+            onPress={() => router.push('/settings/manage-ibadah?openAdd=true')}
+          />
+          <View style={styles.separator} />
+          <SettingRow
             icon="target"
             label={t('settings.minimumViableDay')}
             onPress={() => router.push('/settings/minimum-viable-day')}

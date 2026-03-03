@@ -1,7 +1,7 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import { View, Text, StyleSheet, ScrollView, TouchableOpacity } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { Stack } from 'expo-router';
+import { Stack, useLocalSearchParams } from 'expo-router';
 import { Feather } from '@expo/vector-icons';
 import { Colors, Typography, Spacing, BorderRadius } from '../../constants/theme';
 import { Card, Button, Modal, Input, ConfirmModal } from '../../components/ui';
@@ -40,6 +40,7 @@ const COLOR_OPTIONS = [
 
 export default function ManageIbadahScreen() {
   const { t, isRTL } = useTranslation();
+  const params = useLocalSearchParams<{ openAdd?: string }>();
 
   const UNIT_OPTIONS: { value: IbadahUnit; label: string }[] = [
     { value: 'pages', label: t('manageIbadah.unitLabels.pages') },
@@ -49,6 +50,12 @@ export default function ManageIbadahScreen() {
     { value: 'yesno', label: t('manageIbadah.unitLabels.yesno') },
   ];
   const [addModalVisible, setAddModalVisible] = useState(false);
+
+  useEffect(() => {
+    if (params.openAdd === 'true') {
+      setAddModalVisible(true);
+    }
+  }, []);
   const [archiveConfirmId, setArchiveConfirmId] = useState<string | null>(null);
   const [deleteConfirmId, setDeleteConfirmId] = useState<string | null>(null);
   const [reminderIbadah, setReminderIbadah] = useState<IbadahType | null>(null);
@@ -159,14 +166,6 @@ export default function ManageIbadahScreen() {
               </Card>
             ))}
           </View>
-
-          <Button
-            title={t('manageIbadah.addCustom')}
-            variant="secondary"
-            icon={<Feather name="plus" size={18} color={Colors.text.primary} />}
-            onPress={() => setAddModalVisible(true)}
-            fullWidth
-          />
 
           {archivedTypes.length > 0 && (
             <>

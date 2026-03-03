@@ -68,7 +68,8 @@ export const ar: Translations = {
   },
   settings: {
     ibadah: 'العبادة',
-    manageIbadahTypes: 'إدارة أنواع العبادة',
+    manageIbadahTypes: 'إدارة العبادة',
+    addCustomIbadah: 'إضافة عبادة مخصصة',
     minimumViableDay: 'الحد الأدنى اليومي',
     preferences: 'التفضيلات',
     notifications: 'الإشعارات',
@@ -94,7 +95,7 @@ export const ar: Translations = {
     deleteSetMessage: 'هل أنت متأكد أنك تريد حذف هذه الجلسة؟ لا يمكن التراجع عن هذا الإجراء.',
   },
   manageIbadah: {
-    title: 'إدارة أنواع العبادة',
+    title: 'إدارة العبادة',
     activeTypes: 'أنواع العبادة النشطة',
     archived: 'المؤرشفة',
     addCustom: 'إضافة عبادة مخصصة',
