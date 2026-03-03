@@ -2,7 +2,7 @@ import { useEffect, useState, useRef } from 'react';
 import { StatusBar } from 'expo-status-bar';
 import { Stack, router } from 'expo-router';
 import * as SplashScreen from 'expo-splash-screen';
-import { View, StyleSheet, I18nManager } from 'react-native';
+import { View, StyleSheet, I18nManager, Platform } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import * as Notifications from 'expo-notifications';
 import 'react-native-reanimated';
@@ -21,10 +21,19 @@ export const unstable_settings = {
 
 SplashScreen.preventAutoHideAsync();
 
+// Set up Android notification channel (required for Android 8+)
+if (Platform.OS === 'android') {
+  Notifications.setNotificationChannelAsync('default', {
+    name: 'Reminders',
+    importance: Notifications.AndroidImportance.HIGH,
+    vibrationPattern: [0, 250, 250, 250],
+    sound: 'default',
+  });
+}
+
 // Show notifications as alerts even when app is in foreground
 Notifications.setNotificationHandler({
   handleNotification: async () => ({
-    shouldShowAlert: true,
     shouldPlaySound: true,
     shouldSetBadge: false,
     shouldShowBanner: true,

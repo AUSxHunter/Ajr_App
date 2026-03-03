@@ -24,6 +24,8 @@ import {
   openNotificationSettings,
   scheduleGlobalReminder,
   cancelGlobalReminder,
+  canScheduleExact,
+  openExactAlarmSettings,
   parseTime,
   formatTime,
 } from '../../services/notifications/notificationService';
@@ -49,6 +51,7 @@ export default function NotificationsScreen() {
   const [permissionStatus, setPermissionStatus] = useState<'granted' | 'denied' | 'undetermined'>(
     'undetermined'
   );
+  const [exactAlarmGranted, setExactAlarmGranted] = useState(true);
   const [showAndroidTimePicker, setShowAndroidTimePicker] = useState(false);
 
   const getTimeDate = (): Date => {
@@ -58,10 +61,11 @@ export default function NotificationsScreen() {
     return d;
   };
 
-  // Re-check permission whenever screen is focused
+  // Re-check permissions whenever screen is focused
   useFocusEffect(
     useCallback(() => {
       getPermissionStatus().then(setPermissionStatus);
+      canScheduleExact().then(setExactAlarmGranted);
     }, [])
   );
 
@@ -127,6 +131,19 @@ export default function NotificationsScreen() {
             <TouchableOpacity style={styles.permissionBanner} onPress={openNotificationSettings}>
               <Feather name="alert-triangle" size={18} color={Colors.semantic.warning} />
               <Text style={styles.permissionBannerText}>{t('notifications.permissionDenied')}</Text>
+              <Feather
+                name={isRTL ? 'chevron-left' : 'chevron-right'}
+                size={16}
+                color={Colors.text.muted}
+              />
+            </TouchableOpacity>
+          )}
+
+          {/* Exact alarm permission banner (Android 12+) */}
+          {!exactAlarmGranted && (
+            <TouchableOpacity style={styles.exactAlarmBanner} onPress={openExactAlarmSettings}>
+              <Feather name="clock" size={18} color={Colors.semantic.error} />
+              <Text style={styles.exactAlarmBannerText}>{t('notifications.exactAlarmRequired')}</Text>
               <Feather
                 name={isRTL ? 'chevron-left' : 'chevron-right'}
                 size={16}
@@ -311,6 +328,19 @@ const styles = StyleSheet.create({
   },
   compactPicker: {
     height: 34,
+  },
+  exactAlarmBanner: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: Spacing.sm,
+    backgroundColor: `${Colors.semantic.error}18`,
+    borderRadius: BorderRadius.lg,
+    padding: Spacing.md,
+  },
+  exactAlarmBannerText: {
+    flex: 1,
+    fontSize: Typography.fontSize.bodySmall,
+    color: Colors.semantic.error,
   },
   timeChip: {
     paddingHorizontal: Spacing.md,

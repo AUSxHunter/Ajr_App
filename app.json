@@ -39,8 +39,9 @@
         "expo-notifications",
         {
           "icon": "./assets/images/icon.png",
-          "color": "#000000",
-          "sounds": []
+          "color": "#3B82F6",
+          "sounds": [],
+          "requestScheduleExactAlarm": true
         }
       ]
     ],

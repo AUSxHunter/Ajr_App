@@ -253,6 +253,7 @@ export const ar: Translations = {
     remindMe: 'ذكّرني',
     time: 'الوقت',
     setTime: 'تعيين الوقت',
+    exactAlarmRequired: 'التذكيرات المحددة بوقت تحتاج إذن "التنبيهات والتذكيرات". اضغط للتفعيل من الإعدادات.',
   },
   about: {
     title: 'حول أجر',

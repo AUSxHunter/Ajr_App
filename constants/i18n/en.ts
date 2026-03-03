@@ -257,6 +257,7 @@ export const en = {
     remindMe: 'Remind me',
     time: 'Time',
     setTime: 'Set Time',
+    exactAlarmRequired: 'Timed reminders need "Alarms & reminders" permission. Tap to enable in Settings.',
   },
   about: {
     title: 'About Ajr',
