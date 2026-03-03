@@ -17,7 +17,7 @@ export const ar: Translations = {
     unknown: 'غير معروف',
   },
   tabs: {
-    today: 'اليوم',
+    today: 'الرئيسية',
     history: 'السجل',
     analytics: 'الإحصاء',
     settings: 'الإعدادات',

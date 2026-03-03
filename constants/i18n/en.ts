@@ -15,7 +15,7 @@ export const en = {
     unknown: 'Unknown',
   },
   tabs: {
-    today: 'Today',
+    today: 'Home',
     history: 'History',
     analytics: 'Analytics',
     settings: 'Settings',
