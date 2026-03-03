@@ -11,6 +11,11 @@ interface SettingsActions {
   setOnboardingCompleted: (completed: boolean) => void;
   setNotificationsEnabled: (enabled: boolean) => void;
   setNotificationTime: (time: string) => void;
+  setGlobalReminderEnabled: (enabled: boolean) => void;
+  setGlobalReminderTime: (time: string) => void;
+  setGlobalReminderNotificationId: (id: string | undefined) => void;
+  setStreakMilestonesEnabled: (enabled: boolean) => void;
+  setLastNotifiedStreakMilestone: (milestone: number) => void;
   setLanguage: (language: 'en' | 'ar') => void;
   setMinimumViableDay: (ibadahTypeId: string, minimumValue: number) => void;
   removeMinimumViableDay: (ibadahTypeId: string) => void;
@@ -22,6 +27,11 @@ const DEFAULT_SETTINGS: UserSettings = {
   minimumViableDays: [],
   notificationsEnabled: false,
   notificationTime: undefined,
+  globalReminderEnabled: false,
+  globalReminderTime: '09:00',
+  globalReminderNotificationId: undefined,
+  streakMilestonesEnabled: true,
+  lastNotifiedStreakMilestone: 0,
   onboardingCompleted: false,
   language: 'en',
 };
@@ -42,6 +52,26 @@ export const useSettingsStore = create<SettingsState & SettingsActions>()(
 
       setNotificationTime: (time) => {
         set({ notificationTime: time });
+      },
+
+      setGlobalReminderEnabled: (enabled) => {
+        set({ globalReminderEnabled: enabled });
+      },
+
+      setGlobalReminderTime: (time) => {
+        set({ globalReminderTime: time });
+      },
+
+      setGlobalReminderNotificationId: (id) => {
+        set({ globalReminderNotificationId: id });
+      },
+
+      setStreakMilestonesEnabled: (enabled) => {
+        set({ streakMilestonesEnabled: enabled });
+      },
+
+      setLastNotifiedStreakMilestone: (milestone) => {
+        set({ lastNotifiedStreakMilestone: milestone });
       },
 
       setLanguage: (language) => {
@@ -90,6 +120,11 @@ export const useSettingsStore = create<SettingsState & SettingsActions>()(
         minimumViableDays: state.minimumViableDays,
         notificationsEnabled: state.notificationsEnabled,
         notificationTime: state.notificationTime,
+        globalReminderEnabled: state.globalReminderEnabled,
+        globalReminderTime: state.globalReminderTime,
+        globalReminderNotificationId: state.globalReminderNotificationId,
+        streakMilestonesEnabled: state.streakMilestonesEnabled,
+        lastNotifiedStreakMilestone: state.lastNotifiedStreakMilestone,
         onboardingCompleted: state.onboardingCompleted,
         language: state.language,
       }),

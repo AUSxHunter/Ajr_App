@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text, StyleSheet, ScrollView, Switch, TouchableOpacity, Alert } from 'react-native';
+import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Alert } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { router } from 'expo-router';
 import { Feather } from '@expo/vector-icons';
@@ -42,8 +42,6 @@ const SettingRow: React.FC<SettingRowProps> = ({ icon, label, value, onPress, ri
 };
 
 export default function SettingsScreen() {
-  const notificationsEnabled = useSettingsStore((state) => state.notificationsEnabled);
-  const setNotificationsEnabled = useSettingsStore((state) => state.setNotificationsEnabled);
   const language = useSettingsStore((state) => state.language);
   const setLanguage = useSettingsStore((state) => state.setLanguage);
   const { t, reloadApp } = useTranslation();
@@ -92,17 +90,7 @@ export default function SettingsScreen() {
           <SettingRow
             icon="bell"
             label={t('settings.notifications')}
-            rightElement={
-              <Switch
-                value={notificationsEnabled}
-                onValueChange={setNotificationsEnabled}
-                trackColor={{
-                  false: Colors.background.elevated,
-                  true: Colors.accent.muted,
-                }}
-                thumbColor={notificationsEnabled ? Colors.accent.primary : Colors.text.muted}
-              />
-            }
+            onPress={() => router.push('/settings/notifications')}
           />
           <View style={styles.separator} />
           <SettingRow

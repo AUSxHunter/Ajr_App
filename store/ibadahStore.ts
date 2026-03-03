@@ -21,6 +21,10 @@ interface IbadahActions {
     weight?: number;
   }) => IbadahType;
   updateIbadahType: (id: string, updates: Partial<IbadahType>) => void;
+  updateIbadahReminder: (
+    id: string,
+    reminder: { reminderEnabled: boolean; reminderTime: string; reminderNotificationIds: string[] }
+  ) => void;
   archiveIbadahType: (id: string) => void;
   restoreIbadahType: (id: string) => void;
   deleteIbadahType: (id: string) => boolean;
@@ -45,6 +49,9 @@ export const useIbadahStore = create<IbadahState & IbadahActions>()(
         if (ibadahTypes.length === 0) {
           const defaultTypes: IbadahType[] = DEFAULT_IBADAH_TYPES.map((type) => ({
             ...type,
+            reminderEnabled: false,
+            reminderTime: '09:00',
+            reminderNotificationIds: [],
             createdAt: now,
             updatedAt: now,
           }));
@@ -99,6 +106,20 @@ export const useIbadahStore = create<IbadahState & IbadahActions>()(
             updatedTypes = [...updatedTypes, ...newTypes];
           }
 
+          // Migrate reminder fields for types that don't have them yet
+          updatedTypes = updatedTypes.map((type) => {
+            if (type.reminderEnabled === undefined) {
+              needsUpdate = true;
+              return {
+                ...type,
+                reminderEnabled: false,
+                reminderTime: '09:00',
+                reminderNotificationIds: [],
+              };
+            }
+            return type;
+          });
+
           if (needsUpdate) {
             set({ ibadahTypes: updatedTypes, isLoaded: true });
           } else {
@@ -117,11 +138,22 @@ export const useIbadahStore = create<IbadahState & IbadahActions>()(
           isDefault: false,
           isArchived: false,
           sortOrder: ibadahTypes.length,
+          reminderEnabled: false,
+          reminderTime: '09:00',
+          reminderNotificationIds: [],
           createdAt: now,
           updatedAt: now,
         };
         set({ ibadahTypes: [...ibadahTypes, newType] });
         return newType;
+      },
+
+      updateIbadahReminder: (id, reminder) => {
+        set((state) => ({
+          ibadahTypes: state.ibadahTypes.map((type) =>
+            type.id === id ? { ...type, ...reminder, updatedAt: new Date() } : type
+          ),
+        }));
       },
 
       updateIbadahType: (id, updates) => {
@@ -152,6 +184,12 @@ export const useIbadahStore = create<IbadahState & IbadahActions>()(
         const type = get().ibadahTypes.find((t) => t.id === id);
         if (!type || type.isDefault) {
           return false;
+        }
+        // Cancel any scheduled reminders before deletion
+        if (type.reminderEnabled && type.reminderNotificationIds.length > 0) {
+          import('../services/notifications/notificationService').then(({ cancelIbadahReminder }) => {
+            cancelIbadahReminder(type.reminderNotificationIds);
+          });
         }
         set((state) => ({
           ibadahTypes: state.ibadahTypes.filter((t) => t.id !== id),

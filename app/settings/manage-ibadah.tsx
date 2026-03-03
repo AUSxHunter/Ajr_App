@@ -5,8 +5,9 @@ import { Stack } from 'expo-router';
 import { Feather } from '@expo/vector-icons';
 import { Colors, Typography, Spacing, BorderRadius } from '../../constants/theme';
 import { Card, Button, Modal, Input, ConfirmModal } from '../../components/ui';
+import { ReminderModal } from '../../components/notifications/ReminderModal';
 import { useIbadahStore } from '../../store/ibadahStore';
-import { IbadahUnit } from '../../types';
+import { IbadahType, IbadahUnit } from '../../types';
 import { useTranslation } from '../../hooks/useTranslation';
 
 const ICON_OPTIONS = [
@@ -50,6 +51,7 @@ export default function ManageIbadahScreen() {
   const [addModalVisible, setAddModalVisible] = useState(false);
   const [archiveConfirmId, setArchiveConfirmId] = useState<string | null>(null);
   const [deleteConfirmId, setDeleteConfirmId] = useState<string | null>(null);
+  const [reminderIbadah, setReminderIbadah] = useState<IbadahType | null>(null);
   const [newName, setNewName] = useState('');
   const [newNameArabic, setNewNameArabic] = useState('');
   const [newUnit, setNewUnit] = useState<IbadahUnit>('count');
@@ -125,22 +127,34 @@ export default function ManageIbadahScreen() {
                     )}
                     <Text style={styles.ibadahUnit}>{type.unit}</Text>
                   </View>
-                  {!type.isDefault && (
-                    <View style={styles.actionButtons}>
-                      <TouchableOpacity
-                        onPress={() => handleArchive(type.id)}
-                        style={styles.actionButton}
-                      >
-                        <Feather name="archive" size={18} color={Colors.text.muted} />
-                      </TouchableOpacity>
-                      <TouchableOpacity
-                        onPress={() => handleDelete(type.id)}
-                        style={styles.actionButton}
-                      >
-                        <Feather name="trash-2" size={18} color={Colors.semantic.error} />
-                      </TouchableOpacity>
-                    </View>
-                  )}
+                  <View style={styles.actionButtons}>
+                    <TouchableOpacity
+                      onPress={() => setReminderIbadah(type)}
+                      style={styles.actionButton}
+                    >
+                      <Feather
+                        name="bell"
+                        size={18}
+                        color={type.reminderEnabled ? Colors.accent.primary : Colors.text.muted}
+                      />
+                    </TouchableOpacity>
+                    {!type.isDefault && (
+                      <>
+                        <TouchableOpacity
+                          onPress={() => handleArchive(type.id)}
+                          style={styles.actionButton}
+                        >
+                          <Feather name="archive" size={18} color={Colors.text.muted} />
+                        </TouchableOpacity>
+                        <TouchableOpacity
+                          onPress={() => handleDelete(type.id)}
+                          style={styles.actionButton}
+                        >
+                          <Feather name="trash-2" size={18} color={Colors.semantic.error} />
+                        </TouchableOpacity>
+                      </>
+                    )}
+                  </View>
                 </View>
               </Card>
             ))}
@@ -316,6 +330,12 @@ export default function ManageIbadahScreen() {
           message={t('manageIbadah.deleteMessage')}
           confirmText={t('common.delete')}
           variant="danger"
+        />
+
+        <ReminderModal
+          ibadah={reminderIbadah}
+          visible={reminderIbadah !== null}
+          onClose={() => setReminderIbadah(null)}
         />
       </SafeAreaView>
     </>

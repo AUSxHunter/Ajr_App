@@ -5,6 +5,9 @@ import { Session, SessionSet, SessionWithSets } from '../types';
 import { generateId } from '../utils/id';
 import { format } from 'date-fns';
 import { useIbadahStore } from './ibadahStore';
+import { useSettingsStore } from './settingsStore';
+import { calculateStreak } from '../utils/calculations';
+import { STREAK_MILESTONES, fireStreakMilestoneNotification } from '../services/notifications/notificationService';
 
 interface SessionState {
   sessions: Session[];
@@ -133,6 +136,20 @@ export const useSessionStore = create<SessionState & SessionActions>()(
           ),
           activeSessionId: state.activeSessionId === sessionId ? null : state.activeSessionId,
         }));
+
+        // Check streak milestones after completing session
+        const streak = calculateStreak(get().sessions);
+        const settings = useSettingsStore.getState();
+        if (settings.streakMilestonesEnabled && streak > 0) {
+          const crossed = STREAK_MILESTONES.filter(
+            (m) => m <= streak && m > settings.lastNotifiedStreakMilestone
+          );
+          if (crossed.length > 0) {
+            const highest = Math.max(...crossed);
+            fireStreakMilestoneNotification(highest, settings.language).catch(() => {});
+            settings.setLastNotifiedStreakMilestone(highest);
+          }
+        }
       },
 
       deleteSession: (sessionId) => {

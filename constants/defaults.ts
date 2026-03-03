@@ -1,6 +1,12 @@
 import { IbadahType } from '../types';
 import { Colors } from './theme';
 
+const DEFAULT_REMINDER = {
+  reminderEnabled: false,
+  reminderTime: '09:00',
+  reminderNotificationIds: [] as string[],
+};
+
 export const DEFAULT_IBADAH_TYPES: Omit<IbadahType, 'createdAt' | 'updatedAt'>[] = [
   {
     id: 'quran',
@@ -13,6 +19,7 @@ export const DEFAULT_IBADAH_TYPES: Omit<IbadahType, 'createdAt' | 'updatedAt'>[]
     isDefault: true,
     isArchived: false,
     sortOrder: 0,
+    ...DEFAULT_REMINDER,
   },
   {
     id: 'qiyam',
@@ -25,6 +32,7 @@ export const DEFAULT_IBADAH_TYPES: Omit<IbadahType, 'createdAt' | 'updatedAt'>[]
     isDefault: true,
     isArchived: false,
     sortOrder: 1,
+    ...DEFAULT_REMINDER,
   },
   {
     id: 'dhikr',
@@ -37,6 +45,7 @@ export const DEFAULT_IBADAH_TYPES: Omit<IbadahType, 'createdAt' | 'updatedAt'>[]
     isDefault: true,
     isArchived: false,
     sortOrder: 2,
+    ...DEFAULT_REMINDER,
   },
   {
     id: 'adhkar',
@@ -49,6 +58,7 @@ export const DEFAULT_IBADAH_TYPES: Omit<IbadahType, 'createdAt' | 'updatedAt'>[]
     isDefault: true,
     isArchived: false,
     sortOrder: 2.5,
+    ...DEFAULT_REMINDER,
   },
   {
     id: 'sadaqah',
@@ -61,6 +71,7 @@ export const DEFAULT_IBADAH_TYPES: Omit<IbadahType, 'createdAt' | 'updatedAt'>[]
     isDefault: true,
     isArchived: false,
     sortOrder: 3,
+    ...DEFAULT_REMINDER,
   },
   {
     id: 'fasting',
@@ -73,6 +84,7 @@ export const DEFAULT_IBADAH_TYPES: Omit<IbadahType, 'createdAt' | 'updatedAt'>[]
     isDefault: true,
     isArchived: false,
     sortOrder: 4,
+    ...DEFAULT_REMINDER,
   },
   {
     id: 'dua',
@@ -85,6 +97,7 @@ export const DEFAULT_IBADAH_TYPES: Omit<IbadahType, 'createdAt' | 'updatedAt'>[]
     isDefault: true,
     isArchived: false,
     sortOrder: 5,
+    ...DEFAULT_REMINDER,
   },
 ];
 

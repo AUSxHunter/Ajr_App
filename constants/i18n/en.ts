@@ -243,6 +243,21 @@ export const en = {
     cancel: 'Cancel',
     restartNow: 'Restart Now',
   },
+  notifications: {
+    title: 'Notifications',
+    globalReminder: 'Daily Reminder',
+    globalReminderDesc: 'Remind me to log ibadah every day',
+    reminderTime: 'Reminder Time',
+    streakMilestones: 'Streak Milestones',
+    streakMilestonesDesc: 'Get notified at 3, 7, 14, 30, 60, and 100-day streaks',
+    permissionDeniedTitle: 'Permission Required',
+    permissionDenied: 'Notifications are disabled. Enable them in device Settings to receive reminders.',
+    openSettings: 'Open Settings',
+    setReminder: 'Set Reminder',
+    remindMe: 'Remind me',
+    time: 'Time',
+    setTime: 'Set Time',
+  },
   about: {
     title: 'About Ajr',
     tagline: 'Track your spiritual journey',
@@ -264,7 +279,7 @@ export const en = {
       'Ajr does not collect, transmit, or share any personal data. All information you enter stays on your device.',
     localStorageTitle: 'Local Storage Only',
     localStorageBody:
-      'Your ibadah logs, sessions, and settings are stored locally on your device. This data is never sent to external servers.',
+      'Your ibadah logs, sessions, settings, and notification preferences (including scheduled reminder IDs) are stored locally on your device. This data is never sent to external servers.',
     noTrackingTitle: 'No Tracking or Analytics',
     noTrackingBody:
       'We do not use any analytics services, advertising SDKs, or tracking tools.',

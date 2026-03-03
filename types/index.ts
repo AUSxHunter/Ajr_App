@@ -11,6 +11,9 @@ export interface IbadahType {
   isDefault: boolean;
   isArchived: boolean;
   sortOrder: number;
+  reminderEnabled: boolean;
+  reminderTime: string; // "HH:mm" 24-hour format
+  reminderNotificationIds: string[]; // OS notification IDs for cancellation
   createdAt: Date;
   updatedAt: Date;
 }
@@ -59,6 +62,11 @@ export interface UserSettings {
   minimumViableDays: MinimumViableDay[];
   notificationsEnabled: boolean;
   notificationTime?: string;
+  globalReminderEnabled: boolean;
+  globalReminderTime: string; // "HH:mm" 24-hour format
+  globalReminderNotificationId?: string;
+  streakMilestonesEnabled: boolean;
+  lastNotifiedStreakMilestone: number; // highest milestone (3/7/14/30/60/100) already notified
   onboardingCompleted: boolean;
   language: 'en' | 'ar';
 }
