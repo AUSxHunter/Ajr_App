@@ -52,8 +52,8 @@ export const ar: Translations = {
   analytics: {
     dayStreak: 'سلسلة الأيام',
     sessions: 'الجلسات',
-    totalVolume: 'إجمالي الحجم',
-    avgPerDay: 'المعدل/يوم',
+    weeklyVolume: 'الحجم الأسبوعي',
+    avgPerDay: 'متوسط / يوم',
     thisWeek: 'هذا الأسبوع',
     personalRecords: 'الأرقام القياسية',
     insight: 'رؤية',

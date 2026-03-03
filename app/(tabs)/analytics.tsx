@@ -96,6 +96,7 @@ export default function AnalyticsScreen() {
 
   const dailyVolumeRecords = personalRecords.filter((pr) => pr.recordType === 'daily_volume');
 
+  const weeklyVolume = Math.round(weeklyStats.reduce((sum, d) => sum + d.totalVolume, 0));
   const averageDailyVolume = totalSessions > 0 ? (totalVolume / totalSessions).toFixed(1) : '0';
 
   return (
@@ -141,8 +142,8 @@ export default function AnalyticsScreen() {
 
           <Card style={styles.statCard}>
             <Feather name="activity" size={24} color={Colors.semantic.success} />
-            <Text style={styles.statValue}>{totalVolume}</Text>
-            <Text style={styles.statLabel}>{t('analytics.totalVolume')}</Text>
+            <Text style={styles.statValue}>{weeklyVolume}</Text>
+            <Text style={styles.statLabel}>{t('analytics.weeklyVolume')}</Text>
           </Card>
 
           <Card style={styles.statCard}>

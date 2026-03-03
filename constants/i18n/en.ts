@@ -52,8 +52,8 @@ export const en = {
   analytics: {
     dayStreak: 'Day Streak',
     sessions: 'Sessions',
-    totalVolume: 'Total Volume',
-    avgPerDay: 'Avg/Day',
+    weeklyVolume: 'Weekly Volume',
+    avgPerDay: 'Avg / Day',
     thisWeek: 'This Week',
     personalRecords: 'Personal Records',
     insight: 'Insight',
