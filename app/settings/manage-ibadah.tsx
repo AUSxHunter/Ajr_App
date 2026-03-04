@@ -1,5 +1,7 @@
-import React, { useState, useMemo, useEffect } from 'react';
+import React, { useState, useMemo, useEffect, useCallback } from 'react';
 import { View, Text, StyleSheet, ScrollView, TouchableOpacity } from 'react-native';
+import DraggableFlatList, { ScaleDecorator, ShadowDecorator, RenderItemParams } from 'react-native-draggable-flatlist';
+import * as Haptics from 'expo-haptics';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Stack, useLocalSearchParams } from 'expo-router';
 import { Feather } from '@expo/vector-icons';
@@ -105,154 +107,138 @@ export default function ManageIbadahScreen() {
     setDeleteConfirmId(id);
   };
 
-  const moveUp = (index: number) => {
-    if (index === 0) return;
-    const newOrder = [...ibadahTypes];
-    [newOrder[index - 1], newOrder[index]] = [newOrder[index], newOrder[index - 1]];
-    reorderIbadahTypes(newOrder.map((t) => t.id));
-  };
-
-  const moveDown = (index: number) => {
-    if (index === ibadahTypes.length - 1) return;
-    const newOrder = [...ibadahTypes];
-    [newOrder[index], newOrder[index + 1]] = [newOrder[index + 1], newOrder[index]];
-    reorderIbadahTypes(newOrder.map((t) => t.id));
-  };
+  const renderDraggableItem = useCallback(
+    ({ item: type, drag, isActive }: RenderItemParams<IbadahType>) => (
+      <ShadowDecorator>
+        <ScaleDecorator activeScale={1.03}>
+        <Card style={[styles.ibadahCard, isActive && styles.ibadahCardActive]}>
+          <View style={styles.ibadahRow}>
+            <TouchableOpacity
+              onLongPress={() => { Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium); drag(); }}
+              style={styles.dragHandle}
+              activeOpacity={0.6}
+            >
+              <Feather name="menu" size={18} color={Colors.text.muted} />
+            </TouchableOpacity>
+            <View style={[styles.iconContainer, { backgroundColor: `${type.color}20` }]}>
+              <Feather
+                name={type.icon as keyof typeof Feather.glyphMap}
+                size={20}
+                color={type.color}
+              />
+            </View>
+            <View style={styles.ibadahInfo}>
+              <Text style={styles.ibadahName}>
+                {isRTL ? (type.nameArabic || type.name) : type.name}
+              </Text>
+              {!isRTL && type.nameArabic && (
+                <Text style={styles.ibadahArabic}>{type.nameArabic}</Text>
+              )}
+              <Text style={styles.ibadahUnit}>{type.unit}</Text>
+            </View>
+            <View style={styles.actionButtons}>
+              <TouchableOpacity
+                onPress={() => setReminderIbadah(type)}
+                style={styles.actionButton}
+              >
+                <Feather
+                  name="bell"
+                  size={18}
+                  color={type.reminderEnabled ? Colors.accent.primary : Colors.text.muted}
+                />
+              </TouchableOpacity>
+              {!type.isDefault && (
+                <>
+                  <TouchableOpacity
+                    onPress={() => setArchiveConfirmId(type.id)}
+                    style={styles.actionButton}
+                  >
+                    <Feather name="archive" size={18} color={Colors.text.muted} />
+                  </TouchableOpacity>
+                  <TouchableOpacity
+                    onPress={() => setDeleteConfirmId(type.id)}
+                    style={styles.actionButton}
+                  >
+                    <Feather name="trash-2" size={18} color={Colors.semantic.error} />
+                  </TouchableOpacity>
+                </>
+              )}
+            </View>
+          </View>
+        </Card>
+        </ScaleDecorator>
+      </ShadowDecorator>
+    ),
+    [isRTL]
+  );
 
   return (
     <>
       <Stack.Screen options={{ title: t('manageIbadah.title') }} />
       <SafeAreaView style={styles.container} edges={['bottom']}>
-        <ScrollView
-          style={styles.scrollView}
+        <DraggableFlatList
+          data={ibadahTypes}
+          keyExtractor={(item) => item.id}
+          renderItem={renderDraggableItem}
+          onDragEnd={({ data }) => reorderIbadahTypes(data.map((t) => t.id))}
           contentContainerStyle={styles.content}
           showsVerticalScrollIndicator={false}
-        >
-          <Text style={styles.sectionTitle}>{t('manageIbadah.activeTypes')}</Text>
-          <View style={styles.list}>
-            {ibadahTypes.map((type, index) => (
-              <Card key={type.id} style={styles.ibadahCard}>
-                <View style={styles.ibadahRow}>
-                  <View style={styles.reorderButtons}>
-                    <TouchableOpacity
-                      onPress={() => moveUp(index)}
-                      style={styles.reorderButton}
-                      disabled={index === 0}
-                    >
-                      <Feather
-                        name="chevron-up"
-                        size={16}
-                        color={index === 0 ? Colors.text.muted + '40' : Colors.text.muted}
-                      />
-                    </TouchableOpacity>
-                    <TouchableOpacity
-                      onPress={() => moveDown(index)}
-                      style={styles.reorderButton}
-                      disabled={index === ibadahTypes.length - 1}
-                    >
-                      <Feather
-                        name="chevron-down"
-                        size={16}
-                        color={index === ibadahTypes.length - 1 ? Colors.text.muted + '40' : Colors.text.muted}
-                      />
-                    </TouchableOpacity>
-                  </View>
-                  <View style={[styles.iconContainer, { backgroundColor: `${type.color}20` }]}>
-                    <Feather
-                      name={type.icon as keyof typeof Feather.glyphMap}
-                      size={20}
-                      color={type.color}
-                    />
-                  </View>
-                  <View style={styles.ibadahInfo}>
-                    <Text style={styles.ibadahName}>
-                      {isRTL ? (type.nameArabic || type.name) : type.name}
-                    </Text>
-                    {!isRTL && type.nameArabic && (
-                      <Text style={styles.ibadahArabic}>{type.nameArabic}</Text>
-                    )}
-                    <Text style={styles.ibadahUnit}>{type.unit}</Text>
-                  </View>
-                  <View style={styles.actionButtons}>
-                    <TouchableOpacity
-                      onPress={() => setReminderIbadah(type)}
-                      style={styles.actionButton}
-                    >
-                      <Feather
-                        name="bell"
-                        size={18}
-                        color={type.reminderEnabled ? Colors.accent.primary : Colors.text.muted}
-                      />
-                    </TouchableOpacity>
-                    {!type.isDefault && (
-                      <>
-                        <TouchableOpacity
-                          onPress={() => handleArchive(type.id)}
-                          style={styles.actionButton}
+          dragItemOverflow={true}
+          animationConfig={{ duration: 200, easing: (t: number) => t * (2 - t) }}
+          ListHeaderComponent={
+            <Text style={[styles.sectionTitle, { marginBottom: Spacing.sm }]}>
+              {t('manageIbadah.activeTypes')}
+            </Text>
+          }
+          ListFooterComponent={
+            archivedTypes.length > 0 ? (
+              <View style={styles.archivedSection}>
+                <Text style={styles.sectionTitle}>{t('manageIbadah.archived')}</Text>
+                <View style={[styles.list, { marginTop: Spacing.sm }]}>
+                  {archivedTypes.map((type) => (
+                    <Card key={type.id} style={styles.ibadahCard}>
+                      <View style={styles.ibadahRow}>
+                        <View
+                          style={[
+                            styles.iconContainer,
+                            { backgroundColor: `${type.color}20`, opacity: 0.5 },
+                          ]}
                         >
-                          <Feather name="archive" size={18} color={Colors.text.muted} />
-                        </TouchableOpacity>
-                        <TouchableOpacity
-                          onPress={() => handleDelete(type.id)}
-                          style={styles.actionButton}
-                        >
-                          <Feather name="trash-2" size={18} color={Colors.semantic.error} />
-                        </TouchableOpacity>
-                      </>
-                    )}
-                  </View>
-                </View>
-              </Card>
-            ))}
-          </View>
-
-          {archivedTypes.length > 0 && (
-            <>
-              <Text style={styles.sectionTitle}>{t('manageIbadah.archived')}</Text>
-              <View style={styles.list}>
-                {archivedTypes.map((type) => (
-                  <Card key={type.id} style={styles.ibadahCard}>
-                    <View style={styles.ibadahRow}>
-                      <View
-                        style={[
-                          styles.iconContainer,
-                          { backgroundColor: `${type.color}20`, opacity: 0.5 },
-                        ]}
-                      >
-                        <Feather
-                          name={type.icon as keyof typeof Feather.glyphMap}
-                          size={20}
-                          color={type.color}
-                        />
-                      </View>
-                      <View style={styles.ibadahInfo}>
-                        <Text style={[styles.ibadahName, { opacity: 0.5 }]}>
-                          {isRTL ? (type.nameArabic || type.name) : type.name}
-                        </Text>
-                      </View>
-                      <View style={styles.actionButtons}>
-                        <TouchableOpacity
-                          onPress={() => restoreIbadahType(type.id)}
-                          style={styles.actionButton}
-                        >
-                          <Feather name="refresh-cw" size={18} color={Colors.accent.primary} />
-                        </TouchableOpacity>
-                        {!type.isDefault && (
+                          <Feather
+                            name={type.icon as keyof typeof Feather.glyphMap}
+                            size={20}
+                            color={type.color}
+                          />
+                        </View>
+                        <View style={styles.ibadahInfo}>
+                          <Text style={[styles.ibadahName, { opacity: 0.5 }]}>
+                            {isRTL ? (type.nameArabic || type.name) : type.name}
+                          </Text>
+                        </View>
+                        <View style={styles.actionButtons}>
                           <TouchableOpacity
-                            onPress={() => handleDelete(type.id)}
+                            onPress={() => restoreIbadahType(type.id)}
                             style={styles.actionButton}
                           >
-                            <Feather name="trash-2" size={18} color={Colors.semantic.error} />
+                            <Feather name="refresh-cw" size={18} color={Colors.accent.primary} />
                           </TouchableOpacity>
-                        )}
+                          {!type.isDefault && (
+                            <TouchableOpacity
+                              onPress={() => handleDelete(type.id)}
+                              style={styles.actionButton}
+                            >
+                              <Feather name="trash-2" size={18} color={Colors.semantic.error} />
+                            </TouchableOpacity>
+                          )}
+                        </View>
                       </View>
-                    </View>
-                  </Card>
-                ))}
+                    </Card>
+                  ))}
+                </View>
               </View>
-            </>
-          )}
-        </ScrollView>
+            ) : null
+          }
+        />
 
         <Modal
           visible={addModalVisible}
@@ -434,12 +420,17 @@ const styles = StyleSheet.create({
     color: Colors.accent.primary,
     marginTop: 2,
   },
-  reorderButtons: {
-    alignItems: 'center',
-    gap: 0,
+  dragHandle: {
+    padding: Spacing.sm,
+    marginRight: 2,
   },
-  reorderButton: {
-    padding: 2,
+  ibadahCardActive: {
+    borderColor: Colors.accent.primary + '40',
+    borderWidth: 1,
+  },
+  archivedSection: {
+    gap: Spacing.sm,
+    marginTop: Spacing.lg,
   },
   actionButtons: {
     flexDirection: 'row',

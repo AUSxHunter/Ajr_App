@@ -6,6 +6,7 @@ import { View, StyleSheet, I18nManager, Platform } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import * as Notifications from 'expo-notifications';
 import 'react-native-reanimated';
+import { GestureHandlerRootView } from 'react-native-gesture-handler';
 
 import { Colors } from '../constants/theme';
 import { HeaderBackButton } from '../components/ui';
@@ -83,7 +84,7 @@ export default function RootLayout() {
   }
 
   return (
-    <View style={[styles.container, { direction: isRTL ? 'rtl' : 'ltr' }]}>
+    <GestureHandlerRootView style={[styles.container, { direction: isRTL ? 'rtl' : 'ltr' }]}>
       <StatusBar style="light" />
       <Stack
         screenOptions={{
@@ -130,7 +131,7 @@ export default function RootLayout() {
           }}
         />
       </Stack>
-    </View>
+    </GestureHandlerRootView>
   );
 }
 
