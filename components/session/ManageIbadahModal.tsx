@@ -9,7 +9,8 @@ import {
   Switch,
 } from 'react-native';
 import { Feather } from '@expo/vector-icons';
-import { Colors, Typography, Spacing, BorderRadius } from '../../constants/theme';
+import { Typography, Spacing, BorderRadius } from '../../constants/theme';
+import { useColors } from '../../hooks/useColors';
 import { IbadahType } from '../../types';
 import { useSessionStore } from '../../store/sessionStore';
 import { useTranslation } from '../../hooks/useTranslation';
@@ -25,12 +26,15 @@ export const ManageIbadahModal: React.FC<ManageIbadahModalProps> = ({
   onClose,
   ibadahTypes,
 }) => {
+  const Colors = useColors();
   const { t, isRTL } = useTranslation();
   const hiddenIbadahTypeIds = useSessionStore((state) => state.hiddenIbadahTypeIds);
   const toggleIbadahTypeVisibility = useSessionStore((state) => state.toggleIbadahTypeVisibility);
   const resetHiddenIbadahTypes = useSessionStore((state) => state.resetHiddenIbadahTypes);
 
   const visibleCount = ibadahTypes.filter((t) => !hiddenIbadahTypeIds.includes(t.id)).length;
+
+  const styles = makeStyles(Colors);
 
   return (
     <Modal
@@ -109,92 +113,93 @@ export const ManageIbadahModal: React.FC<ManageIbadahModalProps> = ({
   );
 };
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: Colors.background.primary,
-    padding: Spacing.lg,
-  },
-  header: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'flex-start',
-    marginBottom: Spacing.md,
-  },
-  title: {
-    fontSize: Typography.fontSize.h2,
-    fontWeight: '700',
-    color: Colors.text.primary,
-  },
-  subtitle: {
-    fontSize: Typography.fontSize.caption,
-    color: Colors.text.muted,
-    marginTop: 2,
-  },
-  closeButton: {
-    padding: Spacing.xs,
-  },
-  description: {
-    fontSize: Typography.fontSize.bodySmall,
-    color: Colors.text.secondary,
-    marginBottom: Spacing.lg,
-    lineHeight: 20,
-  },
-  list: {
-    flex: 1,
-  },
-  itemRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    paddingVertical: Spacing.md,
-    borderBottomWidth: 1,
-    borderBottomColor: Colors.border.default,
-  },
-  itemLeft: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: Spacing.md,
-    flex: 1,
-  },
-  iconContainer: {
-    width: 44,
-    height: 44,
-    borderRadius: BorderRadius.lg,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  iconContainerHidden: {
-    backgroundColor: Colors.background.elevated,
-  },
-  itemName: {
-    fontSize: Typography.fontSize.body,
-    fontWeight: '600',
-    color: Colors.text.primary,
-  },
-  itemNameHidden: {
-    color: Colors.text.muted,
-  },
-  itemArabic: {
-    fontSize: Typography.fontSize.caption,
-    color: Colors.text.muted,
-    marginTop: 2,
-  },
-  resetButton: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
-    gap: Spacing.sm,
-    paddingVertical: Spacing.md,
-    marginTop: Spacing.md,
-    backgroundColor: Colors.background.elevated,
-    borderRadius: BorderRadius.md,
-  },
-  resetButtonText: {
-    fontSize: Typography.fontSize.body,
-    fontWeight: '600',
-    color: Colors.accent.primary,
-  },
-});
+const makeStyles = (Colors: ReturnType<typeof import('../../hooks/useColors').useColors>) =>
+  StyleSheet.create({
+    container: {
+      flex: 1,
+      backgroundColor: Colors.background.primary,
+      padding: Spacing.lg,
+    },
+    header: {
+      flexDirection: 'row',
+      justifyContent: 'space-between',
+      alignItems: 'flex-start',
+      marginBottom: Spacing.md,
+    },
+    title: {
+      fontSize: Typography.fontSize.h2,
+      fontWeight: '700',
+      color: Colors.text.primary,
+    },
+    subtitle: {
+      fontSize: Typography.fontSize.caption,
+      color: Colors.text.muted,
+      marginTop: 2,
+    },
+    closeButton: {
+      padding: Spacing.xs,
+    },
+    description: {
+      fontSize: Typography.fontSize.bodySmall,
+      color: Colors.text.secondary,
+      marginBottom: Spacing.lg,
+      lineHeight: 20,
+    },
+    list: {
+      flex: 1,
+    },
+    itemRow: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      justifyContent: 'space-between',
+      paddingVertical: Spacing.md,
+      borderBottomWidth: 1,
+      borderBottomColor: Colors.border.default,
+    },
+    itemLeft: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      gap: Spacing.md,
+      flex: 1,
+    },
+    iconContainer: {
+      width: 44,
+      height: 44,
+      borderRadius: BorderRadius.lg,
+      alignItems: 'center',
+      justifyContent: 'center',
+    },
+    iconContainerHidden: {
+      backgroundColor: Colors.background.elevated,
+    },
+    itemName: {
+      fontSize: Typography.fontSize.body,
+      fontWeight: '600',
+      color: Colors.text.primary,
+    },
+    itemNameHidden: {
+      color: Colors.text.muted,
+    },
+    itemArabic: {
+      fontSize: Typography.fontSize.caption,
+      color: Colors.text.muted,
+      marginTop: 2,
+    },
+    resetButton: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      justifyContent: 'center',
+      gap: Spacing.sm,
+      paddingVertical: Spacing.md,
+      marginTop: Spacing.md,
+      backgroundColor: Colors.background.elevated,
+      borderRadius: BorderRadius.md,
+    },
+    resetButtonText: {
+      fontSize: Typography.fontSize.body,
+      fontWeight: '600',
+      color: Colors.accent.primary,
+    },
+  });
 
 export default ManageIbadahModal;

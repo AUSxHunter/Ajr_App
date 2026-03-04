@@ -1,7 +1,8 @@
 import React from 'react';
 import { TouchableOpacity, StyleSheet, ViewStyle, TouchableOpacityProps } from 'react-native';
 import { Feather } from '@expo/vector-icons';
-import { Colors, Spacing, BorderRadius } from '../../constants/theme';
+import { Spacing, BorderRadius } from '../../constants/theme';
+import { useColors } from '../../hooks/useColors';
 
 type IconButtonVariant = 'default' | 'primary' | 'ghost';
 type IconButtonSize = 'sm' | 'md' | 'lg';
@@ -28,14 +29,22 @@ export const IconButton: React.FC<IconButtonProps> = ({
   style,
   ...props
 }) => {
+  const Colors = useColors();
   const iconColor = color ?? (variant === 'primary' ? Colors.text.primary : Colors.text.secondary);
+
+  const variantBg =
+    variant === 'primary'
+      ? Colors.accent.primary
+      : variant === 'ghost'
+      ? 'transparent'
+      : Colors.background.card;
 
   return (
     <TouchableOpacity
       style={[
         styles.base,
-        styles[`variant_${variant}`],
         styles[`size_${size}`],
+        { backgroundColor: variantBg },
         disabled && styles.disabled,
         style as ViewStyle,
       ]}
@@ -57,17 +66,6 @@ const styles = StyleSheet.create({
   disabled: {
     opacity: 0.5,
   },
-
-  variant_default: {
-    backgroundColor: Colors.background.card,
-  },
-  variant_primary: {
-    backgroundColor: Colors.accent.primary,
-  },
-  variant_ghost: {
-    backgroundColor: 'transparent',
-  },
-
   size_sm: {
     width: 32,
     height: 32,

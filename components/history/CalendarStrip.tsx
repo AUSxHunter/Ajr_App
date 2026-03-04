@@ -1,7 +1,8 @@
 import React from 'react';
 import { View, Text, StyleSheet, ScrollView, TouchableOpacity } from 'react-native';
 import { format, startOfWeek, addDays, isSameDay, isToday } from 'date-fns';
-import { Colors, Typography, Spacing, BorderRadius } from '../../constants/theme';
+import { Typography, Spacing, BorderRadius } from '../../constants/theme';
+import { useColors } from '../../hooks/useColors';
 
 interface CalendarStripProps {
   selectedDate: Date;
@@ -14,8 +15,11 @@ export const CalendarStrip: React.FC<CalendarStripProps> = ({
   onDateSelect,
   sessionsMap,
 }) => {
+  const Colors = useColors();
   const weekStart = startOfWeek(selectedDate, { weekStartsOn: 1 });
   const days = Array.from({ length: 7 }, (_, i) => addDays(weekStart, i));
+
+  const styles = makeStyles(Colors);
 
   return (
     <View style={styles.container}>
@@ -59,55 +63,56 @@ export const CalendarStrip: React.FC<CalendarStripProps> = ({
   );
 };
 
-const styles = StyleSheet.create({
-  container: {
-    backgroundColor: Colors.background.card,
-    borderRadius: BorderRadius.lg,
-    paddingVertical: Spacing.sm,
-  },
-  scrollContent: {
-    paddingHorizontal: Spacing.sm,
-    gap: Spacing.xs,
-  },
-  dayContainer: {
-    width: 48,
-    height: 72,
-    alignItems: 'center',
-    justifyContent: 'center',
-    borderRadius: BorderRadius.lg,
-    gap: Spacing.xs,
-  },
-  dayContainerSelected: {
-    backgroundColor: Colors.accent.primary,
-  },
-  dayName: {
-    fontSize: Typography.fontSize.caption,
-    color: Colors.text.muted,
-    fontWeight: '500',
-  },
-  dayNameSelected: {
-    color: Colors.text.primary,
-  },
-  dayNumber: {
-    fontSize: Typography.fontSize.body,
-    fontWeight: '600',
-    color: Colors.text.primary,
-  },
-  dayNumberSelected: {
-    color: Colors.text.primary,
-  },
-  dayNumberToday: {
-    color: Colors.accent.primary,
-  },
-  indicator: {
-    width: 6,
-    height: 6,
-    borderRadius: 3,
-    backgroundColor: Colors.semantic.success,
-  },
-  indicatorSelected: {
-    backgroundColor: Colors.text.primary,
-  },
-});
+const makeStyles = (Colors: ReturnType<typeof import('../../hooks/useColors').useColors>) =>
+  StyleSheet.create({
+    container: {
+      backgroundColor: Colors.background.card,
+      borderRadius: BorderRadius.lg,
+      paddingVertical: Spacing.sm,
+    },
+    scrollContent: {
+      paddingHorizontal: Spacing.sm,
+      gap: Spacing.xs,
+    },
+    dayContainer: {
+      width: 48,
+      height: 72,
+      alignItems: 'center',
+      justifyContent: 'center',
+      borderRadius: BorderRadius.lg,
+      gap: Spacing.xs,
+    },
+    dayContainerSelected: {
+      backgroundColor: Colors.accent.primary,
+    },
+    dayName: {
+      fontSize: Typography.fontSize.caption,
+      color: Colors.text.muted,
+      fontWeight: '500',
+    },
+    dayNameSelected: {
+      color: Colors.text.primary,
+    },
+    dayNumber: {
+      fontSize: Typography.fontSize.body,
+      fontWeight: '600',
+      color: Colors.text.primary,
+    },
+    dayNumberSelected: {
+      color: Colors.text.primary,
+    },
+    dayNumberToday: {
+      color: Colors.accent.primary,
+    },
+    indicator: {
+      width: 6,
+      height: 6,
+      borderRadius: 3,
+      backgroundColor: Colors.semantic.success,
+    },
+    indicatorSelected: {
+      backgroundColor: Colors.text.primary,
+    },
+  });
 
 export default CalendarStrip;

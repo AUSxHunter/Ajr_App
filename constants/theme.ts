@@ -1,4 +1,23 @@
-export const Colors = {
+const ibadahColors = {
+  quran: '#22C55E',
+  qiyam: '#8B5CF6',
+  dhikr: '#F59E0B',
+  sadaqah: '#EC4899',
+  fasting: '#06B6D4',
+  dua: '#14B8A6',
+  adhkar: '#F97316',
+  custom: '#6366F1',
+};
+
+const semanticColors = {
+  success: '#22C55E',
+  warning: '#F59E0B',
+  danger: '#EF4444',
+  error: '#EF4444',
+  info: '#3B82F6',
+};
+
+export const DarkColors = {
   background: {
     primary: '#000000',
     secondary: '#0A0A0A',
@@ -16,29 +35,43 @@ export const Colors = {
     muted: '#52525B',
     inverse: '#000000',
   },
-  semantic: {
-    success: '#22C55E',
-    warning: '#F59E0B',
-    danger: '#EF4444',
-    error: '#EF4444',
-    info: '#3B82F6',
-  },
+  semantic: semanticColors,
   border: {
     default: '#27272A',
     light: '#3F3F46',
     accent: '#3B82F6',
   },
-  ibadah: {
-    quran: '#22C55E',
-    qiyam: '#8B5CF6',
-    dhikr: '#F59E0B',
-    sadaqah: '#EC4899',
-    fasting: '#06B6D4',
-    dua: '#14B8A6',
-    adhkar: '#F97316',
-    custom: '#6366F1',
-  },
+  ibadah: ibadahColors,
 };
+
+export const LightColors = {
+  background: {
+    primary: '#FFFFFF',
+    secondary: '#F9FAFB',
+    card: '#F3F4F6',
+    elevated: '#E5E7EB',
+  },
+  accent: {
+    primary: '#3B82F6',
+    secondary: '#1D4ED8',
+    muted: '#DBEAFE',
+  },
+  text: {
+    primary: '#111827',
+    secondary: '#6B7280',
+    muted: '#9CA3AF',
+    inverse: '#FFFFFF',
+  },
+  semantic: semanticColors,
+  border: {
+    default: '#E5E7EB',
+    light: '#D1D5DB',
+    accent: '#3B82F6',
+  },
+  ibadah: ibadahColors,
+};
+
+export type ColorScheme = typeof DarkColors;
 
 export const Typography = {
   fontFamily: {
@@ -111,7 +144,7 @@ export const Shadows = {
 };
 
 const theme = {
-  colors: Colors,
+  colors: DarkColors,
   typography: Typography,
   spacing: Spacing,
   borderRadius: BorderRadius,

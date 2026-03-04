@@ -14,10 +14,11 @@ import { Stack } from 'expo-router';
 import { useFocusEffect } from '@react-navigation/native';
 import { Feather } from '@expo/vector-icons';
 import DateTimePicker, { DateTimePickerEvent } from '@react-native-community/datetimepicker';
-import { Colors, Typography, Spacing, BorderRadius } from '../../constants/theme';
+import { Typography, Spacing, BorderRadius } from '../../constants/theme';
 import { Card } from '../../components/ui';
 import { useSettingsStore } from '../../store/settingsStore';
 import { useTranslation } from '../../hooks/useTranslation';
+import { useColors } from '../../hooks/useColors';
 import {
   getPermissionStatus,
   requestPermissions,
@@ -32,6 +33,7 @@ import {
 
 export default function NotificationsScreen() {
   const { t, isRTL } = useTranslation();
+  const Colors = useColors();
   const language = useSettingsStore((state) => state.language);
 
   const globalReminderEnabled = useSettingsStore((state) => state.globalReminderEnabled);
@@ -61,7 +63,6 @@ export default function NotificationsScreen() {
     return d;
   };
 
-  // Re-check permissions whenever screen is focused
   useFocusEffect(
     useCallback(() => {
       getPermissionStatus().then(setPermissionStatus);
@@ -117,6 +118,8 @@ export default function NotificationsScreen() {
     }
   };
 
+  const styles = makeStyles(Colors);
+
   return (
     <>
       <Stack.Screen options={{ title: t('notifications.title') }} />
@@ -126,7 +129,6 @@ export default function NotificationsScreen() {
           contentContainerStyle={styles.content}
           showsVerticalScrollIndicator={false}
         >
-          {/* Permission denied banner */}
           {permissionStatus === 'denied' && (
             <TouchableOpacity style={styles.permissionBanner} onPress={openNotificationSettings}>
               <Feather name="alert-triangle" size={18} color={Colors.semantic.warning} />
@@ -139,7 +141,6 @@ export default function NotificationsScreen() {
             </TouchableOpacity>
           )}
 
-          {/* Exact alarm permission banner (Android 12+) */}
           {!exactAlarmGranted && (
             <TouchableOpacity style={styles.exactAlarmBanner} onPress={openExactAlarmSettings}>
               <Feather name="clock" size={18} color={Colors.semantic.error} />
@@ -152,7 +153,6 @@ export default function NotificationsScreen() {
             </TouchableOpacity>
           )}
 
-          {/* Global Reminder section */}
           <Text style={styles.sectionTitle}>{t('notifications.globalReminder')}</Text>
           <Card padding="none">
             <View style={[styles.row, isRTL && styles.rowRTL]}>
@@ -218,7 +218,6 @@ export default function NotificationsScreen() {
             )}
           </Card>
 
-          {/* Streak Milestones section */}
           <Text style={styles.sectionTitle}>{t('notifications.streakMilestones')}</Text>
           <Card padding="none">
             <View style={[styles.row, isRTL && styles.rowRTL]}>
@@ -250,107 +249,108 @@ export default function NotificationsScreen() {
   );
 }
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: Colors.background.primary,
-  },
-  scrollView: {
-    flex: 1,
-  },
-  content: {
-    padding: Spacing.md,
-    gap: Spacing.lg,
-  },
-  sectionTitle: {
-    fontSize: Typography.fontSize.caption,
-    fontWeight: '600',
-    color: Colors.text.muted,
-    textTransform: 'uppercase',
-    letterSpacing: 1,
-  },
-  permissionBanner: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: Spacing.sm,
-    backgroundColor: `${Colors.semantic.warning}18`,
-    borderRadius: BorderRadius.lg,
-    padding: Spacing.md,
-  },
-  permissionBannerText: {
-    flex: 1,
-    fontSize: Typography.fontSize.bodySmall,
-    color: Colors.semantic.warning,
-  },
-  row: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    paddingVertical: Spacing.md,
-    paddingHorizontal: Spacing.md,
-  },
-  rowRTL: {
-    flexDirection: 'row-reverse',
-  },
-  rowLeft: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: Spacing.md,
-    flex: 1,
-  },
-  rowLeftRTL: {
-    flexDirection: 'row-reverse',
-  },
-  rowText: {
-    flex: 1,
-  },
-  rowLabel: {
-    fontSize: Typography.fontSize.body,
-    color: Colors.text.primary,
-  },
-  rowDesc: {
-    fontSize: Typography.fontSize.bodySmall,
-    color: Colors.text.muted,
-    marginTop: 2,
-  },
-  iconContainer: {
-    width: 32,
-    height: 32,
-    borderRadius: BorderRadius.md,
-    backgroundColor: Colors.background.elevated,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  separator: {
-    height: 1,
-    backgroundColor: Colors.border.default,
-    marginLeft: Spacing.md + 32 + Spacing.md,
-  },
-  compactPicker: {
-    height: 34,
-  },
-  exactAlarmBanner: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: Spacing.sm,
-    backgroundColor: `${Colors.semantic.error}18`,
-    borderRadius: BorderRadius.lg,
-    padding: Spacing.md,
-  },
-  exactAlarmBannerText: {
-    flex: 1,
-    fontSize: Typography.fontSize.bodySmall,
-    color: Colors.semantic.error,
-  },
-  timeChip: {
-    paddingHorizontal: Spacing.md,
-    paddingVertical: Spacing.sm,
-    borderRadius: BorderRadius.md,
-    backgroundColor: Colors.background.elevated,
-  },
-  timeChipText: {
-    fontSize: Typography.fontSize.body,
-    fontWeight: '600',
-    color: Colors.accent.primary,
-  },
-});
+const makeStyles = (Colors: ReturnType<typeof import('../../hooks/useColors').useColors>) =>
+  StyleSheet.create({
+    container: {
+      flex: 1,
+      backgroundColor: Colors.background.primary,
+    },
+    scrollView: {
+      flex: 1,
+    },
+    content: {
+      padding: Spacing.md,
+      gap: Spacing.lg,
+    },
+    sectionTitle: {
+      fontSize: Typography.fontSize.caption,
+      fontWeight: '600',
+      color: Colors.text.muted,
+      textTransform: 'uppercase',
+      letterSpacing: 1,
+    },
+    permissionBanner: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      gap: Spacing.sm,
+      backgroundColor: `${Colors.semantic.warning}18`,
+      borderRadius: BorderRadius.lg,
+      padding: Spacing.md,
+    },
+    permissionBannerText: {
+      flex: 1,
+      fontSize: Typography.fontSize.bodySmall,
+      color: Colors.semantic.warning,
+    },
+    row: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      justifyContent: 'space-between',
+      paddingVertical: Spacing.md,
+      paddingHorizontal: Spacing.md,
+    },
+    rowRTL: {
+      flexDirection: 'row-reverse',
+    },
+    rowLeft: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      gap: Spacing.md,
+      flex: 1,
+    },
+    rowLeftRTL: {
+      flexDirection: 'row-reverse',
+    },
+    rowText: {
+      flex: 1,
+    },
+    rowLabel: {
+      fontSize: Typography.fontSize.body,
+      color: Colors.text.primary,
+    },
+    rowDesc: {
+      fontSize: Typography.fontSize.bodySmall,
+      color: Colors.text.muted,
+      marginTop: 2,
+    },
+    iconContainer: {
+      width: 32,
+      height: 32,
+      borderRadius: BorderRadius.md,
+      backgroundColor: Colors.background.elevated,
+      alignItems: 'center',
+      justifyContent: 'center',
+    },
+    separator: {
+      height: 1,
+      backgroundColor: Colors.border.default,
+      marginLeft: Spacing.md + 32 + Spacing.md,
+    },
+    compactPicker: {
+      height: 34,
+    },
+    exactAlarmBanner: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      gap: Spacing.sm,
+      backgroundColor: `${Colors.semantic.error}18`,
+      borderRadius: BorderRadius.lg,
+      padding: Spacing.md,
+    },
+    exactAlarmBannerText: {
+      flex: 1,
+      fontSize: Typography.fontSize.bodySmall,
+      color: Colors.semantic.error,
+    },
+    timeChip: {
+      paddingHorizontal: Spacing.md,
+      paddingVertical: Spacing.sm,
+      borderRadius: BorderRadius.md,
+      backgroundColor: Colors.background.elevated,
+    },
+    timeChipText: {
+      fontSize: Typography.fontSize.body,
+      fontWeight: '600',
+      color: Colors.accent.primary,
+    },
+  });

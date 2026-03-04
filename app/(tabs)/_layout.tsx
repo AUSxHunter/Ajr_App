@@ -2,11 +2,13 @@ import React from 'react';
 import { Tabs } from 'expo-router';
 import { Feather } from '@expo/vector-icons';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { Colors, Typography } from '../../constants/theme';
+import { Typography } from '../../constants/theme';
+import { useColors } from '../../hooks/useColors';
 import { useTranslation } from '../../hooks/useTranslation';
 
 export default function TabLayout() {
   const insets = useSafeAreaInsets();
+  const Colors = useColors();
   const { t } = useTranslation();
 
   return (

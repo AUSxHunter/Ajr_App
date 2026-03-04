@@ -11,7 +11,8 @@ import Animated, {
   cancelAnimation,
 } from 'react-native-reanimated';
 import { Modal, Button } from '../ui';
-import { Colors, Typography, Spacing, BorderRadius } from '../../constants/theme';
+import { Typography, Spacing, BorderRadius } from '../../constants/theme';
+import { useColors } from '../../hooks/useColors';
 import { useTimerStore } from '../../store/timerStore';
 import { TimerMode } from '../../types';
 import { PRESET_COUNTDOWN_DURATIONS } from '../../constants/defaults';
@@ -23,6 +24,7 @@ interface TimerModalProps {
 }
 
 export const TimerModal: React.FC<TimerModalProps> = ({ visible, onClose, onComplete }) => {
+  const Colors = useColors();
   const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
   const [showPresets, setShowPresets] = useState(true);
 
@@ -148,6 +150,8 @@ export const TimerModal: React.FC<TimerModalProps> = ({ visible, onClose, onComp
   const progress =
     mode === 'countdown' && targetSeconds ? Math.min(1, elapsedSeconds / targetSeconds) : 0;
 
+  const styles = makeStyles(Colors);
+
   return (
     <Modal visible={visible} onClose={handleClose} title="Timer" position="bottom" size="lg">
       <View style={styles.container}>
@@ -239,143 +243,144 @@ export const TimerModal: React.FC<TimerModalProps> = ({ visible, onClose, onComp
   );
 };
 
-const styles = StyleSheet.create({
-  container: {
-    minHeight: 400,
-  },
-  presetContainer: {
-    alignItems: 'center',
-    gap: Spacing.lg,
-  },
-  modeButton: {
-    width: '100%',
-    alignItems: 'center',
-    paddingVertical: Spacing.xl,
-    backgroundColor: Colors.background.elevated,
-    borderRadius: BorderRadius.xl,
-    gap: Spacing.sm,
-  },
-  modeIcon: {
-    width: 64,
-    height: 64,
-    borderRadius: 32,
-    backgroundColor: `${Colors.accent.primary}20`,
-    alignItems: 'center',
-    justifyContent: 'center',
-    marginBottom: Spacing.sm,
-  },
-  modeTitle: {
-    fontSize: Typography.fontSize.h3,
-    fontWeight: '600',
-    color: Colors.text.primary,
-  },
-  modeDescription: {
-    fontSize: Typography.fontSize.bodySmall,
-    color: Colors.text.muted,
-  },
-  divider: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    width: '100%',
-    gap: Spacing.md,
-  },
-  dividerLine: {
-    flex: 1,
-    height: 1,
-    backgroundColor: Colors.border.default,
-  },
-  dividerText: {
-    fontSize: Typography.fontSize.bodySmall,
-    color: Colors.text.muted,
-  },
-  presetsTitle: {
-    fontSize: Typography.fontSize.body,
-    fontWeight: '600',
-    color: Colors.text.secondary,
-    alignSelf: 'flex-start',
-  },
-  presetGrid: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    gap: Spacing.sm,
-    width: '100%',
-  },
-  presetButton: {
-    width: '31%',
-    paddingVertical: Spacing.md,
-    backgroundColor: Colors.background.elevated,
-    borderRadius: BorderRadius.lg,
-    alignItems: 'center',
-  },
-  presetText: {
-    fontSize: Typography.fontSize.body,
-    fontWeight: '600',
-    color: Colors.text.primary,
-  },
-  timerContainer: {
-    alignItems: 'center',
-    gap: Spacing.xl,
-  },
-  timerDisplay: {
-    alignItems: 'center',
-    justifyContent: 'center',
-    width: 240,
-    height: 240,
-    borderRadius: 120,
-    backgroundColor: Colors.background.elevated,
-    position: 'relative',
-    overflow: 'hidden',
-  },
-  progressRing: {
-    position: 'absolute',
-    bottom: 0,
-    left: 0,
-    right: 0,
-    height: 4,
-    backgroundColor: Colors.border.default,
-  },
-  progressFill: {
-    height: '100%',
-    backgroundColor: Colors.accent.primary,
-  },
-  timerText: {
-    fontSize: Typography.fontSize.displayLarge,
-    fontWeight: '700',
-    color: Colors.text.primary,
-    fontVariant: ['tabular-nums'],
-  },
-  timerMode: {
-    fontSize: Typography.fontSize.caption,
-    color: Colors.text.muted,
-    marginTop: Spacing.xs,
-  },
-  controls: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: Spacing.xl,
-  },
-  controlButton: {
-    width: 56,
-    height: 56,
-    borderRadius: 28,
-    backgroundColor: Colors.background.elevated,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  playButton: {
-    width: 80,
-    height: 80,
-    borderRadius: 40,
-    backgroundColor: Colors.accent.primary,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  playButtonActive: {
-    backgroundColor: Colors.semantic.warning,
-  },
-  doneButton: {
-    marginTop: Spacing.md,
-  },
-});
+const makeStyles = (Colors: ReturnType<typeof import('../../hooks/useColors').useColors>) =>
+  StyleSheet.create({
+    container: {
+      minHeight: 400,
+    },
+    presetContainer: {
+      alignItems: 'center',
+      gap: Spacing.lg,
+    },
+    modeButton: {
+      width: '100%',
+      alignItems: 'center',
+      paddingVertical: Spacing.xl,
+      backgroundColor: Colors.background.elevated,
+      borderRadius: BorderRadius.xl,
+      gap: Spacing.sm,
+    },
+    modeIcon: {
+      width: 64,
+      height: 64,
+      borderRadius: 32,
+      backgroundColor: `${Colors.accent.primary}20`,
+      alignItems: 'center',
+      justifyContent: 'center',
+      marginBottom: Spacing.sm,
+    },
+    modeTitle: {
+      fontSize: Typography.fontSize.h3,
+      fontWeight: '600',
+      color: Colors.text.primary,
+    },
+    modeDescription: {
+      fontSize: Typography.fontSize.bodySmall,
+      color: Colors.text.muted,
+    },
+    divider: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      width: '100%',
+      gap: Spacing.md,
+    },
+    dividerLine: {
+      flex: 1,
+      height: 1,
+      backgroundColor: Colors.border.default,
+    },
+    dividerText: {
+      fontSize: Typography.fontSize.bodySmall,
+      color: Colors.text.muted,
+    },
+    presetsTitle: {
+      fontSize: Typography.fontSize.body,
+      fontWeight: '600',
+      color: Colors.text.secondary,
+      alignSelf: 'flex-start',
+    },
+    presetGrid: {
+      flexDirection: 'row',
+      flexWrap: 'wrap',
+      gap: Spacing.sm,
+      width: '100%',
+    },
+    presetButton: {
+      width: '31%',
+      paddingVertical: Spacing.md,
+      backgroundColor: Colors.background.elevated,
+      borderRadius: BorderRadius.lg,
+      alignItems: 'center',
+    },
+    presetText: {
+      fontSize: Typography.fontSize.body,
+      fontWeight: '600',
+      color: Colors.text.primary,
+    },
+    timerContainer: {
+      alignItems: 'center',
+      gap: Spacing.xl,
+    },
+    timerDisplay: {
+      alignItems: 'center',
+      justifyContent: 'center',
+      width: 240,
+      height: 240,
+      borderRadius: 120,
+      backgroundColor: Colors.background.elevated,
+      position: 'relative',
+      overflow: 'hidden',
+    },
+    progressRing: {
+      position: 'absolute',
+      bottom: 0,
+      left: 0,
+      right: 0,
+      height: 4,
+      backgroundColor: Colors.border.default,
+    },
+    progressFill: {
+      height: '100%',
+      backgroundColor: Colors.accent.primary,
+    },
+    timerText: {
+      fontSize: Typography.fontSize.displayLarge,
+      fontWeight: '700',
+      color: Colors.text.primary,
+      fontVariant: ['tabular-nums'],
+    },
+    timerMode: {
+      fontSize: Typography.fontSize.caption,
+      color: Colors.text.muted,
+      marginTop: Spacing.xs,
+    },
+    controls: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      gap: Spacing.xl,
+    },
+    controlButton: {
+      width: 56,
+      height: 56,
+      borderRadius: 28,
+      backgroundColor: Colors.background.elevated,
+      alignItems: 'center',
+      justifyContent: 'center',
+    },
+    playButton: {
+      width: 80,
+      height: 80,
+      borderRadius: 40,
+      backgroundColor: Colors.accent.primary,
+      alignItems: 'center',
+      justifyContent: 'center',
+    },
+    playButtonActive: {
+      backgroundColor: Colors.semantic.warning,
+    },
+    doneButton: {
+      marginTop: Spacing.md,
+    },
+  });
 
 export default TimerModal;

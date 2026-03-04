@@ -69,6 +69,7 @@ export interface UserSettings {
   lastNotifiedStreakMilestone: number; // highest milestone (3/7/14/30/60/100) already notified
   onboardingCompleted: boolean;
   language: 'en' | 'ar';
+  theme: 'dark' | 'light';
 }
 
 export interface SessionWithSets extends Session {

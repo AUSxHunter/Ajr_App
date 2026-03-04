@@ -1,6 +1,7 @@
 import React from 'react';
 import { View, StyleSheet, ViewStyle, StyleProp, TouchableOpacity, TouchableOpacityProps } from 'react-native';
-import { Colors, Spacing, BorderRadius, Shadows } from '../../constants/theme';
+import { Spacing, BorderRadius, Shadows } from '../../constants/theme';
+import { useColors } from '../../hooks/useColors';
 
 interface CardProps {
   children: React.ReactNode;
@@ -20,10 +21,19 @@ export const Card: React.FC<CardProps & Partial<TouchableOpacityProps>> = ({
   pressable = false,
   ...props
 }) => {
+  const Colors = useColors();
+
+  const variantStyle: ViewStyle =
+    variant === 'elevated'
+      ? { backgroundColor: Colors.background.elevated, ...Shadows.md }
+      : variant === 'outlined'
+      ? { backgroundColor: Colors.background.card, borderWidth: 1, borderColor: Colors.border.default }
+      : { backgroundColor: Colors.background.card };
+
   const cardStyles: StyleProp<ViewStyle> = [
     styles.base,
-    styles[`variant_${variant}`],
     styles[`padding_${padding}`],
+    variantStyle,
     style,
   ];
 
@@ -42,20 +52,6 @@ const styles = StyleSheet.create({
   base: {
     borderRadius: BorderRadius.lg,
   },
-
-  variant_default: {
-    backgroundColor: Colors.background.card,
-  },
-  variant_elevated: {
-    backgroundColor: Colors.background.elevated,
-    ...Shadows.md,
-  },
-  variant_outlined: {
-    backgroundColor: Colors.background.card,
-    borderWidth: 1,
-    borderColor: Colors.border.default,
-  },
-
   padding_none: {
     padding: 0,
   },

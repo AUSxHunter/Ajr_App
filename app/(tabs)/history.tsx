@@ -4,15 +4,17 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { router } from 'expo-router';
 import { Feather } from '@expo/vector-icons';
 import { format, subWeeks, addWeeks, startOfWeek, endOfWeek } from 'date-fns';
-import { Colors, Typography, Spacing, BorderRadius } from '../../constants/theme';
+import { Typography, Spacing, BorderRadius } from '../../constants/theme';
 import { EmptyState } from '../../components/ui';
 import { CalendarStrip, SessionListItem } from '../../components/history';
 import { useSessionStore } from '../../store/sessionStore';
 import { useIbadahStore } from '../../store/ibadahStore';
 import { useTranslation } from '../../hooks/useTranslation';
+import { useColors } from '../../hooks/useColors';
 
 export default function HistoryScreen() {
   const { t, isRTL } = useTranslation();
+  const Colors = useColors();
   const [selectedDate, setSelectedDate] = useState(new Date());
 
   const sessions = useSessionStore((state) => state.sessions);
@@ -72,6 +74,8 @@ export default function HistoryScreen() {
     );
   };
 
+  const styles = makeStyles(Colors);
+
   return (
     <SafeAreaView style={styles.container} edges={['bottom']}>
       <ScrollView
@@ -127,45 +131,46 @@ export default function HistoryScreen() {
   );
 }
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: Colors.background.primary,
-  },
-  scrollView: {
-    flex: 1,
-  },
-  content: {
-    padding: Spacing.md,
-    gap: Spacing.lg,
-  },
-  weekNavigation: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-  },
-  navButton: {
-    width: 40,
-    height: 40,
-    alignItems: 'center',
-    justifyContent: 'center',
-    borderRadius: BorderRadius.md,
-    backgroundColor: Colors.background.card,
-  },
-  weekLabel: {
-    fontSize: Typography.fontSize.body,
-    fontWeight: '600',
-    color: Colors.text.primary,
-  },
-  sessionSection: {
-    gap: Spacing.md,
-  },
-  sectionTitle: {
-    fontSize: Typography.fontSize.h3,
-    fontWeight: '600',
-    color: Colors.text.primary,
-  },
-  sessionList: {
-    gap: Spacing.md,
-  },
-});
+const makeStyles = (Colors: ReturnType<typeof import('../../hooks/useColors').useColors>) =>
+  StyleSheet.create({
+    container: {
+      flex: 1,
+      backgroundColor: Colors.background.primary,
+    },
+    scrollView: {
+      flex: 1,
+    },
+    content: {
+      padding: Spacing.md,
+      gap: Spacing.lg,
+    },
+    weekNavigation: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      justifyContent: 'space-between',
+    },
+    navButton: {
+      width: 40,
+      height: 40,
+      alignItems: 'center',
+      justifyContent: 'center',
+      borderRadius: BorderRadius.md,
+      backgroundColor: Colors.background.card,
+    },
+    weekLabel: {
+      fontSize: Typography.fontSize.body,
+      fontWeight: '600',
+      color: Colors.text.primary,
+    },
+    sessionSection: {
+      gap: Spacing.md,
+    },
+    sectionTitle: {
+      fontSize: Typography.fontSize.h3,
+      fontWeight: '600',
+      color: Colors.text.primary,
+    },
+    sessionList: {
+      gap: Spacing.md,
+    },
+  });

@@ -1,8 +1,9 @@
 import { Stack } from 'expo-router';
-import { Colors } from '../../constants/theme';
+import { useColors } from '../../hooks/useColors';
 import { HeaderBackButton } from '../../components/ui';
 
 export default function AdhkarLayout() {
+  const Colors = useColors();
   return (
     <Stack
       screenOptions={{

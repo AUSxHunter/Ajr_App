@@ -8,7 +8,8 @@ import {
   ViewStyle,
   TouchableOpacity,
 } from 'react-native';
-import { Colors, Typography, Spacing, BorderRadius } from '../../constants/theme';
+import { Typography, Spacing, BorderRadius } from '../../constants/theme';
+import { useColors } from '../../hooks/useColors';
 
 interface InputProps extends TextInputProps {
   label?: string;
@@ -34,6 +35,7 @@ export const Input: React.FC<InputProps> = ({
   ...props
 }) => {
   const [isFocused, setIsFocused] = useState(false);
+  const Colors = useColors();
 
   const handleFocus = (e: Parameters<NonNullable<typeof onFocus>>[0]) => {
     setIsFocused(true);
@@ -45,17 +47,20 @@ export const Input: React.FC<InputProps> = ({
     onBlur?.(e);
   };
 
-  const inputContainerStyles: ViewStyle[] = [
-    styles.inputContainer,
-    isFocused && styles.inputContainerFocused,
-    error ? styles.inputContainerError : null,
-  ].filter(Boolean) as ViewStyle[];
+  const inputContainerBorderColor = error
+    ? Colors.semantic.danger
+    : isFocused
+    ? Colors.accent.primary
+    : Colors.border.default;
 
   return (
     <View style={[styles.container, containerStyle]}>
-      {label && <Text style={styles.label}>{label}</Text>}
+      {label && <Text style={[styles.label, { color: Colors.text.secondary }]}>{label}</Text>}
 
-      <View style={inputContainerStyles}>
+      <View style={[
+        styles.inputContainer,
+        { backgroundColor: Colors.background.card, borderColor: inputContainerBorderColor },
+      ]}>
         {leftIcon && <View style={styles.iconLeft}>{leftIcon}</View>}
 
         <TextInput
@@ -63,6 +68,7 @@ export const Input: React.FC<InputProps> = ({
             styles.input,
             !!leftIcon && styles.inputWithLeftIcon,
             !!rightIcon && styles.inputWithRightIcon,
+            { color: Colors.text.primary },
             style,
           ]}
           placeholderTextColor={Colors.text.muted}
@@ -82,8 +88,8 @@ export const Input: React.FC<InputProps> = ({
         )}
       </View>
 
-      {error && <Text style={styles.error}>{error}</Text>}
-      {hint && !error && <Text style={styles.hint}>{hint}</Text>}
+      {error && <Text style={[styles.errorHint, { color: Colors.semantic.danger }]}>{error}</Text>}
+      {hint && !error && <Text style={[styles.errorHint, { color: Colors.text.muted }]}>{hint}</Text>}
     </View>
   );
 };
@@ -131,29 +137,19 @@ const styles = StyleSheet.create({
   label: {
     fontSize: Typography.fontSize.bodySmall,
     fontWeight: '500',
-    color: Colors.text.secondary,
     marginBottom: Spacing.xs,
   },
   inputContainer: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: Colors.background.card,
     borderRadius: BorderRadius.lg,
     borderWidth: 1,
-    borderColor: Colors.border.default,
-  },
-  inputContainerFocused: {
-    borderColor: Colors.accent.primary,
-  },
-  inputContainerError: {
-    borderColor: Colors.semantic.danger,
   },
   input: {
     flex: 1,
     paddingVertical: Spacing.sm + 4,
     paddingHorizontal: Spacing.md,
     fontSize: Typography.fontSize.body,
-    color: Colors.text.primary,
   },
   inputWithLeftIcon: {
     paddingLeft: Spacing.xs,
@@ -167,14 +163,8 @@ const styles = StyleSheet.create({
   iconRight: {
     paddingRight: Spacing.md,
   },
-  error: {
+  errorHint: {
     fontSize: Typography.fontSize.caption,
-    color: Colors.semantic.danger,
-    marginTop: Spacing.xs,
-  },
-  hint: {
-    fontSize: Typography.fontSize.caption,
-    color: Colors.text.muted,
     marginTop: Spacing.xs,
   },
 });

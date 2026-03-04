@@ -7,7 +7,8 @@ import {
   TextInput,
 } from 'react-native';
 import { Feather } from '@expo/vector-icons';
-import { Colors, Typography, Spacing, BorderRadius } from '../../constants/theme';
+import { Typography, Spacing, BorderRadius } from '../../constants/theme';
+import { useColors } from '../../hooks/useColors';
 
 interface QiyamAyatTrackerProps {
   ayatCount: number;
@@ -26,6 +27,7 @@ export const QiyamAyatTracker: React.FC<QiyamAyatTrackerProps> = ({
   ayatCount,
   onAyatCountChange,
 }) => {
+  const Colors = useColors();
   const [isExpanded, setIsExpanded] = useState(false);
   const [customValue, setCustomValue] = useState('');
 
@@ -58,6 +60,8 @@ export const QiyamAyatTracker: React.FC<QiyamAyatTrackerProps> = ({
   const progressToNext = nextMilestone
     ? (ayatCount / nextMilestone.value) * 100
     : 100;
+
+  const styles = makeStyles(Colors);
 
   return (
     <View style={styles.container}>
@@ -182,151 +186,152 @@ export const QiyamAyatTracker: React.FC<QiyamAyatTrackerProps> = ({
   );
 };
 
-const styles = StyleSheet.create({
-  container: {
-    backgroundColor: Colors.background.elevated,
-    borderRadius: BorderRadius.md,
-    padding: Spacing.sm,
-    marginTop: Spacing.sm,
-  },
-  header: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-  },
-  headerLeft: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: Spacing.sm,
-  },
-  ayatIcon: {
-    width: 28,
-    height: 28,
-    borderRadius: BorderRadius.sm,
-    backgroundColor: `${Colors.ibadah.quran}20`,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  title: {
-    fontSize: Typography.fontSize.bodySmall,
-    fontWeight: '600',
-    color: Colors.text.secondary,
-  },
-  headerRight: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: Spacing.sm,
-  },
-  countText: {
-    fontSize: Typography.fontSize.body,
-    fontWeight: '700',
-    color: Colors.ibadah.quran,
-  },
-  milestonesRow: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    gap: Spacing.xs,
-    marginTop: Spacing.sm,
-  },
-  milestoneChip: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 4,
-    paddingHorizontal: Spacing.sm,
-    paddingVertical: 4,
-    borderRadius: BorderRadius.full,
-    backgroundColor: Colors.background.primary,
-  },
-  milestoneText: {
-    fontSize: Typography.fontSize.caption,
-    fontWeight: '500',
-    color: Colors.text.muted,
-  },
-  progressContainer: {
-    marginTop: Spacing.sm,
-  },
-  progressBar: {
-    height: 4,
-    backgroundColor: Colors.background.primary,
-    borderRadius: 2,
-    overflow: 'hidden',
-  },
-  progressFill: {
-    height: '100%',
-    borderRadius: 2,
-  },
-  progressText: {
-    fontSize: Typography.fontSize.caption,
-    color: Colors.text.muted,
-    marginTop: 4,
-    textAlign: 'center',
-  },
-  expandedContent: {
-    marginTop: Spacing.md,
-    paddingTop: Spacing.sm,
-    borderTopWidth: 1,
-    borderTopColor: Colors.border.default,
-  },
-  quickAddLabel: {
-    fontSize: Typography.fontSize.caption,
-    fontWeight: '500',
-    color: Colors.text.muted,
-    marginBottom: Spacing.xs,
-  },
-  quickAddRow: {
-    flexDirection: 'row',
-    gap: Spacing.xs,
-  },
-  quickAddButton: {
-    flex: 1,
-    paddingVertical: Spacing.sm,
-    backgroundColor: Colors.background.primary,
-    borderRadius: BorderRadius.sm,
-    alignItems: 'center',
-  },
-  quickAddButtonText: {
-    fontSize: Typography.fontSize.bodySmall,
-    fontWeight: '600',
-    color: Colors.ibadah.quran,
-  },
-  customInputRow: {
-    flexDirection: 'row',
-    gap: Spacing.xs,
-    marginTop: Spacing.sm,
-  },
-  customInput: {
-    flex: 1,
-    height: 40,
-    backgroundColor: Colors.background.primary,
-    borderRadius: BorderRadius.sm,
-    paddingHorizontal: Spacing.md,
-    fontSize: Typography.fontSize.body,
-    color: Colors.text.primary,
-  },
-  addButton: {
-    width: 40,
-    height: 40,
-    backgroundColor: Colors.ibadah.quran,
-    borderRadius: BorderRadius.sm,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  addButtonDisabled: {
-    backgroundColor: Colors.background.primary,
-  },
-  resetButton: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
-    gap: Spacing.xs,
-    marginTop: Spacing.sm,
-    paddingVertical: Spacing.sm,
-  },
-  resetText: {
-    fontSize: Typography.fontSize.caption,
-    fontWeight: '500',
-    color: Colors.semantic.error,
-  },
-});
+const makeStyles = (Colors: ReturnType<typeof import('../../hooks/useColors').useColors>) =>
+  StyleSheet.create({
+    container: {
+      backgroundColor: Colors.background.elevated,
+      borderRadius: BorderRadius.md,
+      padding: Spacing.sm,
+      marginTop: Spacing.sm,
+    },
+    header: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      justifyContent: 'space-between',
+    },
+    headerLeft: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      gap: Spacing.sm,
+    },
+    ayatIcon: {
+      width: 28,
+      height: 28,
+      borderRadius: BorderRadius.sm,
+      backgroundColor: `${Colors.ibadah.quran}20`,
+      alignItems: 'center',
+      justifyContent: 'center',
+    },
+    title: {
+      fontSize: Typography.fontSize.bodySmall,
+      fontWeight: '600',
+      color: Colors.text.secondary,
+    },
+    headerRight: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      gap: Spacing.sm,
+    },
+    countText: {
+      fontSize: Typography.fontSize.body,
+      fontWeight: '700',
+      color: Colors.ibadah.quran,
+    },
+    milestonesRow: {
+      flexDirection: 'row',
+      flexWrap: 'wrap',
+      gap: Spacing.xs,
+      marginTop: Spacing.sm,
+    },
+    milestoneChip: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      gap: 4,
+      paddingHorizontal: Spacing.sm,
+      paddingVertical: 4,
+      borderRadius: BorderRadius.full,
+      backgroundColor: Colors.background.primary,
+    },
+    milestoneText: {
+      fontSize: Typography.fontSize.caption,
+      fontWeight: '500',
+      color: Colors.text.muted,
+    },
+    progressContainer: {
+      marginTop: Spacing.sm,
+    },
+    progressBar: {
+      height: 4,
+      backgroundColor: Colors.background.primary,
+      borderRadius: 2,
+      overflow: 'hidden',
+    },
+    progressFill: {
+      height: '100%',
+      borderRadius: 2,
+    },
+    progressText: {
+      fontSize: Typography.fontSize.caption,
+      color: Colors.text.muted,
+      marginTop: 4,
+      textAlign: 'center',
+    },
+    expandedContent: {
+      marginTop: Spacing.md,
+      paddingTop: Spacing.sm,
+      borderTopWidth: 1,
+      borderTopColor: Colors.border.default,
+    },
+    quickAddLabel: {
+      fontSize: Typography.fontSize.caption,
+      fontWeight: '500',
+      color: Colors.text.muted,
+      marginBottom: Spacing.xs,
+    },
+    quickAddRow: {
+      flexDirection: 'row',
+      gap: Spacing.xs,
+    },
+    quickAddButton: {
+      flex: 1,
+      paddingVertical: Spacing.sm,
+      backgroundColor: Colors.background.primary,
+      borderRadius: BorderRadius.sm,
+      alignItems: 'center',
+    },
+    quickAddButtonText: {
+      fontSize: Typography.fontSize.bodySmall,
+      fontWeight: '600',
+      color: Colors.ibadah.quran,
+    },
+    customInputRow: {
+      flexDirection: 'row',
+      gap: Spacing.xs,
+      marginTop: Spacing.sm,
+    },
+    customInput: {
+      flex: 1,
+      height: 40,
+      backgroundColor: Colors.background.primary,
+      borderRadius: BorderRadius.sm,
+      paddingHorizontal: Spacing.md,
+      fontSize: Typography.fontSize.body,
+      color: Colors.text.primary,
+    },
+    addButton: {
+      width: 40,
+      height: 40,
+      backgroundColor: Colors.ibadah.quran,
+      borderRadius: BorderRadius.sm,
+      alignItems: 'center',
+      justifyContent: 'center',
+    },
+    addButtonDisabled: {
+      backgroundColor: Colors.background.primary,
+    },
+    resetButton: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      justifyContent: 'center',
+      gap: Spacing.xs,
+      marginTop: Spacing.sm,
+      paddingVertical: Spacing.sm,
+    },
+    resetText: {
+      fontSize: Typography.fontSize.caption,
+      fontWeight: '500',
+      color: Colors.semantic.error,
+    },
+  });
 
 export default QiyamAyatTracker;

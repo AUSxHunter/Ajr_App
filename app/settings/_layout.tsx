@@ -1,8 +1,10 @@
 import { Stack } from 'expo-router';
-import { Colors, Typography } from '../../constants/theme';
+import { Typography } from '../../constants/theme';
 import { HeaderBackButton } from '../../components/ui';
+import { useColors } from '../../hooks/useColors';
 
 export default function SettingsLayout() {
+  const Colors = useColors();
   return (
     <Stack
       screenOptions={{

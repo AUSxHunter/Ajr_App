@@ -9,7 +9,8 @@ import {
   StyleProp,
   TouchableOpacityProps,
 } from 'react-native';
-import { Colors, Typography, Spacing, BorderRadius } from '../../constants/theme';
+import { Typography, Spacing, BorderRadius } from '../../constants/theme';
+import { useColors } from '../../hooks/useColors';
 
 type ButtonVariant = 'primary' | 'secondary' | 'ghost' | 'danger';
 type ButtonSize = 'sm' | 'md' | 'lg';
@@ -36,12 +37,25 @@ export const Button: React.FC<ButtonProps> = ({
   style,
   ...props
 }) => {
+  const Colors = useColors();
   const isDisabled = disabled || loading;
+
+  const variantStyle: ViewStyle =
+    variant === 'secondary'
+      ? { backgroundColor: Colors.background.card, borderWidth: 1, borderColor: Colors.border.default }
+      : variant === 'danger'
+      ? { backgroundColor: Colors.semantic.danger }
+      : variant === 'ghost'
+      ? { backgroundColor: 'transparent' }
+      : { backgroundColor: Colors.accent.primary };
+
+  const textColor =
+    variant === 'ghost' ? Colors.accent.primary : Colors.text.primary;
 
   const buttonStyles: StyleProp<ViewStyle> = [
     styles.base,
-    styles[`variant_${variant}`],
     styles[`size_${size}`],
+    variantStyle,
     fullWidth && styles.fullWidth,
     isDisabled && styles.disabled,
     style as ViewStyle,
@@ -49,8 +63,8 @@ export const Button: React.FC<ButtonProps> = ({
 
   const textStyles: StyleProp<TextStyle> = [
     styles.text,
-    styles[`text_${variant}`],
     styles[`text_${size}`],
+    { color: textColor },
     isDisabled && styles.textDisabled,
   ];
 
@@ -86,22 +100,6 @@ const styles = StyleSheet.create({
   disabled: {
     opacity: 0.5,
   },
-
-  variant_primary: {
-    backgroundColor: Colors.accent.primary,
-  },
-  variant_secondary: {
-    backgroundColor: Colors.background.card,
-    borderWidth: 1,
-    borderColor: Colors.border.default,
-  },
-  variant_ghost: {
-    backgroundColor: 'transparent',
-  },
-  variant_danger: {
-    backgroundColor: Colors.semantic.danger,
-  },
-
   size_sm: {
     paddingVertical: Spacing.sm,
     paddingHorizontal: Spacing.md,
@@ -117,26 +115,12 @@ const styles = StyleSheet.create({
     paddingHorizontal: Spacing.xl,
     minHeight: 56,
   },
-
   text: {
     fontWeight: '600',
-  },
-  text_primary: {
-    color: Colors.text.primary,
-  },
-  text_secondary: {
-    color: Colors.text.primary,
-  },
-  text_ghost: {
-    color: Colors.accent.primary,
-  },
-  text_danger: {
-    color: Colors.text.primary,
   },
   textDisabled: {
     opacity: 0.7,
   },
-
   text_sm: {
     fontSize: Typography.fontSize.bodySmall,
   },

@@ -3,7 +3,8 @@ import { View, Text, StyleSheet } from 'react-native';
 import { Feather } from '@expo/vector-icons';
 import { format, parseISO } from 'date-fns';
 import { Card } from '../ui';
-import { Colors, Typography, Spacing, BorderRadius } from '../../constants/theme';
+import { Typography, Spacing, BorderRadius } from '../../constants/theme';
+import { useColors } from '../../hooks/useColors';
 import { PersonalRecord, IbadahType } from '../../types';
 import { useTranslation } from '../../hooks/useTranslation';
 
@@ -13,6 +14,7 @@ interface PRCardProps {
 }
 
 export const PRCard: React.FC<PRCardProps> = ({ record, ibadahType }) => {
+  const Colors = useColors();
   const { t, tUnit, isRTL } = useTranslation();
   const formattedValue =
     ibadahType.unit === 'currency'
@@ -20,6 +22,8 @@ export const PRCard: React.FC<PRCardProps> = ({ record, ibadahType }) => {
       : `${record.value} ${tUnit(ibadahType.unit, record.value)}`;
 
   const recordTypeLabel = record.recordType === 'daily_volume' ? t('analytics.bestDay') : t('analytics.bestSet');
+
+  const styles = makeStyles(Colors);
 
   return (
     <Card style={styles.container}>
@@ -47,48 +51,49 @@ export const PRCard: React.FC<PRCardProps> = ({ record, ibadahType }) => {
   );
 };
 
-const styles = StyleSheet.create({
-  container: {
-    gap: Spacing.md,
-  },
-  header: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: Spacing.sm,
-  },
-  iconContainer: {
-    width: 36,
-    height: 36,
-    borderRadius: 18,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  headerText: {
-    flex: 1,
-  },
-  ibadahName: {
-    fontSize: Typography.fontSize.body,
-    fontWeight: '600',
-    color: Colors.text.primary,
-  },
-  recordType: {
-    fontSize: Typography.fontSize.caption,
-    color: Colors.text.muted,
-  },
-  valueRow: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'baseline',
-  },
-  value: {
-    fontSize: Typography.fontSize.h2,
-    fontWeight: '700',
-    color: Colors.accent.primary,
-  },
-  date: {
-    fontSize: Typography.fontSize.caption,
-    color: Colors.text.muted,
-  },
-});
+const makeStyles = (Colors: ReturnType<typeof import('../../hooks/useColors').useColors>) =>
+  StyleSheet.create({
+    container: {
+      gap: Spacing.md,
+    },
+    header: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      gap: Spacing.sm,
+    },
+    iconContainer: {
+      width: 36,
+      height: 36,
+      borderRadius: 18,
+      alignItems: 'center',
+      justifyContent: 'center',
+    },
+    headerText: {
+      flex: 1,
+    },
+    ibadahName: {
+      fontSize: Typography.fontSize.body,
+      fontWeight: '600',
+      color: Colors.text.primary,
+    },
+    recordType: {
+      fontSize: Typography.fontSize.caption,
+      color: Colors.text.muted,
+    },
+    valueRow: {
+      flexDirection: 'row',
+      justifyContent: 'space-between',
+      alignItems: 'baseline',
+    },
+    value: {
+      fontSize: Typography.fontSize.h2,
+      fontWeight: '700',
+      color: Colors.accent.primary,
+    },
+    date: {
+      fontSize: Typography.fontSize.caption,
+      color: Colors.text.muted,
+    },
+  });
 
 export default PRCard;

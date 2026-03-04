@@ -3,10 +3,11 @@ import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Alert } from 'rea
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { router } from 'expo-router';
 import { Feather } from '@expo/vector-icons';
-import { Colors, Typography, Spacing, BorderRadius } from '../../constants/theme';
+import { Typography, Spacing, BorderRadius } from '../../constants/theme';
 import { Card } from '../../components/ui';
 import { useSettingsStore } from '../../store/settingsStore';
 import { useTranslation } from '../../hooks/useTranslation';
+import { useColors } from '../../hooks/useColors';
 
 interface SettingRowProps {
   icon: keyof typeof Feather.glyphMap;
@@ -18,6 +19,7 @@ interface SettingRowProps {
 
 const SettingRow: React.FC<SettingRowProps> = ({ icon, label, value, onPress, rightElement }) => {
   const { isRTL } = useTranslation();
+  const Colors = useColors();
   return (
     <TouchableOpacity
       style={styles.settingRow}
@@ -26,14 +28,14 @@ const SettingRow: React.FC<SettingRowProps> = ({ icon, label, value, onPress, ri
       activeOpacity={onPress ? 0.7 : 1}
     >
       <View style={styles.settingLeft}>
-        <View style={styles.iconContainer}>
+        <View style={[styles.iconContainer, { backgroundColor: Colors.background.elevated }]}>
           <Feather name={icon} size={20} color={Colors.text.secondary} />
         </View>
-        <Text style={styles.settingLabel}>{label}</Text>
+        <Text style={[styles.settingLabel, { color: Colors.text.primary }]}>{label}</Text>
       </View>
       {rightElement || (
         <View style={styles.settingRight}>
-          {value && <Text style={styles.settingValue}>{value}</Text>}
+          {value && <Text style={[styles.settingValue, { color: Colors.text.muted }]}>{value}</Text>}
           {onPress && <Feather name={isRTL ? 'chevron-left' : 'chevron-right'} size={20} color={Colors.text.muted} />}
         </View>
       )}
@@ -44,7 +46,10 @@ const SettingRow: React.FC<SettingRowProps> = ({ icon, label, value, onPress, ri
 export default function SettingsScreen() {
   const language = useSettingsStore((state) => state.language);
   const setLanguage = useSettingsStore((state) => state.setLanguage);
+  const theme = useSettingsStore((state) => state.theme);
+  const setTheme = useSettingsStore((state) => state.setTheme);
   const { t, reloadApp } = useTranslation();
+  const Colors = useColors();
 
   const handleLanguageChange = (lang: 'en' | 'ar') => {
     if (lang === language) return;
@@ -64,26 +69,26 @@ export default function SettingsScreen() {
   };
 
   return (
-    <SafeAreaView style={styles.container} edges={['bottom']}>
+    <SafeAreaView style={[styles.container, { backgroundColor: Colors.background.primary }]} edges={['bottom']}>
       <ScrollView
         style={styles.scrollView}
         contentContainerStyle={styles.content}
         showsVerticalScrollIndicator={false}
       >
-        <Text style={styles.sectionTitle}>{t('settings.ibadah')}</Text>
+        <Text style={[styles.sectionTitle, { color: Colors.text.muted }]}>{t('settings.ibadah')}</Text>
         <Card padding="none">
           <SettingRow
             icon="book-open"
             label={t('settings.manageIbadahTypes')}
             onPress={() => router.push('/settings/manage-ibadah')}
           />
-          <View style={styles.separator} />
+          <View style={[styles.separator, { backgroundColor: Colors.border.default }]} />
           <SettingRow
             icon="plus-circle"
             label={t('settings.addCustomIbadah')}
             onPress={() => router.push('/settings/manage-ibadah?openAdd=true')}
           />
-          <View style={styles.separator} />
+          <View style={[styles.separator, { backgroundColor: Colors.border.default }]} />
           <SettingRow
             icon="target"
             label={t('settings.minimumViableDay')}
@@ -91,33 +96,58 @@ export default function SettingsScreen() {
           />
         </Card>
 
-        <Text style={styles.sectionTitle}>{t('settings.preferences')}</Text>
+        <Text style={[styles.sectionTitle, { color: Colors.text.muted }]}>{t('settings.preferences')}</Text>
         <Card padding="none">
           <SettingRow
             icon="bell"
             label={t('settings.notifications')}
             onPress={() => router.push('/settings/notifications')}
           />
-          <View style={styles.separator} />
+          <View style={[styles.separator, { backgroundColor: Colors.border.default }]} />
           <SettingRow
             icon="globe"
             label={t('settings.language')}
             rightElement={
-              <View style={styles.languagePicker}>
+              <View style={styles.chipPicker}>
                 <TouchableOpacity
-                  style={[styles.langChip, language === 'en' && styles.langChipActive]}
+                  style={[styles.chip, { backgroundColor: Colors.background.elevated }, language === 'en' && { backgroundColor: Colors.accent.primary }]}
                   onPress={() => handleLanguageChange('en')}
                 >
-                  <Text style={[styles.langChipText, language === 'en' && styles.langChipTextActive]}>
+                  <Text style={[styles.chipText, { color: Colors.text.muted }, language === 'en' && { color: Colors.text.inverse }]}>
                     EN
                   </Text>
                 </TouchableOpacity>
                 <TouchableOpacity
-                  style={[styles.langChip, language === 'ar' && styles.langChipActive]}
+                  style={[styles.chip, { backgroundColor: Colors.background.elevated }, language === 'ar' && { backgroundColor: Colors.accent.primary }]}
                   onPress={() => handleLanguageChange('ar')}
                 >
-                  <Text style={[styles.langChipText, language === 'ar' && styles.langChipTextActive]}>
+                  <Text style={[styles.chipText, { color: Colors.text.muted }, language === 'ar' && { color: Colors.text.inverse }]}>
                     عر
+                  </Text>
+                </TouchableOpacity>
+              </View>
+            }
+          />
+          <View style={[styles.separator, { backgroundColor: Colors.border.default }]} />
+          <SettingRow
+            icon="moon"
+            label={t('settings.appearance')}
+            rightElement={
+              <View style={styles.chipPicker}>
+                <TouchableOpacity
+                  style={[styles.chip, { backgroundColor: Colors.background.elevated }, theme === 'dark' && { backgroundColor: Colors.accent.primary }]}
+                  onPress={() => setTheme('dark')}
+                >
+                  <Text style={[styles.chipText, { color: Colors.text.muted }, theme === 'dark' && { color: Colors.text.inverse }]}>
+                    {t('settings.dark')}
+                  </Text>
+                </TouchableOpacity>
+                <TouchableOpacity
+                  style={[styles.chip, { backgroundColor: Colors.background.elevated }, theme === 'light' && { backgroundColor: Colors.accent.primary }]}
+                  onPress={() => setTheme('light')}
+                >
+                  <Text style={[styles.chipText, { color: Colors.text.muted }, theme === 'light' && { color: Colors.text.inverse }]}>
+                    {t('settings.light')}
                   </Text>
                 </TouchableOpacity>
               </View>
@@ -125,7 +155,7 @@ export default function SettingsScreen() {
           />
         </Card>
 
-        <Text style={styles.sectionTitle}>{t('settings.account')}</Text>
+        <Text style={[styles.sectionTitle, { color: Colors.text.muted }]}>{t('settings.account')}</Text>
         <Card padding="none">
           <SettingRow
             icon="cloud"
@@ -134,12 +164,12 @@ export default function SettingsScreen() {
           />
         </Card>
 
-        <Text style={styles.sectionTitle}>{t('settings.about')}</Text>
+        <Text style={[styles.sectionTitle, { color: Colors.text.muted }]}>{t('settings.about')}</Text>
         <Card padding="none">
           <SettingRow icon="info" label={t('settings.version')} value="1.0.0" />
-          <View style={styles.separator} />
+          <View style={[styles.separator, { backgroundColor: Colors.border.default }]} />
           <SettingRow icon="heart" label={t('settings.aboutAjr')} onPress={() => router.push('/settings/about')} />
-          <View style={styles.separator} />
+          <View style={[styles.separator, { backgroundColor: Colors.border.default }]} />
           <SettingRow icon="shield" label={t('settings.privacyPolicy')} onPress={() => router.push('/settings/privacy')} />
         </Card>
       </ScrollView>
@@ -150,7 +180,6 @@ export default function SettingsScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: Colors.background.primary,
   },
   scrollView: {
     flex: 1,
@@ -162,7 +191,6 @@ const styles = StyleSheet.create({
   sectionTitle: {
     fontSize: Typography.fontSize.caption,
     fontWeight: '600',
-    color: Colors.text.muted,
     textTransform: 'uppercase',
     letterSpacing: 1,
     marginTop: Spacing.sm,
@@ -184,13 +212,11 @@ const styles = StyleSheet.create({
     width: 32,
     height: 32,
     borderRadius: BorderRadius.md,
-    backgroundColor: Colors.background.elevated,
     alignItems: 'center',
     justifyContent: 'center',
   },
   settingLabel: {
     fontSize: Typography.fontSize.body,
-    color: Colors.text.primary,
   },
   settingRight: {
     flexDirection: 'row',
@@ -199,34 +225,24 @@ const styles = StyleSheet.create({
   },
   settingValue: {
     fontSize: Typography.fontSize.body,
-    color: Colors.text.muted,
   },
   separator: {
     height: 1,
-    backgroundColor: Colors.border.default,
     marginLeft: Spacing.md + 32 + Spacing.md,
   },
-  languagePicker: {
+  chipPicker: {
     flexDirection: 'row',
     gap: Spacing.xs,
   },
-  langChip: {
+  chip: {
     paddingHorizontal: Spacing.sm,
     paddingVertical: 4,
     borderRadius: BorderRadius.md,
-    backgroundColor: Colors.background.elevated,
     minWidth: 36,
     alignItems: 'center',
   },
-  langChipActive: {
-    backgroundColor: Colors.accent.primary,
-  },
-  langChipText: {
+  chipText: {
     fontSize: Typography.fontSize.bodySmall,
     fontWeight: '600',
-    color: Colors.text.muted,
-  },
-  langChipTextActive: {
-    color: Colors.text.primary,
   },
 });

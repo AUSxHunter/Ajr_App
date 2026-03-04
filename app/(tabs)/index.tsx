@@ -3,16 +3,18 @@ import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Alert } from 'rea
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Feather } from '@expo/vector-icons';
 import { format, subDays } from 'date-fns';
-import { Colors, Typography, Spacing, BorderRadius } from '../../constants/theme';
+import { Typography, Spacing, BorderRadius } from '../../constants/theme';
 import { Card, EmptyState } from '../../components/ui';
 import { SessionCard, AddSetModal, ManageIbadahModal, AdhkarSessionCard } from '../../components/session';
 import { useSessionStore } from '../../store/sessionStore';
 import { useIbadahStore } from '../../store/ibadahStore';
 import { IbadahType, SessionSet } from '../../types';
 import { useTranslation } from '../../hooks/useTranslation';
+import { useColors } from '../../hooks/useColors';
 
 export default function TodayScreen() {
   const { t } = useTranslation();
+  const Colors = useColors();
   const [addSetModalVisible, setAddSetModalVisible] = useState(false);
   const [manageModalVisible, setManageModalVisible] = useState(false);
   const [selectedIbadah, setSelectedIbadah] = useState<IbadahType | null>(null);
@@ -48,17 +50,17 @@ export default function TodayScreen() {
 
   const todayDateString = format(new Date(), 'yyyy-MM-dd');
   const yesterdayDateString = format(subDays(new Date(), 1), 'yyyy-MM-dd');
-  
+
   const activeSession = useMemo(
     () => sessions.find((s) => s.sessionDate === todayDateString && !s.completedAt),
     [sessions, todayDateString]
   );
-  
+
   const completedTodaySession = useMemo(
     () => sessions.find((s) => s.sessionDate === todayDateString && s.completedAt),
     [sessions, todayDateString]
   );
-  
+
   const yesterdaySession = useMemo(
     () => sessions.find((s) => s.sessionDate === yesterdayDateString),
     [sessions, yesterdayDateString]
@@ -67,7 +69,7 @@ export default function TodayScreen() {
   const todaySession = activeSession;
   const hasActiveSession = !!activeSession;
   const canContinueSession = !hasActiveSession && !!completedTodaySession;
-  
+
   const sessionSets = useMemo(
     () =>
       todaySession
@@ -162,6 +164,8 @@ export default function TodayScreen() {
   const handleDeleteSet = (setId: string) => {
     deleteSet(setId);
   };
+
+  const styles = makeStyles(Colors);
 
   return (
     <SafeAreaView style={styles.container} edges={['bottom']}>
@@ -269,7 +273,7 @@ export default function TodayScreen() {
                   />
                 );
               }
-              
+
               const sets = ibadahSetsMap.get(ibadahType.id) || [];
               return (
                 <SessionCard
@@ -342,146 +346,147 @@ export default function TodayScreen() {
   );
 }
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: Colors.background.primary,
-  },
-  scrollView: {
-    flex: 1,
-  },
-  content: {
-    padding: Spacing.md,
-    paddingBottom: Spacing['2xl'],
-  },
-  header: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'flex-start',
-    marginBottom: Spacing.lg,
-  },
-  headerButtons: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: Spacing.sm,
-  },
-  greeting: {
-    fontSize: Typography.fontSize.h1,
-    fontWeight: '700',
-    color: Colors.text.primary,
-  },
-  date: {
-    fontSize: Typography.fontSize.body,
-    color: Colors.text.secondary,
-    marginTop: Spacing.xs,
-  },
-  manageButton: {
-    width: 40,
-    height: 40,
-    borderRadius: BorderRadius.md,
-    backgroundColor: `${Colors.accent.primary}15`,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  endSessionButton: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: Spacing.xs,
-    paddingHorizontal: Spacing.md,
-    paddingVertical: Spacing.sm,
-    backgroundColor: `${Colors.semantic.error}15`,
-    borderRadius: BorderRadius.md,
-    borderWidth: 1,
-    borderColor: `${Colors.semantic.error}30`,
-  },
-  endSessionText: {
-    fontSize: Typography.fontSize.bodySmall,
-    fontWeight: '600',
-    color: Colors.semantic.error,
-  },
-  summaryCard: {
-    marginBottom: Spacing.lg,
-  },
-  summaryRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-  },
-  summaryStat: {
-    flex: 1,
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: Spacing.md,
-    justifyContent: 'center',
-  },
-  summaryValue: {
-    fontSize: Typography.fontSize.h2,
-    fontWeight: '700',
-    color: Colors.text.primary,
-  },
-  summaryLabel: {
-    fontSize: Typography.fontSize.caption,
-    color: Colors.text.muted,
-  },
-  divider: {
-    width: 1,
-    height: 40,
-    backgroundColor: Colors.border.default,
-  },
-  emptyContainer: {
-    flex: 1,
-    justifyContent: 'center',
-    paddingVertical: Spacing['2xl'],
-  },
-  cardsContainer: {
-    gap: Spacing.md,
-  },
-  quickAddSection: {
-    marginTop: Spacing.xl,
-  },
-  quickAddTitle: {
-    fontSize: Typography.fontSize.bodySmall,
-    fontWeight: '600',
-    color: Colors.text.muted,
-    marginBottom: Spacing.sm,
-  },
-  quickAddButtons: {
-    gap: Spacing.sm,
-    paddingRight: Spacing.md,
-  },
-  quickAddButton: {
-    width: 48,
-    height: 48,
-    borderRadius: BorderRadius.lg,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  comparisonRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
-    gap: Spacing.xs,
-    marginTop: Spacing.md,
-    paddingTop: Spacing.md,
-    borderTopWidth: 1,
-    borderTopColor: Colors.border.default,
-  },
-  comparisonText: {
-    fontSize: Typography.fontSize.caption,
-    fontWeight: '500',
-  },
-  finishSessionButton: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
-    gap: Spacing.sm,
-    marginTop: Spacing.xl,
-    paddingVertical: Spacing.md,
-    backgroundColor: Colors.accent.primary,
-    borderRadius: BorderRadius.lg,
-  },
-  finishSessionText: {
-    fontSize: Typography.fontSize.body,
-    fontWeight: '600',
-    color: Colors.text.primary,
-  },
-});
+const makeStyles = (Colors: ReturnType<typeof import('../../hooks/useColors').useColors>) =>
+  StyleSheet.create({
+    container: {
+      flex: 1,
+      backgroundColor: Colors.background.primary,
+    },
+    scrollView: {
+      flex: 1,
+    },
+    content: {
+      padding: Spacing.md,
+      paddingBottom: Spacing['2xl'],
+    },
+    header: {
+      flexDirection: 'row',
+      justifyContent: 'space-between',
+      alignItems: 'flex-start',
+      marginBottom: Spacing.lg,
+    },
+    headerButtons: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      gap: Spacing.sm,
+    },
+    greeting: {
+      fontSize: Typography.fontSize.h1,
+      fontWeight: '700',
+      color: Colors.text.primary,
+    },
+    date: {
+      fontSize: Typography.fontSize.body,
+      color: Colors.text.secondary,
+      marginTop: Spacing.xs,
+    },
+    manageButton: {
+      width: 40,
+      height: 40,
+      borderRadius: BorderRadius.md,
+      backgroundColor: `${Colors.accent.primary}15`,
+      alignItems: 'center',
+      justifyContent: 'center',
+    },
+    endSessionButton: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      gap: Spacing.xs,
+      paddingHorizontal: Spacing.md,
+      paddingVertical: Spacing.sm,
+      backgroundColor: `${Colors.semantic.error}15`,
+      borderRadius: BorderRadius.md,
+      borderWidth: 1,
+      borderColor: `${Colors.semantic.error}30`,
+    },
+    endSessionText: {
+      fontSize: Typography.fontSize.bodySmall,
+      fontWeight: '600',
+      color: Colors.semantic.error,
+    },
+    summaryCard: {
+      marginBottom: Spacing.lg,
+    },
+    summaryRow: {
+      flexDirection: 'row',
+      alignItems: 'center',
+    },
+    summaryStat: {
+      flex: 1,
+      flexDirection: 'row',
+      alignItems: 'center',
+      gap: Spacing.md,
+      justifyContent: 'center',
+    },
+    summaryValue: {
+      fontSize: Typography.fontSize.h2,
+      fontWeight: '700',
+      color: Colors.text.primary,
+    },
+    summaryLabel: {
+      fontSize: Typography.fontSize.caption,
+      color: Colors.text.muted,
+    },
+    divider: {
+      width: 1,
+      height: 40,
+      backgroundColor: Colors.border.default,
+    },
+    emptyContainer: {
+      flex: 1,
+      justifyContent: 'center',
+      paddingVertical: Spacing['2xl'],
+    },
+    cardsContainer: {
+      gap: Spacing.md,
+    },
+    quickAddSection: {
+      marginTop: Spacing.xl,
+    },
+    quickAddTitle: {
+      fontSize: Typography.fontSize.bodySmall,
+      fontWeight: '600',
+      color: Colors.text.muted,
+      marginBottom: Spacing.sm,
+    },
+    quickAddButtons: {
+      gap: Spacing.sm,
+      paddingRight: Spacing.md,
+    },
+    quickAddButton: {
+      width: 48,
+      height: 48,
+      borderRadius: BorderRadius.lg,
+      alignItems: 'center',
+      justifyContent: 'center',
+    },
+    comparisonRow: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      justifyContent: 'center',
+      gap: Spacing.xs,
+      marginTop: Spacing.md,
+      paddingTop: Spacing.md,
+      borderTopWidth: 1,
+      borderTopColor: Colors.border.default,
+    },
+    comparisonText: {
+      fontSize: Typography.fontSize.caption,
+      fontWeight: '500',
+    },
+    finishSessionButton: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      justifyContent: 'center',
+      gap: Spacing.sm,
+      marginTop: Spacing.xl,
+      paddingVertical: Spacing.md,
+      backgroundColor: Colors.accent.primary,
+      borderRadius: BorderRadius.lg,
+    },
+    finishSessionText: {
+      fontSize: Typography.fontSize.body,
+      fontWeight: '600',
+      color: Colors.text.primary,
+    },
+  });

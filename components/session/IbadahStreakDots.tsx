@@ -2,7 +2,8 @@ import React, { useMemo } from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 import { Feather } from '@expo/vector-icons';
 import { subDays, format } from 'date-fns';
-import { Colors, Typography, Spacing } from '../../constants/theme';
+import { Typography, Spacing } from '../../constants/theme';
+import { useColors } from '../../hooks/useColors';
 import { useSessionStore } from '../../store/sessionStore';
 
 interface IbadahStreakDotsProps {
@@ -13,6 +14,7 @@ interface IbadahStreakDotsProps {
 type DayStatus = 'completed' | 'today' | 'missed';
 
 export const IbadahStreakDots: React.FC<IbadahStreakDotsProps> = ({ ibadahTypeId, color }) => {
+  const Colors = useColors();
   const sessions = useSessionStore((state) => state.sessions);
   const sessionSets = useSessionStore((state) => state.sessionSets);
 
@@ -67,6 +69,8 @@ export const IbadahStreakDots: React.FC<IbadahStreakDotsProps> = ({ ibadahTypeId
     return { days, streak };
   }, [sessions, sessionSets, ibadahTypeId]);
 
+  const styles = makeStyles(Colors);
+
   return (
     <View style={styles.container}>
       {/* Streak counter */}
@@ -98,69 +102,70 @@ export const IbadahStreakDots: React.FC<IbadahStreakDotsProps> = ({ ibadahTypeId
   );
 };
 
-const styles = StyleSheet.create({
-  container: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    paddingHorizontal: Spacing.md,
-    paddingBottom: Spacing.sm,
-    paddingTop: 2,
-    gap: Spacing.md,
-  },
-  streakBadge: {
-    alignItems: 'center',
-    minWidth: 28,
-  },
-  streakNumber: {
-    fontSize: Typography.fontSize.bodySmall,
-    fontWeight: '700',
-    color: Colors.text.primary,
-    lineHeight: 16,
-  },
-  streakLabel: {
-    fontSize: 9,
-    color: Colors.text.muted,
-    lineHeight: 11,
-  },
-  dotsRow: {
-    flex: 1,
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-  },
-  dayItem: {
-    alignItems: 'center',
-    gap: 4,
-  },
-  dayLabel: {
-    fontSize: Typography.fontSize.xs,
-    color: Colors.text.muted,
-  },
-  dotFull: {
-    width: 20,
-    height: 20,
-    borderRadius: 10,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  dotOutline: {
-    width: 20,
-    height: 20,
-    borderRadius: 10,
-    borderWidth: 1.5,
-    backgroundColor: 'transparent',
-  },
-  dotSlot: {
-    width: 20,
-    height: 20,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  dotMissed: {
-    width: 8,
-    height: 8,
-    borderRadius: 4,
-    backgroundColor: Colors.text.muted,
-  },
-});
+const makeStyles = (Colors: ReturnType<typeof import('../../hooks/useColors').useColors>) =>
+  StyleSheet.create({
+    container: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      paddingHorizontal: Spacing.md,
+      paddingBottom: Spacing.sm,
+      paddingTop: 2,
+      gap: Spacing.md,
+    },
+    streakBadge: {
+      alignItems: 'center',
+      minWidth: 28,
+    },
+    streakNumber: {
+      fontSize: Typography.fontSize.bodySmall,
+      fontWeight: '700',
+      color: Colors.text.primary,
+      lineHeight: 16,
+    },
+    streakLabel: {
+      fontSize: 9,
+      color: Colors.text.muted,
+      lineHeight: 11,
+    },
+    dotsRow: {
+      flex: 1,
+      flexDirection: 'row',
+      justifyContent: 'space-between',
+    },
+    dayItem: {
+      alignItems: 'center',
+      gap: 4,
+    },
+    dayLabel: {
+      fontSize: Typography.fontSize.xs,
+      color: Colors.text.muted,
+    },
+    dotFull: {
+      width: 20,
+      height: 20,
+      borderRadius: 10,
+      alignItems: 'center',
+      justifyContent: 'center',
+    },
+    dotOutline: {
+      width: 20,
+      height: 20,
+      borderRadius: 10,
+      borderWidth: 1.5,
+      backgroundColor: 'transparent',
+    },
+    dotSlot: {
+      width: 20,
+      height: 20,
+      alignItems: 'center',
+      justifyContent: 'center',
+    },
+    dotMissed: {
+      width: 8,
+      height: 8,
+      borderRadius: 4,
+      backgroundColor: Colors.text.muted,
+    },
+  });
 
 export default IbadahStreakDots;

@@ -2,9 +2,10 @@ import React from 'react';
 import { View, Text, StyleSheet, ScrollView } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Stack } from 'expo-router';
-import { Colors, Typography, Spacing } from '../../constants/theme';
+import { Typography, Spacing } from '../../constants/theme';
 import { Card } from '../../components/ui';
 import { useTranslation } from '../../hooks/useTranslation';
+import { useColors } from '../../hooks/useColors';
 
 interface SectionCardProps {
   title: string;
@@ -12,15 +13,20 @@ interface SectionCardProps {
   isRTL: boolean;
 }
 
-const SectionCard: React.FC<SectionCardProps> = ({ title, body, isRTL }) => (
-  <Card style={styles.sectionCard}>
-    <Text style={[styles.sectionTitle, { textAlign: isRTL ? 'right' : 'left' }]}>{title}</Text>
-    <Text style={[styles.sectionBody, { textAlign: isRTL ? 'right' : 'left' }]}>{body}</Text>
-  </Card>
-);
+const SectionCard: React.FC<SectionCardProps> = ({ title, body, isRTL }) => {
+  const Colors = useColors();
+  return (
+    <Card style={{ gap: Spacing.sm }}>
+      <Text style={[{ fontSize: Typography.fontSize.body, fontWeight: '700', color: Colors.text.primary }, { textAlign: isRTL ? 'right' : 'left' }]}>{title}</Text>
+      <Text style={[{ fontSize: Typography.fontSize.body, color: Colors.text.secondary, lineHeight: Typography.fontSize.body * 1.6 }, { textAlign: isRTL ? 'right' : 'left' }]}>{body}</Text>
+    </Card>
+  );
+};
 
 export default function PrivacyScreen() {
   const { t, isRTL } = useTranslation();
+  const Colors = useColors();
+  const styles = makeStyles(Colors);
 
   return (
     <>
@@ -31,7 +37,6 @@ export default function PrivacyScreen() {
           contentContainerStyle={styles.content}
           showsVerticalScrollIndicator={false}
         >
-          {/* Intro */}
           <View style={styles.introSection}>
             <Text style={[styles.lastUpdated, { textAlign: isRTL ? 'right' : 'left' }]}>
               {t('privacy.lastUpdated')}
@@ -41,7 +46,6 @@ export default function PrivacyScreen() {
             </Text>
           </View>
 
-          {/* Section cards */}
           <SectionCard
             title={t('privacy.noCollectionTitle')}
             body={t('privacy.noCollectionBody')}
@@ -63,8 +67,7 @@ export default function PrivacyScreen() {
             isRTL={isRTL}
           />
 
-          {/* Contact card */}
-          <Card style={styles.contactCard}>
+          <Card style={[styles.contactCard, { backgroundColor: `${Colors.accent.primary}10`, borderColor: Colors.accent.muted }]}>
             <Text style={[styles.contactTitle, { textAlign: isRTL ? 'right' : 'left' }]}>
               {t('privacy.contactTitle')}
             </Text>
@@ -81,63 +84,52 @@ export default function PrivacyScreen() {
   );
 }
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: Colors.background.primary,
-  },
-  scrollView: {
-    flex: 1,
-  },
-  content: {
-    padding: Spacing.md,
-    gap: Spacing.lg,
-  },
-  introSection: {
-    gap: Spacing.sm,
-    paddingTop: Spacing.sm,
-  },
-  lastUpdated: {
-    fontSize: Typography.fontSize.bodySmall,
-    color: Colors.text.muted,
-  },
-  intro: {
-    fontSize: Typography.fontSize.body,
-    color: Colors.text.secondary,
-    lineHeight: Typography.fontSize.body * 1.6,
-  },
-  sectionCard: {
-    gap: Spacing.sm,
-  },
-  sectionTitle: {
-    fontSize: Typography.fontSize.body,
-    fontWeight: '700',
-    color: Colors.text.primary,
-  },
-  sectionBody: {
-    fontSize: Typography.fontSize.body,
-    color: Colors.text.secondary,
-    lineHeight: Typography.fontSize.body * 1.6,
-  },
-  contactCard: {
-    gap: Spacing.sm,
-    backgroundColor: `${Colors.accent.primary}10`,
-    borderWidth: 1,
-    borderColor: Colors.accent.muted,
-  },
-  contactTitle: {
-    fontSize: Typography.fontSize.body,
-    fontWeight: '700',
-    color: Colors.text.primary,
-  },
-  contactBody: {
-    fontSize: Typography.fontSize.body,
-    color: Colors.text.secondary,
-    lineHeight: Typography.fontSize.body * 1.6,
-  },
-  contactEmail: {
-    fontSize: Typography.fontSize.body,
-    color: Colors.accent.primary,
-    fontWeight: '500',
-  },
-});
+const makeStyles = (Colors: ReturnType<typeof import('../../hooks/useColors').useColors>) =>
+  StyleSheet.create({
+    container: {
+      flex: 1,
+      backgroundColor: Colors.background.primary,
+    },
+    scrollView: {
+      flex: 1,
+    },
+    content: {
+      padding: Spacing.md,
+      gap: Spacing.lg,
+    },
+    introSection: {
+      gap: Spacing.sm,
+      paddingTop: Spacing.sm,
+    },
+    lastUpdated: {
+      fontSize: Typography.fontSize.bodySmall,
+      color: Colors.text.muted,
+    },
+    intro: {
+      fontSize: Typography.fontSize.body,
+      color: Colors.text.secondary,
+      lineHeight: Typography.fontSize.body * 1.6,
+    },
+    sectionCard: {
+      gap: Spacing.sm,
+    },
+    contactCard: {
+      gap: Spacing.sm,
+      borderWidth: 1,
+    },
+    contactTitle: {
+      fontSize: Typography.fontSize.body,
+      fontWeight: '700',
+      color: Colors.text.primary,
+    },
+    contactBody: {
+      fontSize: Typography.fontSize.body,
+      color: Colors.text.secondary,
+      lineHeight: Typography.fontSize.body * 1.6,
+    },
+    contactEmail: {
+      fontSize: Typography.fontSize.body,
+      color: Colors.accent.primary,
+      fontWeight: '500',
+    },
+  });

@@ -8,11 +8,11 @@ import * as Notifications from 'expo-notifications';
 import 'react-native-reanimated';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 
-import { Colors } from '../constants/theme';
 import { HeaderBackButton } from '../components/ui';
 import { useIbadahStore } from '../store/ibadahStore';
 import { useSettingsStore } from '../store/settingsStore';
 import { useTranslation } from '../hooks/useTranslation';
+import { useColors } from '../hooks/useColors';
 
 export { ErrorBoundary } from 'expo-router';
 
@@ -46,6 +46,8 @@ export default function RootLayout() {
   const [isReady, setIsReady] = useState(false);
   const hasInitialized = useRef(false);
   const onboardingCompleted = useSettingsStore((state) => state.onboardingCompleted);
+  const theme = useSettingsStore((state) => state.theme);
+  const Colors = useColors();
   const { t, isRTL } = useTranslation();
 
   useEffect(() => {
@@ -84,8 +86,8 @@ export default function RootLayout() {
   }
 
   return (
-    <GestureHandlerRootView style={[styles.container, { direction: isRTL ? 'rtl' : 'ltr' }]}>
-      <StatusBar style="light" />
+    <GestureHandlerRootView style={[styles.container, { direction: isRTL ? 'rtl' : 'ltr', backgroundColor: Colors.background.primary }]}>
+      <StatusBar style={theme === 'light' ? 'dark' : 'light'} />
       <Stack
         screenOptions={{
           headerStyle: {
@@ -138,6 +140,5 @@ export default function RootLayout() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: Colors.background.primary,
   },
 });

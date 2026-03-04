@@ -3,7 +3,7 @@ import { View, Text, StyleSheet, ScrollView } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Feather } from '@expo/vector-icons';
 import { format, startOfWeek, endOfWeek, eachDayOfInterval } from 'date-fns';
-import { Colors, Typography, Spacing, BorderRadius } from '../../constants/theme';
+import { Typography, Spacing } from '../../constants/theme';
 import { Card } from '../../components/ui';
 import { WeeklyChart, PRCard, IbadahBreakdown } from '../../components/analytics';
 import { SuggestionCard, BurnoutWarningCard } from '../../components/insights';
@@ -14,9 +14,11 @@ import { generateOverloadSuggestions } from '../../utils/suggestions';
 import { detectBurnout } from '../../utils/burnout';
 import { DailyStats } from '../../types';
 import { useTranslation } from '../../hooks/useTranslation';
+import { useColors } from '../../hooks/useColors';
 
 export default function AnalyticsScreen() {
   const { t } = useTranslation();
+  const Colors = useColors();
   const [dismissedSuggestions, setDismissedSuggestions] = useState<string[]>([]);
   const [dismissedBurnout, setDismissedBurnout] = useState(false);
 
@@ -99,6 +101,11 @@ export default function AnalyticsScreen() {
   const weeklyVolume = Math.round(weeklyStats.reduce((sum, d) => sum + d.totalVolume, 0));
   const averageDailyVolume = totalSessions > 0 ? (totalVolume / totalSessions).toFixed(1) : '0';
 
+  // suppress unused var warning
+  void totalSets;
+
+  const styles = makeStyles(Colors);
+
   return (
     <SafeAreaView style={styles.container} edges={['bottom']}>
       <ScrollView
@@ -170,10 +177,10 @@ export default function AnalyticsScreen() {
           </View>
         )}
 
-        <Card style={styles.insightCard}>
+        <Card style={[styles.insightCard, { backgroundColor: `${Colors.accent.primary}10`, borderColor: Colors.accent.muted }]}>
           <View style={styles.insightHeader}>
             <Feather name="info" size={20} color={Colors.accent.primary} />
-            <Text style={styles.insightTitle}>{t('analytics.insight')}</Text>
+            <Text style={[styles.insightTitle, { color: Colors.accent.primary }]}>{t('analytics.insight')}</Text>
           </View>
           <Text style={styles.insightText}>
             {streak >= 7
@@ -190,72 +197,70 @@ export default function AnalyticsScreen() {
   );
 }
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: Colors.background.primary,
-  },
-  scrollView: {
-    flex: 1,
-  },
-  content: {
-    padding: Spacing.md,
-    gap: Spacing.lg,
-    paddingBottom: Spacing['2xl'],
-  },
-  suggestionsSection: {
-    gap: Spacing.md,
-  },
-  statsGrid: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    gap: Spacing.md,
-  },
-  statCard: {
-    width: '47%',
-    alignItems: 'center',
-    paddingVertical: Spacing.lg,
-    gap: Spacing.sm,
-  },
-  statValue: {
-    fontSize: Typography.fontSize.display,
-    fontWeight: '700',
-    color: Colors.text.primary,
-  },
-  statLabel: {
-    fontSize: Typography.fontSize.bodySmall,
-    color: Colors.text.secondary,
-  },
-  prSection: {
-    gap: Spacing.md,
-  },
-  sectionTitle: {
-    fontSize: Typography.fontSize.h3,
-    fontWeight: '600',
-    color: Colors.text.primary,
-  },
-  prList: {
-    gap: Spacing.md,
-  },
-  insightCard: {
-    gap: Spacing.sm,
-    backgroundColor: `${Colors.accent.primary}10`,
-    borderColor: Colors.accent.muted,
-    borderWidth: 1,
-  },
-  insightHeader: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: Spacing.sm,
-  },
-  insightTitle: {
-    fontSize: Typography.fontSize.body,
-    fontWeight: '600',
-    color: Colors.accent.primary,
-  },
-  insightText: {
-    fontSize: Typography.fontSize.body,
-    color: Colors.text.secondary,
-    lineHeight: Typography.fontSize.body * 1.5,
-  },
-});
+const makeStyles = (Colors: ReturnType<typeof import('../../hooks/useColors').useColors>) =>
+  StyleSheet.create({
+    container: {
+      flex: 1,
+      backgroundColor: Colors.background.primary,
+    },
+    scrollView: {
+      flex: 1,
+    },
+    content: {
+      padding: Spacing.md,
+      gap: Spacing.lg,
+      paddingBottom: Spacing['2xl'],
+    },
+    suggestionsSection: {
+      gap: Spacing.md,
+    },
+    statsGrid: {
+      flexDirection: 'row',
+      flexWrap: 'wrap',
+      gap: Spacing.md,
+    },
+    statCard: {
+      width: '47%',
+      alignItems: 'center',
+      paddingVertical: Spacing.lg,
+      gap: Spacing.sm,
+    },
+    statValue: {
+      fontSize: Typography.fontSize.display,
+      fontWeight: '700',
+      color: Colors.text.primary,
+    },
+    statLabel: {
+      fontSize: Typography.fontSize.bodySmall,
+      color: Colors.text.secondary,
+    },
+    prSection: {
+      gap: Spacing.md,
+    },
+    sectionTitle: {
+      fontSize: Typography.fontSize.h3,
+      fontWeight: '600',
+      color: Colors.text.primary,
+    },
+    prList: {
+      gap: Spacing.md,
+    },
+    insightCard: {
+      gap: Spacing.sm,
+      borderWidth: 1,
+    },
+    insightHeader: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      gap: Spacing.sm,
+    },
+    insightTitle: {
+      fontSize: Typography.fontSize.body,
+      fontWeight: '600',
+    },
+    insightText: {
+      fontSize: Typography.fontSize.body,
+      color: Colors.text.secondary,
+      lineHeight: Typography.fontSize.body * 1.5,
+    },
+  });

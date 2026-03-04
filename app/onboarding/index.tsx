@@ -3,16 +3,18 @@ import { View, Text, StyleSheet, Dimensions, TouchableOpacity } from 'react-nati
 import { router } from 'expo-router';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Feather } from '@expo/vector-icons';
-import { Colors, Typography, Spacing, BorderRadius } from '../../constants/theme';
+import { Typography, Spacing, BorderRadius } from '../../constants/theme';
 import { Button, Card } from '../../components/ui';
 import { useSettingsStore } from '../../store/settingsStore';
 import { useIbadahStore } from '../../store/ibadahStore';
 import { useTranslation } from '../../hooks/useTranslation';
+import { useColors } from '../../hooks/useColors';
 
 const { width } = Dimensions.get('window');
 
 export default function OnboardingScreen() {
   const [step, setStep] = useState(0);
+  const Colors = useColors();
 
   const setOnboardingCompleted = useSettingsStore((state) => state.setOnboardingCompleted);
   const language = useSettingsStore((state) => state.language);
@@ -47,7 +49,6 @@ export default function OnboardingScreen() {
     setSelectedIbadah((prev) => (prev.includes(id) ? prev.filter((i) => i !== id) : [...prev, id]));
   };
 
-  // Step 0 = language picker; steps 1-3 = onboarding content
   const contentSteps = [
     {
       title: t('onboarding.step1Title'),
@@ -66,7 +67,7 @@ export default function OnboardingScreen() {
     },
   ];
 
-  const totalSteps = 1 + contentSteps.length; // language step + 3 content steps
+  const totalSteps = 1 + contentSteps.length;
   const isLastStep = step === totalSteps - 1;
 
   const handleNext = () => {
@@ -77,7 +78,8 @@ export default function OnboardingScreen() {
     }
   };
 
-  // Step 0: Language selection
+  const styles = makeStyles(Colors);
+
   if (step === 0) {
     return (
       <SafeAreaView style={styles.container}>
@@ -133,7 +135,6 @@ export default function OnboardingScreen() {
     );
   }
 
-  // Steps 1-3: content steps
   const currentStep = contentSteps[step - 1];
   const isIbadahStep = step === totalSteps - 1;
 
@@ -211,151 +212,152 @@ export default function OnboardingScreen() {
   );
 }
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: Colors.background.primary,
-  },
-  content: {
-    flex: 1,
-    justifyContent: 'center',
-    paddingHorizontal: Spacing.lg,
-  },
-  welcomeContent: {
-    alignItems: 'center',
-  },
-  selectContent: {
-    flex: 1,
-    paddingTop: Spacing.xl,
-  },
-  iconContainer: {
-    width: 120,
-    height: 120,
-    borderRadius: 60,
-    backgroundColor: `${Colors.accent.primary}15`,
-    alignItems: 'center',
-    justifyContent: 'center',
-    marginBottom: Spacing.xl,
-  },
-  title: {
-    fontSize: Typography.fontSize.h1,
-    fontWeight: '700',
-    color: Colors.text.primary,
-    textAlign: 'center',
-    marginBottom: Spacing.md,
-  },
-  description: {
-    fontSize: Typography.fontSize.body,
-    color: Colors.text.secondary,
-    textAlign: 'center',
-    lineHeight: Typography.fontSize.body * 1.6,
-    maxWidth: 300,
-    alignSelf: 'center',
-    marginBottom: Spacing.lg,
-  },
-  langCards: {
-    flexDirection: 'row',
-    gap: Spacing.md,
-    marginTop: Spacing.md,
-  },
-  langCard: {
-    flex: 1,
-    alignItems: 'center',
-    paddingVertical: Spacing.lg,
-    paddingHorizontal: Spacing.md,
-    borderRadius: BorderRadius.lg,
-    backgroundColor: Colors.background.card,
-    borderWidth: 2,
-    borderColor: 'transparent',
-    position: 'relative',
-    gap: Spacing.sm,
-  },
-  langCardSelected: {
-    borderColor: Colors.accent.primary,
-  },
-  langCardFlag: {
-    fontSize: 32,
-  },
-  langCardText: {
-    fontSize: Typography.fontSize.body,
-    fontWeight: '600',
-    color: Colors.text.primary,
-  },
-  langCheckmark: {
-    position: 'absolute',
-    top: Spacing.sm,
-    right: Spacing.sm,
-    width: 24,
-    height: 24,
-    borderRadius: 12,
-    backgroundColor: Colors.accent.primary,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  ibadahGrid: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    gap: Spacing.md,
-    justifyContent: 'center',
-    marginTop: Spacing.md,
-  },
-  ibadahCard: {
-    width: (width - Spacing.lg * 2 - Spacing.md * 2) / 3,
-    alignItems: 'center',
-    paddingVertical: Spacing.md,
-    position: 'relative',
-  },
-  ibadahCardSelected: {
-    borderWidth: 2,
-    borderColor: Colors.accent.primary,
-  },
-  ibadahIcon: {
-    width: 48,
-    height: 48,
-    borderRadius: 24,
-    alignItems: 'center',
-    justifyContent: 'center',
-    marginBottom: Spacing.sm,
-  },
-  ibadahName: {
-    fontSize: Typography.fontSize.bodySmall,
-    color: Colors.text.primary,
-    fontWeight: '500',
-    textAlign: 'center',
-  },
-  checkmark: {
-    position: 'absolute',
-    top: Spacing.sm,
-    right: Spacing.sm,
-    width: 24,
-    height: 24,
-    borderRadius: 12,
-    backgroundColor: Colors.accent.primary,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  footer: {
-    paddingHorizontal: Spacing.lg,
-    paddingBottom: Spacing.lg,
-    gap: Spacing.lg,
-  },
-  dots: {
-    flexDirection: 'row',
-    justifyContent: 'center',
-    gap: Spacing.sm,
-  },
-  dot: {
-    width: 8,
-    height: 8,
-    borderRadius: 4,
-    backgroundColor: Colors.border.default,
-  },
-  dotActive: {
-    backgroundColor: Colors.accent.primary,
-    width: 24,
-  },
-  buttons: {
-    flexDirection: 'column',
-    gap: Spacing.sm,
-  },
-});
+const makeStyles = (Colors: ReturnType<typeof import('../../hooks/useColors').useColors>) =>
+  StyleSheet.create({
+    container: {
+      flex: 1,
+      backgroundColor: Colors.background.primary,
+    },
+    content: {
+      flex: 1,
+      justifyContent: 'center',
+      paddingHorizontal: Spacing.lg,
+    },
+    welcomeContent: {
+      alignItems: 'center',
+    },
+    selectContent: {
+      flex: 1,
+      paddingTop: Spacing.xl,
+    },
+    iconContainer: {
+      width: 120,
+      height: 120,
+      borderRadius: 60,
+      backgroundColor: `${Colors.accent.primary}15`,
+      alignItems: 'center',
+      justifyContent: 'center',
+      marginBottom: Spacing.xl,
+    },
+    title: {
+      fontSize: Typography.fontSize.h1,
+      fontWeight: '700',
+      color: Colors.text.primary,
+      textAlign: 'center',
+      marginBottom: Spacing.md,
+    },
+    description: {
+      fontSize: Typography.fontSize.body,
+      color: Colors.text.secondary,
+      textAlign: 'center',
+      lineHeight: Typography.fontSize.body * 1.6,
+      maxWidth: 300,
+      alignSelf: 'center',
+      marginBottom: Spacing.lg,
+    },
+    langCards: {
+      flexDirection: 'row',
+      gap: Spacing.md,
+      marginTop: Spacing.md,
+    },
+    langCard: {
+      flex: 1,
+      alignItems: 'center',
+      paddingVertical: Spacing.lg,
+      paddingHorizontal: Spacing.md,
+      borderRadius: BorderRadius.lg,
+      backgroundColor: Colors.background.card,
+      borderWidth: 2,
+      borderColor: 'transparent',
+      position: 'relative',
+      gap: Spacing.sm,
+    },
+    langCardSelected: {
+      borderColor: Colors.accent.primary,
+    },
+    langCardFlag: {
+      fontSize: 32,
+    },
+    langCardText: {
+      fontSize: Typography.fontSize.body,
+      fontWeight: '600',
+      color: Colors.text.primary,
+    },
+    langCheckmark: {
+      position: 'absolute',
+      top: Spacing.sm,
+      right: Spacing.sm,
+      width: 24,
+      height: 24,
+      borderRadius: 12,
+      backgroundColor: Colors.accent.primary,
+      alignItems: 'center',
+      justifyContent: 'center',
+    },
+    ibadahGrid: {
+      flexDirection: 'row',
+      flexWrap: 'wrap',
+      gap: Spacing.md,
+      justifyContent: 'center',
+      marginTop: Spacing.md,
+    },
+    ibadahCard: {
+      width: (width - Spacing.lg * 2 - Spacing.md * 2) / 3,
+      alignItems: 'center',
+      paddingVertical: Spacing.md,
+      position: 'relative',
+    },
+    ibadahCardSelected: {
+      borderWidth: 2,
+      borderColor: Colors.accent.primary,
+    },
+    ibadahIcon: {
+      width: 48,
+      height: 48,
+      borderRadius: 24,
+      alignItems: 'center',
+      justifyContent: 'center',
+      marginBottom: Spacing.sm,
+    },
+    ibadahName: {
+      fontSize: Typography.fontSize.bodySmall,
+      color: Colors.text.primary,
+      fontWeight: '500',
+      textAlign: 'center',
+    },
+    checkmark: {
+      position: 'absolute',
+      top: Spacing.sm,
+      right: Spacing.sm,
+      width: 24,
+      height: 24,
+      borderRadius: 12,
+      backgroundColor: Colors.accent.primary,
+      alignItems: 'center',
+      justifyContent: 'center',
+    },
+    footer: {
+      paddingHorizontal: Spacing.lg,
+      paddingBottom: Spacing.lg,
+      gap: Spacing.lg,
+    },
+    dots: {
+      flexDirection: 'row',
+      justifyContent: 'center',
+      gap: Spacing.sm,
+    },
+    dot: {
+      width: 8,
+      height: 8,
+      borderRadius: 4,
+      backgroundColor: Colors.border.default,
+    },
+    dotActive: {
+      backgroundColor: Colors.accent.primary,
+      width: 24,
+    },
+    buttons: {
+      flexDirection: 'column',
+      gap: Spacing.sm,
+    },
+  });

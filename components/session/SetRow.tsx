@@ -1,7 +1,8 @@
 import React from 'react';
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import { Feather } from '@expo/vector-icons';
-import { Colors, Typography, Spacing, BorderRadius } from '../../constants/theme';
+import { Typography, Spacing, BorderRadius } from '../../constants/theme';
+import { useColors } from '../../hooks/useColors';
 import { SessionSet, IbadahType } from '../../types';
 import { formatDuration } from '../../utils/calculations';
 import { UNIT_LABELS } from '../../constants/defaults';
@@ -16,6 +17,7 @@ interface SetRowProps {
 }
 
 export const SetRow: React.FC<SetRowProps> = ({ set, ibadahType, index, onEdit, onDelete }) => {
+  const Colors = useColors();
   const { t } = useTranslation();
   const unitLabel = UNIT_LABELS[ibadahType.unit];
 
@@ -29,6 +31,8 @@ export const SetRow: React.FC<SetRowProps> = ({ set, ibadahType, index, onEdit, 
   } else {
     displayValue = `${set.value} ${set.value === 1 ? unitLabel.singular : unitLabel.plural}`;
   }
+
+  const styles = makeStyles(Colors);
 
   return (
     <View style={styles.container}>
@@ -60,52 +64,53 @@ export const SetRow: React.FC<SetRowProps> = ({ set, ibadahType, index, onEdit, 
   );
 };
 
-const styles = StyleSheet.create({
-  container: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    paddingVertical: Spacing.sm,
-    paddingHorizontal: Spacing.sm,
-    backgroundColor: Colors.background.secondary,
-    borderRadius: BorderRadius.md,
-    marginBottom: Spacing.xs,
-  },
-  leftSection: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: Spacing.sm,
-  },
-  setNumber: {
-    width: 28,
-    height: 28,
-    borderRadius: BorderRadius.md,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  setNumberText: {
-    fontSize: Typography.fontSize.bodySmall,
-    fontWeight: '600',
-  },
-  setInfo: {
-    gap: 2,
-  },
-  value: {
-    fontSize: Typography.fontSize.body,
-    fontWeight: '600',
-    color: Colors.text.primary,
-  },
-  duration: {
-    fontSize: Typography.fontSize.caption,
-    color: Colors.text.muted,
-  },
-  actions: {
-    flexDirection: 'row',
-    gap: Spacing.xs,
-  },
-  actionButton: {
-    padding: Spacing.xs,
-  },
-});
+const makeStyles = (Colors: ReturnType<typeof import('../../hooks/useColors').useColors>) =>
+  StyleSheet.create({
+    container: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      justifyContent: 'space-between',
+      paddingVertical: Spacing.sm,
+      paddingHorizontal: Spacing.sm,
+      backgroundColor: Colors.background.secondary,
+      borderRadius: BorderRadius.md,
+      marginBottom: Spacing.xs,
+    },
+    leftSection: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      gap: Spacing.sm,
+    },
+    setNumber: {
+      width: 28,
+      height: 28,
+      borderRadius: BorderRadius.md,
+      alignItems: 'center',
+      justifyContent: 'center',
+    },
+    setNumberText: {
+      fontSize: Typography.fontSize.bodySmall,
+      fontWeight: '600',
+    },
+    setInfo: {
+      gap: 2,
+    },
+    value: {
+      fontSize: Typography.fontSize.body,
+      fontWeight: '600',
+      color: Colors.text.primary,
+    },
+    duration: {
+      fontSize: Typography.fontSize.caption,
+      color: Colors.text.muted,
+    },
+    actions: {
+      flexDirection: 'row',
+      gap: Spacing.xs,
+    },
+    actionButton: {
+      padding: Spacing.xs,
+    },
+  });
 
 export default SetRow;

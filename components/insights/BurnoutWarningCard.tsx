@@ -2,7 +2,8 @@ import React from 'react';
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import { Feather } from '@expo/vector-icons';
 import { Card } from '../ui';
-import { Colors, Typography, Spacing, BorderRadius } from '../../constants/theme';
+import { Typography, Spacing, BorderRadius } from '../../constants/theme';
+import { useColors } from '../../hooks/useColors';
 import { BurnoutWarning } from '../../types';
 import { useTranslation } from '../../hooks/useTranslation';
 
@@ -12,6 +13,7 @@ interface BurnoutWarningCardProps {
 }
 
 export const BurnoutWarningCard: React.FC<BurnoutWarningCardProps> = ({ warning, onDismiss }) => {
+  const Colors = useColors();
   const { t } = useTranslation();
 
   const SEVERITY_CONFIG = {
@@ -33,6 +35,8 @@ export const BurnoutWarningCard: React.FC<BurnoutWarningCardProps> = ({ warning,
   };
 
   const config = SEVERITY_CONFIG[warning.severity];
+
+  const styles = makeStyles(Colors);
 
   return (
     <Card
@@ -72,51 +76,52 @@ export const BurnoutWarningCard: React.FC<BurnoutWarningCardProps> = ({ warning,
   );
 };
 
-const styles = StyleSheet.create({
-  container: {
-    gap: Spacing.md,
-    borderWidth: 1,
-  },
-  header: {
-    flexDirection: 'row',
-    alignItems: 'flex-start',
-    gap: Spacing.sm,
-  },
-  iconContainer: {
-    width: 32,
-    height: 32,
-    borderRadius: 16,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  headerText: {
-    flex: 1,
-  },
-  title: {
-    fontSize: Typography.fontSize.body,
-    fontWeight: '600',
-  },
-  dismissButton: {
-    padding: Spacing.xs,
-  },
-  message: {
-    fontSize: Typography.fontSize.body,
-    color: Colors.text.secondary,
-    lineHeight: Typography.fontSize.body * 1.4,
-  },
-  deloadInfo: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: Spacing.sm,
-    paddingTop: Spacing.sm,
-    borderTopWidth: 1,
-    borderTopColor: Colors.border.default,
-  },
-  deloadText: {
-    flex: 1,
-    fontSize: Typography.fontSize.bodySmall,
-    color: Colors.text.muted,
-  },
-});
+const makeStyles = (Colors: ReturnType<typeof import('../../hooks/useColors').useColors>) =>
+  StyleSheet.create({
+    container: {
+      gap: Spacing.md,
+      borderWidth: 1,
+    },
+    header: {
+      flexDirection: 'row',
+      alignItems: 'flex-start',
+      gap: Spacing.sm,
+    },
+    iconContainer: {
+      width: 32,
+      height: 32,
+      borderRadius: 16,
+      alignItems: 'center',
+      justifyContent: 'center',
+    },
+    headerText: {
+      flex: 1,
+    },
+    title: {
+      fontSize: Typography.fontSize.body,
+      fontWeight: '600',
+    },
+    dismissButton: {
+      padding: Spacing.xs,
+    },
+    message: {
+      fontSize: Typography.fontSize.body,
+      color: Colors.text.secondary,
+      lineHeight: Typography.fontSize.body * 1.4,
+    },
+    deloadInfo: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      gap: Spacing.sm,
+      paddingTop: Spacing.sm,
+      borderTopWidth: 1,
+      borderTopColor: Colors.border.default,
+    },
+    deloadText: {
+      flex: 1,
+      fontSize: Typography.fontSize.bodySmall,
+      color: Colors.text.muted,
+    },
+  });
 
 export default BurnoutWarningCard;

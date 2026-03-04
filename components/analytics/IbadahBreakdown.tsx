@@ -2,7 +2,8 @@ import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 import { Feather } from '@expo/vector-icons';
 import { Card } from '../ui';
-import { Colors, Typography, Spacing, BorderRadius } from '../../constants/theme';
+import { Typography, Spacing, BorderRadius } from '../../constants/theme';
+import { useColors } from '../../hooks/useColors';
 import { IbadahType, SessionSet } from '../../types';
 import { useTranslation } from '../../hooks/useTranslation';
 
@@ -20,6 +21,7 @@ interface BreakdownItem {
 }
 
 export const IbadahBreakdown: React.FC<IbadahBreakdownProps> = ({ ibadahTypes, sessionSets }) => {
+  const Colors = useColors();
   const { t, tUnit, isRTL } = useTranslation();
   const breakdown: BreakdownItem[] = ibadahTypes
     .map((type) => {
@@ -42,6 +44,8 @@ export const IbadahBreakdown: React.FC<IbadahBreakdownProps> = ({ ibadahTypes, s
   breakdown.forEach((item) => {
     item.percentage = totalWeightedVolume > 0 ? (item.weightedValue / totalWeightedVolume) * 100 : 0;
   });
+
+  const styles = makeStyles(Colors);
 
   if (breakdown.length === 0) {
     return (
@@ -112,75 +116,76 @@ export const IbadahBreakdown: React.FC<IbadahBreakdownProps> = ({ ibadahTypes, s
   );
 };
 
-const styles = StyleSheet.create({
-  container: {
-    gap: Spacing.md,
-  },
-  emptyContainer: {
-    alignItems: 'center',
-    paddingVertical: Spacing.xl,
-  },
-  emptyText: {
-    fontSize: Typography.fontSize.body,
-    color: Colors.text.muted,
-  },
-  title: {
-    fontSize: Typography.fontSize.body,
-    fontWeight: '600',
-    color: Colors.text.primary,
-  },
-  list: {
-    gap: Spacing.md,
-  },
-  item: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-  },
-  itemLeft: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: Spacing.sm,
-  },
-  iconContainer: {
-    width: 32,
-    height: 32,
-    borderRadius: 16,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  ibadahName: {
-    fontSize: Typography.fontSize.body,
-    fontWeight: '500',
-    color: Colors.text.primary,
-  },
-  setCount: {
-    fontSize: Typography.fontSize.caption,
-    color: Colors.text.muted,
-  },
-  itemRight: {
-    alignItems: 'flex-end',
-  },
-  value: {
-    fontSize: Typography.fontSize.body,
-    fontWeight: '600',
-    color: Colors.text.primary,
-  },
-  percentage: {
-    fontSize: Typography.fontSize.caption,
-    color: Colors.text.muted,
-  },
-  progressBarContainer: {
-    flexDirection: 'row',
-    height: 8,
-    borderRadius: 4,
-    overflow: 'hidden',
-    gap: 2,
-  },
-  progressSegment: {
-    minWidth: 4,
-    borderRadius: 4,
-  },
-});
+const makeStyles = (Colors: ReturnType<typeof import('../../hooks/useColors').useColors>) =>
+  StyleSheet.create({
+    container: {
+      gap: Spacing.md,
+    },
+    emptyContainer: {
+      alignItems: 'center',
+      paddingVertical: Spacing.xl,
+    },
+    emptyText: {
+      fontSize: Typography.fontSize.body,
+      color: Colors.text.muted,
+    },
+    title: {
+      fontSize: Typography.fontSize.body,
+      fontWeight: '600',
+      color: Colors.text.primary,
+    },
+    list: {
+      gap: Spacing.md,
+    },
+    item: {
+      flexDirection: 'row',
+      justifyContent: 'space-between',
+      alignItems: 'center',
+    },
+    itemLeft: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      gap: Spacing.sm,
+    },
+    iconContainer: {
+      width: 32,
+      height: 32,
+      borderRadius: 16,
+      alignItems: 'center',
+      justifyContent: 'center',
+    },
+    ibadahName: {
+      fontSize: Typography.fontSize.body,
+      fontWeight: '500',
+      color: Colors.text.primary,
+    },
+    setCount: {
+      fontSize: Typography.fontSize.caption,
+      color: Colors.text.muted,
+    },
+    itemRight: {
+      alignItems: 'flex-end',
+    },
+    value: {
+      fontSize: Typography.fontSize.body,
+      fontWeight: '600',
+      color: Colors.text.primary,
+    },
+    percentage: {
+      fontSize: Typography.fontSize.caption,
+      color: Colors.text.muted,
+    },
+    progressBarContainer: {
+      flexDirection: 'row',
+      height: 8,
+      borderRadius: 4,
+      overflow: 'hidden',
+      gap: 2,
+    },
+    progressSegment: {
+      minWidth: 4,
+      borderRadius: 4,
+    },
+  });
 
 export default IbadahBreakdown;

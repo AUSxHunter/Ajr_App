@@ -5,12 +5,13 @@ import * as Haptics from 'expo-haptics';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Stack, useLocalSearchParams } from 'expo-router';
 import { Feather } from '@expo/vector-icons';
-import { Colors, Typography, Spacing, BorderRadius } from '../../constants/theme';
+import { Typography, Spacing, BorderRadius } from '../../constants/theme';
 import { Card, Button, Modal, Input, ConfirmModal } from '../../components/ui';
 import { ReminderModal } from '../../components/notifications/ReminderModal';
 import { useIbadahStore } from '../../store/ibadahStore';
 import { IbadahType, IbadahUnit } from '../../types';
 import { useTranslation } from '../../hooks/useTranslation';
+import { useColors } from '../../hooks/useColors';
 
 const ICON_OPTIONS = [
   'book-open',
@@ -42,6 +43,7 @@ const COLOR_OPTIONS = [
 
 export default function ManageIbadahScreen() {
   const { t, isRTL } = useTranslation();
+  const Colors = useColors();
   const params = useLocalSearchParams<{ openAdd?: string }>();
 
   const UNIT_OPTIONS: { value: IbadahUnit; label: string }[] = [
@@ -99,13 +101,11 @@ export default function ManageIbadahScreen() {
     setAddModalVisible(false);
   };
 
-  const handleArchive = (id: string) => {
-    setArchiveConfirmId(id);
-  };
-
   const handleDelete = (id: string) => {
     setDeleteConfirmId(id);
   };
+
+  const styles = makeStyles(Colors);
 
   const renderDraggableItem = useCallback(
     ({ item: type, drag, isActive }: RenderItemParams<IbadahType>) => (
@@ -169,7 +169,7 @@ export default function ManageIbadahScreen() {
         </ScaleDecorator>
       </ShadowDecorator>
     ),
-    [isRTL]
+    [isRTL, Colors, styles]
   );
 
   return (
@@ -366,138 +366,136 @@ export default function ManageIbadahScreen() {
   );
 }
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: Colors.background.primary,
-  },
-  scrollView: {
-    flex: 1,
-  },
-  content: {
-    padding: Spacing.md,
-    gap: Spacing.lg,
-  },
-  sectionTitle: {
-    fontSize: Typography.fontSize.caption,
-    fontWeight: '600',
-    color: Colors.text.muted,
-    textTransform: 'uppercase',
-    letterSpacing: 1,
-  },
-  list: {
-    gap: Spacing.sm,
-  },
-  ibadahCard: {
-    padding: Spacing.md,
-  },
-  ibadahRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: Spacing.md,
-  },
-  iconContainer: {
-    width: 44,
-    height: 44,
-    borderRadius: 22,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  ibadahInfo: {
-    flex: 1,
-  },
-  ibadahName: {
-    fontSize: Typography.fontSize.body,
-    fontWeight: '600',
-    color: Colors.text.primary,
-  },
-  ibadahArabic: {
-    fontSize: Typography.fontSize.caption,
-    color: Colors.text.muted,
-  },
-  ibadahUnit: {
-    fontSize: Typography.fontSize.caption,
-    color: Colors.accent.primary,
-    marginTop: 2,
-  },
-  dragHandle: {
-    padding: Spacing.sm,
-    marginRight: 2,
-  },
-  ibadahCardActive: {
-    borderColor: Colors.accent.primary + '40',
-    borderWidth: 1,
-  },
-  archivedSection: {
-    gap: Spacing.sm,
-    marginTop: Spacing.lg,
-  },
-  actionButtons: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: Spacing.xs,
-  },
-  actionButton: {
-    padding: Spacing.sm,
-  },
-  modalContent: {
-    gap: Spacing.lg,
-  },
-  fieldLabel: {
-    fontSize: Typography.fontSize.bodySmall,
-    fontWeight: '500',
-    color: Colors.text.secondary,
-  },
-  optionsRow: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    gap: Spacing.sm,
-  },
-  optionButton: {
-    paddingVertical: Spacing.sm,
-    paddingHorizontal: Spacing.md,
-    borderRadius: BorderRadius.md,
-    backgroundColor: Colors.background.elevated,
-  },
-  optionButtonActive: {
-    backgroundColor: Colors.accent.primary,
-  },
-  optionText: {
-    fontSize: Typography.fontSize.bodySmall,
-    color: Colors.text.secondary,
-  },
-  optionTextActive: {
-    color: Colors.text.primary,
-    fontWeight: '600',
-  },
-  iconGrid: {
-    gap: Spacing.sm,
-  },
-  iconOption: {
-    width: 44,
-    height: 44,
-    borderRadius: 22,
-    backgroundColor: Colors.background.elevated,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  iconOptionActive: {
-    backgroundColor: Colors.accent.primary,
-  },
-  colorGrid: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    gap: Spacing.sm,
-  },
-  colorOption: {
-    width: 36,
-    height: 36,
-    borderRadius: 18,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  colorOptionActive: {
-    borderWidth: 3,
-    borderColor: Colors.text.primary,
-  },
-});
+const makeStyles = (Colors: ReturnType<typeof import('../../hooks/useColors').useColors>) =>
+  StyleSheet.create({
+    container: {
+      flex: 1,
+      backgroundColor: Colors.background.primary,
+    },
+    content: {
+      padding: Spacing.md,
+      gap: Spacing.lg,
+    },
+    sectionTitle: {
+      fontSize: Typography.fontSize.caption,
+      fontWeight: '600',
+      color: Colors.text.muted,
+      textTransform: 'uppercase',
+      letterSpacing: 1,
+    },
+    list: {
+      gap: Spacing.sm,
+    },
+    ibadahCard: {
+      padding: Spacing.md,
+    },
+    ibadahRow: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      gap: Spacing.md,
+    },
+    iconContainer: {
+      width: 44,
+      height: 44,
+      borderRadius: 22,
+      alignItems: 'center',
+      justifyContent: 'center',
+    },
+    ibadahInfo: {
+      flex: 1,
+    },
+    ibadahName: {
+      fontSize: Typography.fontSize.body,
+      fontWeight: '600',
+      color: Colors.text.primary,
+    },
+    ibadahArabic: {
+      fontSize: Typography.fontSize.caption,
+      color: Colors.text.muted,
+    },
+    ibadahUnit: {
+      fontSize: Typography.fontSize.caption,
+      color: Colors.accent.primary,
+      marginTop: 2,
+    },
+    dragHandle: {
+      padding: Spacing.sm,
+      marginRight: 2,
+    },
+    ibadahCardActive: {
+      borderColor: Colors.accent.primary + '40',
+      borderWidth: 1,
+    },
+    archivedSection: {
+      gap: Spacing.sm,
+      marginTop: Spacing.lg,
+    },
+    actionButtons: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      gap: Spacing.xs,
+    },
+    actionButton: {
+      padding: Spacing.sm,
+    },
+    modalContent: {
+      gap: Spacing.lg,
+    },
+    fieldLabel: {
+      fontSize: Typography.fontSize.bodySmall,
+      fontWeight: '500',
+      color: Colors.text.secondary,
+    },
+    optionsRow: {
+      flexDirection: 'row',
+      flexWrap: 'wrap',
+      gap: Spacing.sm,
+    },
+    optionButton: {
+      paddingVertical: Spacing.sm,
+      paddingHorizontal: Spacing.md,
+      borderRadius: BorderRadius.md,
+      backgroundColor: Colors.background.elevated,
+    },
+    optionButtonActive: {
+      backgroundColor: Colors.accent.primary,
+    },
+    optionText: {
+      fontSize: Typography.fontSize.bodySmall,
+      color: Colors.text.secondary,
+    },
+    optionTextActive: {
+      color: Colors.text.primary,
+      fontWeight: '600',
+    },
+    iconGrid: {
+      gap: Spacing.sm,
+    },
+    iconOption: {
+      width: 44,
+      height: 44,
+      borderRadius: 22,
+      backgroundColor: Colors.background.elevated,
+      alignItems: 'center',
+      justifyContent: 'center',
+    },
+    iconOptionActive: {
+      backgroundColor: Colors.accent.primary,
+    },
+    colorGrid: {
+      flexDirection: 'row',
+      flexWrap: 'wrap',
+      gap: Spacing.sm,
+    },
+    colorOption: {
+      width: 36,
+      height: 36,
+      borderRadius: 18,
+      alignItems: 'center',
+      justifyContent: 'center',
+    },
+    colorOptionActive: {
+      borderWidth: 3,
+      borderColor: Colors.text.primary,
+    },
+  });

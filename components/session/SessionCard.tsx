@@ -5,7 +5,8 @@ import Animated, { useAnimatedStyle, useSharedValue, withTiming } from 'react-na
 import { Card, ConfirmModal } from '../ui';
 import { SetRow } from './SetRow';
 import { QiyamAyatTracker } from './QiyamAyatTracker';
-import { Colors, Typography, Spacing, BorderRadius } from '../../constants/theme';
+import { Typography, Spacing, BorderRadius } from '../../constants/theme';
+import { useColors } from '../../hooks/useColors';
 import { IbadahType, SessionSet } from '../../types';
 import { useSettingsStore } from '../../store/settingsStore';
 import { useSessionStore } from '../../store/sessionStore';
@@ -27,6 +28,7 @@ export const SessionCard: React.FC<SessionCardProps> = ({
   onEditSet,
   onDeleteSet,
 }) => {
+  const Colors = useColors();
   const { t, tUnit, isRTL } = useTranslation();
   const [isExpanded, setIsExpanded] = useState(sets.length > 0);
   const [deleteConfirmId, setDeleteConfirmId] = useState<string | null>(null);
@@ -83,6 +85,8 @@ export const SessionCard: React.FC<SessionCardProps> = ({
       onAddSet();
     }
   };
+
+  const styles = makeStyles(Colors);
 
   if (isYesNo) {
     return (
@@ -309,113 +313,114 @@ export const SessionCard: React.FC<SessionCardProps> = ({
   );
 };
 
-const styles = StyleSheet.create({
-  card: {
-    overflow: 'hidden',
-  },
-  header: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    padding: Spacing.md,
-  },
-  headerLeft: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: Spacing.md,
-  },
-  iconContainer: {
-    width: 44,
-    height: 44,
-    borderRadius: BorderRadius.lg,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  headerInfo: {
-    gap: 2,
-  },
-  ibadahName: {
-    fontSize: Typography.fontSize.body,
-    fontWeight: '600',
-    color: Colors.text.primary,
-  },
-  ibadahNameArabic: {
-    fontSize: Typography.fontSize.caption,
-    color: Colors.text.muted,
-  },
-  headerRight: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: Spacing.md,
-  },
-  stats: {
-    alignItems: 'flex-end',
-  },
-  totalValue: {
-    fontSize: Typography.fontSize.body,
-    fontWeight: '700',
-    color: Colors.accent.primary,
-  },
-  setCount: {
-    fontSize: Typography.fontSize.caption,
-    color: Colors.text.muted,
-  },
-  mvdRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 4,
-  },
-  mvdTarget: {
-    fontSize: Typography.fontSize.caption,
-    color: Colors.text.muted,
-  },
-  mvdTargetMet: {
-    color: Colors.semantic.success,
-  },
-  content: {
-    paddingHorizontal: Spacing.md,
-    paddingBottom: Spacing.md,
-    gap: Spacing.sm,
-  },
-  setsList: {
-    gap: Spacing.xs,
-  },
-  addButton: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
-    gap: Spacing.sm,
-    paddingVertical: Spacing.sm,
-    borderRadius: BorderRadius.md,
-    borderWidth: 1,
-    borderColor: Colors.accent.primary,
-    borderStyle: 'dashed',
-  },
-  addButtonText: {
-    fontSize: Typography.fontSize.bodySmall,
-    fontWeight: '600',
-    color: Colors.accent.primary,
-  },
-  binaryToggle: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: Spacing.xs,
-    paddingHorizontal: Spacing.md,
-    paddingVertical: Spacing.sm,
-    borderRadius: BorderRadius.md,
-    backgroundColor: Colors.background.elevated,
-  },
-  binaryToggleActive: {
-    backgroundColor: `${Colors.semantic.success}20`,
-  },
-  binaryToggleText: {
-    fontSize: Typography.fontSize.bodySmall,
-    fontWeight: '600',
-    color: Colors.text.muted,
-  },
-  binaryToggleTextActive: {
-    color: Colors.semantic.success,
-  },
-});
+const makeStyles = (Colors: ReturnType<typeof import('../../hooks/useColors').useColors>) =>
+  StyleSheet.create({
+    card: {
+      overflow: 'hidden',
+    },
+    header: {
+      flexDirection: 'row',
+      justifyContent: 'space-between',
+      alignItems: 'center',
+      padding: Spacing.md,
+    },
+    headerLeft: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      gap: Spacing.md,
+    },
+    iconContainer: {
+      width: 44,
+      height: 44,
+      borderRadius: BorderRadius.lg,
+      alignItems: 'center',
+      justifyContent: 'center',
+    },
+    headerInfo: {
+      gap: 2,
+    },
+    ibadahName: {
+      fontSize: Typography.fontSize.body,
+      fontWeight: '600',
+      color: Colors.text.primary,
+    },
+    ibadahNameArabic: {
+      fontSize: Typography.fontSize.caption,
+      color: Colors.text.muted,
+    },
+    headerRight: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      gap: Spacing.md,
+    },
+    stats: {
+      alignItems: 'flex-end',
+    },
+    totalValue: {
+      fontSize: Typography.fontSize.body,
+      fontWeight: '700',
+      color: Colors.accent.primary,
+    },
+    setCount: {
+      fontSize: Typography.fontSize.caption,
+      color: Colors.text.muted,
+    },
+    mvdRow: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      gap: 4,
+    },
+    mvdTarget: {
+      fontSize: Typography.fontSize.caption,
+      color: Colors.text.muted,
+    },
+    mvdTargetMet: {
+      color: Colors.semantic.success,
+    },
+    content: {
+      paddingHorizontal: Spacing.md,
+      paddingBottom: Spacing.md,
+      gap: Spacing.sm,
+    },
+    setsList: {
+      gap: Spacing.xs,
+    },
+    addButton: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      justifyContent: 'center',
+      gap: Spacing.sm,
+      paddingVertical: Spacing.sm,
+      borderRadius: BorderRadius.md,
+      borderWidth: 1,
+      borderColor: Colors.accent.primary,
+      borderStyle: 'dashed',
+    },
+    addButtonText: {
+      fontSize: Typography.fontSize.bodySmall,
+      fontWeight: '600',
+      color: Colors.accent.primary,
+    },
+    binaryToggle: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      gap: Spacing.xs,
+      paddingHorizontal: Spacing.md,
+      paddingVertical: Spacing.sm,
+      borderRadius: BorderRadius.md,
+      backgroundColor: Colors.background.elevated,
+    },
+    binaryToggleActive: {
+      backgroundColor: `${Colors.semantic.success}20`,
+    },
+    binaryToggleText: {
+      fontSize: Typography.fontSize.bodySmall,
+      fontWeight: '600',
+      color: Colors.text.muted,
+    },
+    binaryToggleTextActive: {
+      color: Colors.semantic.success,
+    },
+  });
 
 export default SessionCard;

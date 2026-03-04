@@ -17,6 +17,7 @@ interface SettingsActions {
   setStreakMilestonesEnabled: (enabled: boolean) => void;
   setLastNotifiedStreakMilestone: (milestone: number) => void;
   setLanguage: (language: 'en' | 'ar') => void;
+  setTheme: (theme: 'dark' | 'light') => void;
   setMinimumViableDay: (ibadahTypeId: string, minimumValue: number) => void;
   removeMinimumViableDay: (ibadahTypeId: string) => void;
   getMinimumViableDay: (ibadahTypeId: string) => number | undefined;
@@ -34,6 +35,7 @@ const DEFAULT_SETTINGS: UserSettings = {
   lastNotifiedStreakMilestone: 0,
   onboardingCompleted: false,
   language: 'en',
+  theme: 'dark',
 };
 
 export const useSettingsStore = create<SettingsState & SettingsActions>()(
@@ -76,6 +78,10 @@ export const useSettingsStore = create<SettingsState & SettingsActions>()(
 
       setLanguage: (language) => {
         set({ language });
+      },
+
+      setTheme: (theme) => {
+        set({ theme });
       },
 
       setMinimumViableDay: (ibadahTypeId, minimumValue) => {
@@ -127,6 +133,7 @@ export const useSettingsStore = create<SettingsState & SettingsActions>()(
         lastNotifiedStreakMilestone: state.lastNotifiedStreakMilestone,
         onboardingCompleted: state.onboardingCompleted,
         language: state.language,
+        theme: state.theme,
       }),
     }
   )

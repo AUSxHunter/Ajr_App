@@ -11,7 +11,8 @@ import {
 import DateTimePicker, { DateTimePickerEvent } from '@react-native-community/datetimepicker';
 import { Modal } from '../ui';
 import { Button } from '../ui';
-import { Colors, Typography, Spacing, BorderRadius } from '../../constants/theme';
+import { Typography, Spacing, BorderRadius } from '../../constants/theme';
+import { useColors } from '../../hooks/useColors';
 import { IbadahType } from '../../types';
 import { useIbadahStore } from '../../store/ibadahStore';
 import { useSettingsStore } from '../../store/settingsStore';
@@ -31,6 +32,7 @@ interface ReminderModalProps {
 }
 
 export const ReminderModal: React.FC<ReminderModalProps> = ({ ibadah, visible, onClose }) => {
+  const Colors = useColors();
   const { t, isRTL } = useTranslation();
   const language = useSettingsStore((state) => state.language);
   const updateIbadahReminder = useIbadahStore((state) => state.updateIbadahReminder);
@@ -127,6 +129,8 @@ export const ReminderModal: React.FC<ReminderModalProps> = ({ ibadah, visible, o
       : ibadah.name
     : '';
 
+  const styles = makeStyles(Colors);
+
   return (
     <Modal
       visible={visible}
@@ -200,48 +204,49 @@ export const ReminderModal: React.FC<ReminderModalProps> = ({ ibadah, visible, o
   );
 };
 
-const styles = StyleSheet.create({
-  content: {
-    gap: Spacing.lg,
-  },
-  row: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-  },
-  rowRTL: {
-    flexDirection: 'row-reverse',
-  },
-  rowLabel: {
-    fontSize: Typography.fontSize.body,
-    color: Colors.text.primary,
-    fontWeight: '500',
-  },
-  timeSection: {
-    gap: Spacing.sm,
-  },
-  timeLabel: {
-    fontSize: Typography.fontSize.bodySmall,
-    fontWeight: '500',
-    color: Colors.text.secondary,
-  },
-  iosPicker: {
-    height: 120,
-  },
-  timeDisplay: {
-    fontSize: Typography.fontSize.h3,
-    fontWeight: '600',
-    color: Colors.text.primary,
-  },
-  setTimeButton: {
-    paddingVertical: Spacing.sm,
-    paddingHorizontal: Spacing.md,
-    borderRadius: BorderRadius.md,
-    backgroundColor: Colors.background.elevated,
-  },
-  setTimeButtonText: {
-    fontSize: Typography.fontSize.bodySmall,
-    fontWeight: '600',
-    color: Colors.accent.primary,
-  },
-});
+const makeStyles = (Colors: ReturnType<typeof import('../../hooks/useColors').useColors>) =>
+  StyleSheet.create({
+    content: {
+      gap: Spacing.lg,
+    },
+    row: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      justifyContent: 'space-between',
+    },
+    rowRTL: {
+      flexDirection: 'row-reverse',
+    },
+    rowLabel: {
+      fontSize: Typography.fontSize.body,
+      color: Colors.text.primary,
+      fontWeight: '500',
+    },
+    timeSection: {
+      gap: Spacing.sm,
+    },
+    timeLabel: {
+      fontSize: Typography.fontSize.bodySmall,
+      fontWeight: '500',
+      color: Colors.text.secondary,
+    },
+    iosPicker: {
+      height: 120,
+    },
+    timeDisplay: {
+      fontSize: Typography.fontSize.h3,
+      fontWeight: '600',
+      color: Colors.text.primary,
+    },
+    setTimeButton: {
+      paddingVertical: Spacing.sm,
+      paddingHorizontal: Spacing.md,
+      borderRadius: BorderRadius.md,
+      backgroundColor: Colors.background.elevated,
+    },
+    setTimeButtonText: {
+      fontSize: Typography.fontSize.bodySmall,
+      fontWeight: '600',
+      color: Colors.accent.primary,
+    },
+  });

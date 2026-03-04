@@ -3,12 +3,16 @@ import { View, Text, StyleSheet, ScrollView } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Stack } from 'expo-router';
 import { Feather } from '@expo/vector-icons';
-import { Colors, Typography, Spacing, BorderRadius } from '../../constants/theme';
+import { Typography, Spacing } from '../../constants/theme';
 import { Card } from '../../components/ui';
 import { useTranslation } from '../../hooks/useTranslation';
+import { useColors } from '../../hooks/useColors';
 
 export default function AccountScreen() {
   const { t } = useTranslation();
+  const Colors = useColors();
+  const styles = makeStyles(Colors);
+
   return (
     <>
       <Stack.Screen options={{ title: t('account.title') }} />
@@ -26,10 +30,10 @@ export default function AccountScreen() {
             <Text style={styles.description}>{t('account.cloudSyncDesc')}</Text>
           </View>
 
-          <Card style={styles.comingSoonCard}>
+          <Card style={[styles.comingSoonCard, { backgroundColor: `${Colors.accent.primary}10`, borderColor: Colors.accent.muted }]}>
             <Feather name="clock" size={24} color={Colors.accent.primary} />
             <View style={styles.comingSoonText}>
-              <Text style={styles.comingSoonTitle}>{t('account.comingSoon')}</Text>
+              <Text style={[styles.comingSoonTitle, { color: Colors.accent.primary }]}>{t('account.comingSoon')}</Text>
               <Text style={styles.comingSoonDescription}>{t('account.comingSoonDesc')}</Text>
             </View>
           </Card>
@@ -55,89 +59,86 @@ export default function AccountScreen() {
               </View>
             </View>
           </Card>
-
         </ScrollView>
       </SafeAreaView>
     </>
   );
 }
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: Colors.background.primary,
-  },
-  scrollView: {
-    flex: 1,
-  },
-  content: {
-    padding: Spacing.md,
-    gap: Spacing.lg,
-  },
-  iconSection: {
-    alignItems: 'center',
-    paddingVertical: Spacing.xl,
-    gap: Spacing.md,
-  },
-  iconContainer: {
-    width: 100,
-    height: 100,
-    borderRadius: 50,
-    backgroundColor: Colors.background.card,
-    alignItems: 'center',
-    justifyContent: 'center',
-    marginBottom: Spacing.sm,
-  },
-  title: {
-    fontSize: Typography.fontSize.h2,
-    fontWeight: '700',
-    color: Colors.text.primary,
-  },
-  description: {
-    fontSize: Typography.fontSize.body,
-    color: Colors.text.secondary,
-    textAlign: 'center',
-    maxWidth: 280,
-  },
-  comingSoonCard: {
-    flexDirection: 'row',
-    gap: Spacing.md,
-    backgroundColor: `${Colors.accent.primary}10`,
-    borderWidth: 1,
-    borderColor: Colors.accent.muted,
-  },
-  comingSoonText: {
-    flex: 1,
-    gap: Spacing.xs,
-  },
-  comingSoonTitle: {
-    fontSize: Typography.fontSize.body,
-    fontWeight: '600',
-    color: Colors.accent.primary,
-  },
-  comingSoonDescription: {
-    fontSize: Typography.fontSize.bodySmall,
-    color: Colors.text.secondary,
-    lineHeight: Typography.fontSize.bodySmall * 1.4,
-  },
-  featuresCard: {
-    gap: Spacing.md,
-  },
-  featuresTitle: {
-    fontSize: Typography.fontSize.body,
-    fontWeight: '600',
-    color: Colors.text.primary,
-  },
-  featuresList: {
-    gap: Spacing.sm,
-  },
-  featureRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: Spacing.sm,
-  },
-  featureText: {
-    fontSize: Typography.fontSize.body,
-    color: Colors.text.secondary,
-  },
-});
+const makeStyles = (Colors: ReturnType<typeof import('../../hooks/useColors').useColors>) =>
+  StyleSheet.create({
+    container: {
+      flex: 1,
+      backgroundColor: Colors.background.primary,
+    },
+    scrollView: {
+      flex: 1,
+    },
+    content: {
+      padding: Spacing.md,
+      gap: Spacing.lg,
+    },
+    iconSection: {
+      alignItems: 'center',
+      paddingVertical: Spacing.xl,
+      gap: Spacing.md,
+    },
+    iconContainer: {
+      width: 100,
+      height: 100,
+      borderRadius: 50,
+      backgroundColor: Colors.background.card,
+      alignItems: 'center',
+      justifyContent: 'center',
+      marginBottom: Spacing.sm,
+    },
+    title: {
+      fontSize: Typography.fontSize.h2,
+      fontWeight: '700',
+      color: Colors.text.primary,
+    },
+    description: {
+      fontSize: Typography.fontSize.body,
+      color: Colors.text.secondary,
+      textAlign: 'center',
+      maxWidth: 280,
+    },
+    comingSoonCard: {
+      flexDirection: 'row',
+      gap: Spacing.md,
+      borderWidth: 1,
+    },
+    comingSoonText: {
+      flex: 1,
+      gap: Spacing.xs,
+    },
+    comingSoonTitle: {
+      fontSize: Typography.fontSize.body,
+      fontWeight: '600',
+    },
+    comingSoonDescription: {
+      fontSize: Typography.fontSize.bodySmall,
+      color: Colors.text.secondary,
+      lineHeight: Typography.fontSize.bodySmall * 1.4,
+    },
+    featuresCard: {
+      gap: Spacing.md,
+    },
+    featuresTitle: {
+      fontSize: Typography.fontSize.body,
+      fontWeight: '600',
+      color: Colors.text.primary,
+    },
+    featuresList: {
+      gap: Spacing.sm,
+    },
+    featureRow: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      gap: Spacing.sm,
+    },
+    featureText: {
+      fontSize: Typography.fontSize.body,
+      color: Colors.text.secondary,
+    },
+  });

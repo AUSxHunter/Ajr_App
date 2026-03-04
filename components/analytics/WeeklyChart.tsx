@@ -2,7 +2,8 @@ import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 import { format, parseISO } from 'date-fns';
 import { Card } from '../ui';
-import { Colors, Typography, Spacing, BorderRadius } from '../../constants/theme';
+import { Typography, Spacing, BorderRadius } from '../../constants/theme';
+import { useColors } from '../../hooks/useColors';
 import { DailyStats } from '../../types';
 
 interface WeeklyChartProps {
@@ -11,7 +12,10 @@ interface WeeklyChartProps {
 }
 
 export const WeeklyChart: React.FC<WeeklyChartProps> = ({ dailyStats, title = 'This Week' }) => {
+  const Colors = useColors();
   const maxVolume = Math.max(...dailyStats.map((d) => d.totalVolume), 1);
+
+  const styles = makeStyles(Colors);
 
   return (
     <Card style={styles.container}>
@@ -45,50 +49,51 @@ export const WeeklyChart: React.FC<WeeklyChartProps> = ({ dailyStats, title = 'T
   );
 };
 
-const styles = StyleSheet.create({
-  container: {
-    gap: Spacing.md,
-  },
-  title: {
-    fontSize: Typography.fontSize.body,
-    fontWeight: '600',
-    color: Colors.text.primary,
-  },
-  chartContainer: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    height: 150,
-    paddingTop: Spacing.md,
-  },
-  barContainer: {
-    flex: 1,
-    alignItems: 'center',
-    gap: Spacing.xs,
-  },
-  barWrapper: {
-    flex: 1,
-    width: '100%',
-    justifyContent: 'flex-end',
-    alignItems: 'center',
-    paddingHorizontal: 4,
-  },
-  bar: {
-    width: '80%',
-    borderRadius: BorderRadius.sm,
-    minHeight: 4,
-  },
-  dayLabel: {
-    fontSize: Typography.fontSize.caption,
-    color: Colors.text.muted,
-    fontWeight: '500',
-  },
-  dayLabelToday: {
-    color: Colors.accent.primary,
-  },
-  volumeLabel: {
-    fontSize: Typography.fontSize.xs,
-    color: Colors.text.muted,
-  },
-});
+const makeStyles = (Colors: ReturnType<typeof import('../../hooks/useColors').useColors>) =>
+  StyleSheet.create({
+    container: {
+      gap: Spacing.md,
+    },
+    title: {
+      fontSize: Typography.fontSize.body,
+      fontWeight: '600',
+      color: Colors.text.primary,
+    },
+    chartContainer: {
+      flexDirection: 'row',
+      justifyContent: 'space-between',
+      height: 150,
+      paddingTop: Spacing.md,
+    },
+    barContainer: {
+      flex: 1,
+      alignItems: 'center',
+      gap: Spacing.xs,
+    },
+    barWrapper: {
+      flex: 1,
+      width: '100%',
+      justifyContent: 'flex-end',
+      alignItems: 'center',
+      paddingHorizontal: 4,
+    },
+    bar: {
+      width: '80%',
+      borderRadius: BorderRadius.sm,
+      minHeight: 4,
+    },
+    dayLabel: {
+      fontSize: Typography.fontSize.caption,
+      color: Colors.text.muted,
+      fontWeight: '500',
+    },
+    dayLabelToday: {
+      color: Colors.accent.primary,
+    },
+    volumeLabel: {
+      fontSize: Typography.fontSize.xs,
+      color: Colors.text.muted,
+    },
+  });
 
 export default WeeklyChart;

@@ -1,0 +1,17 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(npx tsc:*)",
+      "Bash(npx expo:*)",
+      "Bash(node:*)",
+      "mcp__ide__getDiagnostics",
+      "Bash(python3:*)",
+      "Bash(npm install:*)",
+      "Bash(powershell:*)",
+      "Bash(ls:*)",
+      "Bash(curl:*)",
+      "Bash(xxd:*)",
+      "Bash(xargs grep:*)"
+    ]
+  }
+}

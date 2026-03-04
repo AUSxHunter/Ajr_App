@@ -4,16 +4,18 @@ import { useLocalSearchParams } from 'expo-router';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Feather } from '@expo/vector-icons';
 import { format, parseISO } from 'date-fns';
-import { Colors, Typography, Spacing, BorderRadius } from '../../constants/theme';
+import { Typography, Spacing, BorderRadius } from '../../constants/theme';
 import { Card, EmptyState, ConfirmModal } from '../../components/ui';
 import { AddSetModal } from '../../components/session';
 import { useSessionStore } from '../../store/sessionStore';
 import { useIbadahStore } from '../../store/ibadahStore';
 import { SessionSet, IbadahType } from '../../types';
 import { useTranslation } from '../../hooks/useTranslation';
+import { useColors } from '../../hooks/useColors';
 
 export default function SessionDetailScreen() {
   const { t, tUnit } = useTranslation();
+  const Colors = useColors();
   const { id } = useLocalSearchParams<{ id: string }>();
   const [editModalVisible, setEditModalVisible] = useState(false);
   const [deleteModalVisible, setDeleteModalVisible] = useState(false);
@@ -67,6 +69,8 @@ export default function SessionDetailScreen() {
   };
 
   const formattedDate = session ? format(parseISO(session.sessionDate), 'EEEE, MMMM d, yyyy') : '';
+
+  const styles = makeStyles(Colors);
 
   if (!session) {
     return (
@@ -191,112 +195,113 @@ export default function SessionDetailScreen() {
   );
 }
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: Colors.background.primary,
-  },
-  scrollView: {
-    flex: 1,
-  },
-  content: {
-    padding: Spacing.md,
-    gap: Spacing.lg,
-  },
-  headerCard: {
-    alignItems: 'center',
-    paddingVertical: Spacing.lg,
-  },
-  dateLabel: {
-    fontSize: Typography.fontSize.bodySmall,
-    color: Colors.text.muted,
-    marginBottom: Spacing.xs,
-  },
-  dateValue: {
-    fontSize: Typography.fontSize.h2,
-    fontWeight: '700',
-    color: Colors.text.primary,
-    marginBottom: Spacing.md,
-  },
-  statsRow: {
-    flexDirection: 'row',
-    gap: Spacing.xl,
-  },
-  stat: {
-    alignItems: 'center',
-  },
-  statValue: {
-    fontSize: Typography.fontSize.h1,
-    fontWeight: '700',
-    color: Colors.accent.primary,
-  },
-  statLabel: {
-    fontSize: Typography.fontSize.bodySmall,
-    color: Colors.text.secondary,
-  },
-  sectionTitle: {
-    fontSize: Typography.fontSize.h3,
-    fontWeight: '600',
-    color: Colors.text.primary,
-  },
-  setsList: {
-    gap: Spacing.sm,
-  },
-  setCard: {
-    gap: Spacing.xs,
-  },
-  setHeaderRow: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    marginBottom: Spacing.xs,
-  },
-  setHeader: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: Spacing.sm,
-  },
-  setActions: {
-    flexDirection: 'row',
-    gap: Spacing.sm,
-  },
-  actionButton: {
-    padding: Spacing.xs,
-    borderRadius: BorderRadius.sm,
-  },
-  setIndicator: {
-    width: 4,
-    height: 16,
-    borderRadius: 2,
-  },
-  setNumber: {
-    fontSize: Typography.fontSize.caption,
-    color: Colors.text.muted,
-    fontWeight: '500',
-  },
-  ibadahName: {
-    fontSize: Typography.fontSize.body,
-    color: Colors.text.primary,
-    fontWeight: '500',
-  },
-  setValue: {
-    fontSize: Typography.fontSize.h2,
-    fontWeight: '700',
-    color: Colors.accent.primary,
-  },
-  setNotes: {
-    fontSize: Typography.fontSize.bodySmall,
-    color: Colors.text.secondary,
-    marginTop: Spacing.xs,
-  },
-  emptyText: {
-    fontSize: Typography.fontSize.body,
-    color: Colors.text.muted,
-    textAlign: 'center',
-  },
-  notesText: {
-    fontSize: Typography.fontSize.body,
-    color: Colors.text.secondary,
-    lineHeight: Typography.fontSize.body * 1.5,
-  },
-});
+const makeStyles = (Colors: ReturnType<typeof import('../../hooks/useColors').useColors>) =>
+  StyleSheet.create({
+    container: {
+      flex: 1,
+      backgroundColor: Colors.background.primary,
+    },
+    scrollView: {
+      flex: 1,
+    },
+    content: {
+      padding: Spacing.md,
+      gap: Spacing.lg,
+    },
+    headerCard: {
+      alignItems: 'center',
+      paddingVertical: Spacing.lg,
+    },
+    dateLabel: {
+      fontSize: Typography.fontSize.bodySmall,
+      color: Colors.text.muted,
+      marginBottom: Spacing.xs,
+    },
+    dateValue: {
+      fontSize: Typography.fontSize.h2,
+      fontWeight: '700',
+      color: Colors.text.primary,
+      marginBottom: Spacing.md,
+    },
+    statsRow: {
+      flexDirection: 'row',
+      gap: Spacing.xl,
+    },
+    stat: {
+      alignItems: 'center',
+    },
+    statValue: {
+      fontSize: Typography.fontSize.h1,
+      fontWeight: '700',
+      color: Colors.accent.primary,
+    },
+    statLabel: {
+      fontSize: Typography.fontSize.bodySmall,
+      color: Colors.text.secondary,
+    },
+    sectionTitle: {
+      fontSize: Typography.fontSize.h3,
+      fontWeight: '600',
+      color: Colors.text.primary,
+    },
+    setsList: {
+      gap: Spacing.sm,
+    },
+    setCard: {
+      gap: Spacing.xs,
+    },
+    setHeaderRow: {
+      flexDirection: 'row',
+      justifyContent: 'space-between',
+      alignItems: 'center',
+      marginBottom: Spacing.xs,
+    },
+    setHeader: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      gap: Spacing.sm,
+    },
+    setActions: {
+      flexDirection: 'row',
+      gap: Spacing.sm,
+    },
+    actionButton: {
+      padding: Spacing.xs,
+      borderRadius: BorderRadius.sm,
+    },
+    setIndicator: {
+      width: 4,
+      height: 16,
+      borderRadius: 2,
+    },
+    setNumber: {
+      fontSize: Typography.fontSize.caption,
+      color: Colors.text.muted,
+      fontWeight: '500',
+    },
+    ibadahName: {
+      fontSize: Typography.fontSize.body,
+      color: Colors.text.primary,
+      fontWeight: '500',
+    },
+    setValue: {
+      fontSize: Typography.fontSize.h2,
+      fontWeight: '700',
+      color: Colors.accent.primary,
+    },
+    setNotes: {
+      fontSize: Typography.fontSize.bodySmall,
+      color: Colors.text.secondary,
+      marginTop: Spacing.xs,
+    },
+    emptyText: {
+      fontSize: Typography.fontSize.body,
+      color: Colors.text.muted,
+      textAlign: 'center',
+    },
+    notesText: {
+      fontSize: Typography.fontSize.body,
+      color: Colors.text.secondary,
+      lineHeight: Typography.fontSize.body * 1.5,
+    },
+  });

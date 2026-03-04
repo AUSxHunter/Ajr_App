@@ -20,7 +20,8 @@ import Animated, {
   withSequence,
   withTiming,
 } from 'react-native-reanimated';
-import { Colors, Typography, Spacing, BorderRadius } from '../../constants/theme';
+import { Typography, Spacing, BorderRadius } from '../../constants/theme';
+import { useColors } from '../../hooks/useColors';
 import { Card } from '../../components/ui';
 import { useAdhkarStore } from '../../store/adhkarStore';
 import { useSessionStore } from '../../store/sessionStore';
@@ -56,6 +57,8 @@ const AdhkarItemCard = React.memo(({
   onIncrement,
 }: AdhkarItemCardProps) => {
   const { t, isRTL } = useTranslation();
+  const Colors = useColors();
+  const styles = makeStyles(Colors);
   const currentCount = useAdhkarStore(
     useCallback(
       (s) => {
@@ -78,12 +81,12 @@ const AdhkarItemCard = React.memo(({
 
   const handlePress = () => {
     if (isCompleted) return;
-    
+
     scale.value = withSequence(
       withTiming(0.95, { duration: 50 }),
       withSpring(1, { damping: 10, stiffness: 400 })
     );
-    
+
     Vibration.vibrate(10);
     onIncrement();
   };
@@ -168,6 +171,8 @@ const AdhkarItemCard = React.memo(({
 
 export default function AdhkarReaderScreen() {
   const { t, tUnit, isRTL } = useTranslation();
+  const Colors = useColors();
+  const styles = makeStyles(Colors);
   const { type } = useLocalSearchParams<{ type: string }>();
   const router = useRouter();
   const scrollViewRef = useRef<ScrollView>(null);
@@ -338,214 +343,215 @@ export default function AdhkarReaderScreen() {
   );
 }
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: Colors.background.primary,
-  },
-  headerTitle: {
-    alignItems: 'center',
-  },
-  headerTitleText: {
-    fontSize: Typography.fontSize.body,
-    fontWeight: '600',
-    color: Colors.text.primary,
-  },
-  headerTitleArabic: {
-    fontSize: Typography.fontSize.caption,
-    color: Colors.text.muted,
-  },
-  progressHeader: {
-    padding: Spacing.md,
-    borderBottomWidth: 1,
-    borderBottomColor: Colors.border.default,
-  },
-  progressInfo: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: Spacing.sm,
-  },
-  progressLabel: {
-    fontSize: Typography.fontSize.bodySmall,
-    color: Colors.text.muted,
-  },
-  progressDot: {
-    fontSize: Typography.fontSize.bodySmall,
-    color: Colors.text.muted,
-  },
-  progressCount: {
-    fontSize: Typography.fontSize.bodySmall,
-    fontWeight: '600',
-    color: Colors.text.primary,
-  },
-  progressBar: {
-    height: 8,
-    backgroundColor: Colors.background.elevated,
-    borderRadius: 4,
-    overflow: 'hidden',
-    marginTop: Spacing.sm,
-  },
-  progressFill: {
-    height: '100%',
-    backgroundColor: Colors.ibadah.adhkar,
-    borderRadius: 4,
-  },
-  scrollView: {
-    flex: 1,
-  },
-  scrollContent: {
-    padding: Spacing.md,
-    paddingBottom: Spacing['2xl'],
-  },
-  cardWrapper: {
-    marginBottom: Spacing.lg,
-  },
-  indexBadge: {
-    position: 'absolute',
-    top: -8,
-    start: -8,
-    width: 30,
-    height: 30,
-    borderRadius: 15,
-    backgroundColor: Colors.ibadah.adhkar,
-    alignItems: 'center',
-    justifyContent: 'center',
-    zIndex: 1,
-  },
-  indexText: {
-    fontSize: Typography.fontSize.caption,
-    fontWeight: '700',
-    color: Colors.text.primary,
-    textAlign: 'center',
-    lineHeight: 30,
-  },
-  adhkarCard: {
-    padding: Spacing.lg,
-  },
-  adhkarCardCompleted: {
-    borderColor: Colors.semantic.success,
-    borderWidth: 1,
-    opacity: 0.8,
-  },
-  arabicScrollView: {
-    marginBottom: Spacing.md,
-  },
-  arabicScrollContent: {
-    flexGrow: 1,
-    width: '100%',
-  },
-  arabicWrapper: {
-    width: '100%',
-    direction: 'rtl',
-    alignItems: 'flex-start',
-  },
-  arabicText: {
-    fontSize: 15,
-    lineHeight: 23,
-    color: Colors.text.primary,
-    textAlign: 'left',
-    writingDirection: 'rtl',
-    direction: 'rtl',
-    fontFamily: 'System',
-  },
-  translationContainer: {
-    marginBottom: Spacing.sm,
-    paddingTop: Spacing.sm,
-    borderTopWidth: 1,
-    borderTopColor: Colors.border.default,
-  },
-  translationText: {
-    fontSize: Typography.fontSize.bodySmall,
-    lineHeight: 22,
-    color: Colors.text.secondary,
-  },
-  sourceText: {
-    fontSize: Typography.fontSize.caption,
-    color: Colors.text.muted,
-    marginBottom: Spacing.md,
-  },
-  counterSection: {
-    alignItems: 'center',
-    paddingVertical: Spacing.xs,
-    borderTopWidth: 1,
-    borderTopColor: Colors.border.default,
-  },
-  counterDisplay: {
-    flexDirection: 'row',
-    alignItems: 'baseline',
-  },
-  counterCurrent: {
-    fontSize: Typography.fontSize.h3,
-    fontWeight: '700',
-    color: Colors.ibadah.adhkar,
-  },
-  counterSeparator: {
-    fontSize: Typography.fontSize.body,
-    color: Colors.text.muted,
-    marginHorizontal: 4,
-  },
-  counterTotal: {
-    fontSize: Typography.fontSize.body,
-    fontWeight: '500',
-    color: Colors.text.muted,
-  },
-  tapHint: {
-    fontSize: Typography.fontSize.caption,
-    color: Colors.text.muted,
-    marginTop: Spacing.xs,
-  },
-  completedContainer: {
-    alignItems: 'center',
-    gap: Spacing.xs,
-  },
-  completedText: {
-    fontSize: Typography.fontSize.body,
-    fontWeight: '600',
-    color: Colors.semantic.success,
-  },
-  virtueContainer: {
-    flexDirection: 'row',
-    alignItems: 'flex-start',
-    gap: Spacing.xs,
-    marginTop: Spacing.md,
-    padding: Spacing.sm,
-    backgroundColor: `${Colors.semantic.warning}10`,
-    borderRadius: BorderRadius.md,
-  },
-  virtueText: {
-    flex: 1,
-    fontSize: Typography.fontSize.caption,
-    color: Colors.semantic.warning,
-    lineHeight: 18,
-  },
-  completionMessage: {
-    alignItems: 'center',
-    paddingVertical: Spacing['2xl'],
-    gap: Spacing.md,
-  },
-  completionTitle: {
-    fontSize: Typography.fontSize.h2,
-    fontWeight: '700',
-    color: Colors.semantic.success,
-  },
-  completionSubtitle: {
-    fontSize: Typography.fontSize.body,
-    color: Colors.text.secondary,
-    textAlign: 'center',
-  },
-  completeButton: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
-    gap: Spacing.sm,
-    margin: Spacing.md,
-    paddingVertical: Spacing.md,
-    backgroundColor: Colors.semantic.success,
-    borderRadius: BorderRadius.lg,
-  },
-  completeButtonText: {
-    fontSize: Typography.fontSize.body,
-    fontWeight: '600',
-    color: Colors.text.primary,
-  },
-});
+const makeStyles = (Colors: ReturnType<typeof import('../../hooks/useColors').useColors>) =>
+  StyleSheet.create({
+    container: {
+      flex: 1,
+      backgroundColor: Colors.background.primary,
+    },
+    headerTitle: {
+      alignItems: 'center',
+    },
+    headerTitleText: {
+      fontSize: Typography.fontSize.body,
+      fontWeight: '600',
+      color: Colors.text.primary,
+    },
+    headerTitleArabic: {
+      fontSize: Typography.fontSize.caption,
+      color: Colors.text.muted,
+    },
+    progressHeader: {
+      padding: Spacing.md,
+      borderBottomWidth: 1,
+      borderBottomColor: Colors.border.default,
+    },
+    progressInfo: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      gap: Spacing.sm,
+    },
+    progressLabel: {
+      fontSize: Typography.fontSize.bodySmall,
+      color: Colors.text.muted,
+    },
+    progressDot: {
+      fontSize: Typography.fontSize.bodySmall,
+      color: Colors.text.muted,
+    },
+    progressCount: {
+      fontSize: Typography.fontSize.bodySmall,
+      fontWeight: '600',
+      color: Colors.text.primary,
+    },
+    progressBar: {
+      height: 8,
+      backgroundColor: Colors.background.elevated,
+      borderRadius: 4,
+      overflow: 'hidden',
+      marginTop: Spacing.sm,
+    },
+    progressFill: {
+      height: '100%',
+      backgroundColor: Colors.ibadah.adhkar,
+      borderRadius: 4,
+    },
+    scrollView: {
+      flex: 1,
+    },
+    scrollContent: {
+      padding: Spacing.md,
+      paddingBottom: Spacing['2xl'],
+    },
+    cardWrapper: {
+      marginBottom: Spacing.lg,
+    },
+    indexBadge: {
+      position: 'absolute',
+      top: -8,
+      start: -8,
+      width: 30,
+      height: 30,
+      borderRadius: 15,
+      backgroundColor: Colors.ibadah.adhkar,
+      alignItems: 'center',
+      justifyContent: 'center',
+      zIndex: 1,
+    },
+    indexText: {
+      fontSize: Typography.fontSize.caption,
+      fontWeight: '700',
+      color: Colors.text.primary,
+      textAlign: 'center',
+      lineHeight: 30,
+    },
+    adhkarCard: {
+      padding: Spacing.lg,
+    },
+    adhkarCardCompleted: {
+      borderColor: Colors.semantic.success,
+      borderWidth: 1,
+      opacity: 0.8,
+    },
+    arabicScrollView: {
+      marginBottom: Spacing.md,
+    },
+    arabicScrollContent: {
+      flexGrow: 1,
+      width: '100%',
+    },
+    arabicWrapper: {
+      width: '100%',
+      direction: 'rtl',
+      alignItems: 'flex-start',
+    },
+    arabicText: {
+      fontSize: 15,
+      lineHeight: 23,
+      color: Colors.text.primary,
+      textAlign: 'left',
+      writingDirection: 'rtl',
+      direction: 'rtl',
+      fontFamily: 'System',
+    },
+    translationContainer: {
+      marginBottom: Spacing.sm,
+      paddingTop: Spacing.sm,
+      borderTopWidth: 1,
+      borderTopColor: Colors.border.default,
+    },
+    translationText: {
+      fontSize: Typography.fontSize.bodySmall,
+      lineHeight: 22,
+      color: Colors.text.secondary,
+    },
+    sourceText: {
+      fontSize: Typography.fontSize.caption,
+      color: Colors.text.muted,
+      marginBottom: Spacing.md,
+    },
+    counterSection: {
+      alignItems: 'center',
+      paddingVertical: Spacing.xs,
+      borderTopWidth: 1,
+      borderTopColor: Colors.border.default,
+    },
+    counterDisplay: {
+      flexDirection: 'row',
+      alignItems: 'baseline',
+    },
+    counterCurrent: {
+      fontSize: Typography.fontSize.h3,
+      fontWeight: '700',
+      color: Colors.ibadah.adhkar,
+    },
+    counterSeparator: {
+      fontSize: Typography.fontSize.body,
+      color: Colors.text.muted,
+      marginHorizontal: 4,
+    },
+    counterTotal: {
+      fontSize: Typography.fontSize.body,
+      fontWeight: '500',
+      color: Colors.text.muted,
+    },
+    tapHint: {
+      fontSize: Typography.fontSize.caption,
+      color: Colors.text.muted,
+      marginTop: Spacing.xs,
+    },
+    completedContainer: {
+      alignItems: 'center',
+      gap: Spacing.xs,
+    },
+    completedText: {
+      fontSize: Typography.fontSize.body,
+      fontWeight: '600',
+      color: Colors.semantic.success,
+    },
+    virtueContainer: {
+      flexDirection: 'row',
+      alignItems: 'flex-start',
+      gap: Spacing.xs,
+      marginTop: Spacing.md,
+      padding: Spacing.sm,
+      backgroundColor: `${Colors.semantic.warning}10`,
+      borderRadius: BorderRadius.md,
+    },
+    virtueText: {
+      flex: 1,
+      fontSize: Typography.fontSize.caption,
+      color: Colors.semantic.warning,
+      lineHeight: 18,
+    },
+    completionMessage: {
+      alignItems: 'center',
+      paddingVertical: Spacing['2xl'],
+      gap: Spacing.md,
+    },
+    completionTitle: {
+      fontSize: Typography.fontSize.h2,
+      fontWeight: '700',
+      color: Colors.semantic.success,
+    },
+    completionSubtitle: {
+      fontSize: Typography.fontSize.body,
+      color: Colors.text.secondary,
+      textAlign: 'center',
+    },
+    completeButton: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      justifyContent: 'center',
+      gap: Spacing.sm,
+      margin: Spacing.md,
+      paddingVertical: Spacing.md,
+      backgroundColor: Colors.semantic.success,
+      borderRadius: BorderRadius.lg,
+    },
+    completeButtonText: {
+      fontSize: Typography.fontSize.body,
+      fontWeight: '600',
+      color: Colors.text.primary,
+    },
+  });

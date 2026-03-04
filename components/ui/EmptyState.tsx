@@ -1,7 +1,8 @@
 import React from 'react';
 import { View, Text, StyleSheet, ViewStyle } from 'react-native';
 import { Feather } from '@expo/vector-icons';
-import { Colors, Typography, Spacing } from '../../constants/theme';
+import { Typography, Spacing } from '../../constants/theme';
+import { useColors } from '../../hooks/useColors';
 import { Button } from './Button';
 
 interface EmptyStateProps {
@@ -21,13 +22,14 @@ export const EmptyState: React.FC<EmptyStateProps> = ({
   onAction,
   style,
 }) => {
+  const Colors = useColors();
   return (
     <View style={[styles.container, style]}>
       <View style={styles.iconContainer}>
         <Feather name={icon} size={48} color={Colors.text.muted} />
       </View>
-      <Text style={styles.title}>{title}</Text>
-      {description && <Text style={styles.description}>{description}</Text>}
+      <Text style={[styles.title, { color: Colors.text.primary }]}>{title}</Text>
+      {description && <Text style={[styles.description, { color: Colors.text.secondary }]}>{description}</Text>}
       {actionLabel && onAction && (
         <Button
           title={actionLabel}
@@ -54,13 +56,11 @@ const styles = StyleSheet.create({
   title: {
     fontSize: Typography.fontSize.h3,
     fontWeight: '600',
-    color: Colors.text.primary,
     textAlign: 'center',
     marginBottom: Spacing.sm,
   },
   description: {
     fontSize: Typography.fontSize.body,
-    color: Colors.text.secondary,
     textAlign: 'center',
     lineHeight: Typography.fontSize.body * Typography.lineHeight.relaxed,
   },

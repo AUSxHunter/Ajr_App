@@ -2,7 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import { Feather } from '@expo/vector-icons';
 import { Modal, Button, NumberInput } from '../ui';
-import { Colors, Typography, Spacing, BorderRadius } from '../../constants/theme';
+import { Typography, Spacing, BorderRadius } from '../../constants/theme';
+import { useColors } from '../../hooks/useColors';
 import { IbadahType } from '../../types';
 import { useTranslation } from '../../hooks/useTranslation';
 
@@ -25,6 +26,7 @@ export const AddSetModal: React.FC<AddSetModalProps> = ({
   timerSeconds,
   isEditing = false,
 }) => {
+  const Colors = useColors();
   const [value, setValue] = useState('');
   const [binaryValue, setBinaryValue] = useState<boolean | null>(null);
 
@@ -68,6 +70,8 @@ export const AddSetModal: React.FC<AddSetModalProps> = ({
   };
 
   const presetValues = getPresetValues(ibadahType.unit);
+
+  const styles = makeStyles(Colors);
 
   if (isBinary || isYesNo) {
     const handleYes = () => {
@@ -226,126 +230,127 @@ const getPresetValues = (unit: string): number[] => {
   }
 };
 
-const styles = StyleSheet.create({
-  content: {
-    gap: Spacing.lg,
-  },
-  inputSection: {
-    alignItems: 'center',
-    paddingVertical: Spacing.md,
-  },
-  inputRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: Spacing.lg,
-  },
-  adjustButton: {
-    width: 56,
-    height: 56,
-    borderRadius: BorderRadius.full,
-    backgroundColor: Colors.background.elevated,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  valueContainer: {
-    alignItems: 'center',
-    minWidth: 120,
-  },
-  valueInput: {
-    fontSize: Typography.fontSize.displayLarge,
-    fontWeight: '700',
-    color: Colors.text.primary,
-    textAlign: 'center',
-    backgroundColor: 'transparent',
-    borderWidth: 0,
-    padding: 0,
-  },
-  unitLabel: {
-    fontSize: Typography.fontSize.body,
-    color: Colors.text.muted,
-    marginTop: Spacing.xs,
-  },
-  presets: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    gap: Spacing.sm,
-    justifyContent: 'center',
-  },
-  presetButton: {
-    paddingVertical: Spacing.sm,
-    paddingHorizontal: Spacing.md,
-    borderRadius: BorderRadius.lg,
-    backgroundColor: Colors.background.elevated,
-    minWidth: 56,
-    alignItems: 'center',
-  },
-  presetButtonActive: {
-    backgroundColor: Colors.accent.primary,
-  },
-  presetText: {
-    fontSize: Typography.fontSize.body,
-    fontWeight: '500',
-    color: Colors.text.secondary,
-  },
-  presetTextActive: {
-    color: Colors.text.primary,
-  },
-  timerInfo: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
-    gap: Spacing.sm,
-    paddingVertical: Spacing.sm,
-    backgroundColor: Colors.background.elevated,
-    borderRadius: BorderRadius.md,
-  },
-  timerText: {
-    fontSize: Typography.fontSize.bodySmall,
-    color: Colors.text.muted,
-  },
-  binaryQuestion: {
-    fontSize: Typography.fontSize.h2,
-    fontWeight: '600',
-    color: Colors.text.primary,
-    textAlign: 'center',
-    marginBottom: Spacing.md,
-  },
-  binaryOptions: {
-    flexDirection: 'row',
-    justifyContent: 'center',
-    gap: Spacing.xl,
-    marginBottom: Spacing.lg,
-  },
-  binaryButton: {
-    alignItems: 'center',
-    justifyContent: 'center',
-    padding: Spacing.lg,
-    borderRadius: BorderRadius.lg,
-    backgroundColor: Colors.background.elevated,
-    minWidth: 100,
-    gap: Spacing.sm,
-  },
-  binaryButtonActive: {
-    backgroundColor: `${Colors.semantic.success}20`,
-    borderWidth: 2,
-    borderColor: Colors.semantic.success,
-  },
-  binaryButtonInactive: {
-    backgroundColor: `${Colors.semantic.error}20`,
-    borderWidth: 2,
-    borderColor: Colors.semantic.error,
-  },
-  binaryButtonText: {
-    fontSize: Typography.fontSize.body,
-    fontWeight: '600',
-    color: Colors.text.muted,
-  },
-  binaryButtonTextActive: {
-    color: Colors.semantic.success,
-  },
-  binaryButtonTextInactive: {
-    color: Colors.semantic.error,
-  },
-});
+const makeStyles = (Colors: ReturnType<typeof import('../../hooks/useColors').useColors>) =>
+  StyleSheet.create({
+    content: {
+      gap: Spacing.lg,
+    },
+    inputSection: {
+      alignItems: 'center',
+      paddingVertical: Spacing.md,
+    },
+    inputRow: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      gap: Spacing.lg,
+    },
+    adjustButton: {
+      width: 56,
+      height: 56,
+      borderRadius: BorderRadius.full,
+      backgroundColor: Colors.background.elevated,
+      alignItems: 'center',
+      justifyContent: 'center',
+    },
+    valueContainer: {
+      alignItems: 'center',
+      minWidth: 120,
+    },
+    valueInput: {
+      fontSize: Typography.fontSize.displayLarge,
+      fontWeight: '700',
+      color: Colors.text.primary,
+      textAlign: 'center',
+      backgroundColor: 'transparent',
+      borderWidth: 0,
+      padding: 0,
+    },
+    unitLabel: {
+      fontSize: Typography.fontSize.body,
+      color: Colors.text.muted,
+      marginTop: Spacing.xs,
+    },
+    presets: {
+      flexDirection: 'row',
+      flexWrap: 'wrap',
+      gap: Spacing.sm,
+      justifyContent: 'center',
+    },
+    presetButton: {
+      paddingVertical: Spacing.sm,
+      paddingHorizontal: Spacing.md,
+      borderRadius: BorderRadius.lg,
+      backgroundColor: Colors.background.elevated,
+      minWidth: 56,
+      alignItems: 'center',
+    },
+    presetButtonActive: {
+      backgroundColor: Colors.accent.primary,
+    },
+    presetText: {
+      fontSize: Typography.fontSize.body,
+      fontWeight: '500',
+      color: Colors.text.secondary,
+    },
+    presetTextActive: {
+      color: Colors.text.primary,
+    },
+    timerInfo: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      justifyContent: 'center',
+      gap: Spacing.sm,
+      paddingVertical: Spacing.sm,
+      backgroundColor: Colors.background.elevated,
+      borderRadius: BorderRadius.md,
+    },
+    timerText: {
+      fontSize: Typography.fontSize.bodySmall,
+      color: Colors.text.muted,
+    },
+    binaryQuestion: {
+      fontSize: Typography.fontSize.h2,
+      fontWeight: '600',
+      color: Colors.text.primary,
+      textAlign: 'center',
+      marginBottom: Spacing.md,
+    },
+    binaryOptions: {
+      flexDirection: 'row',
+      justifyContent: 'center',
+      gap: Spacing.xl,
+      marginBottom: Spacing.lg,
+    },
+    binaryButton: {
+      alignItems: 'center',
+      justifyContent: 'center',
+      padding: Spacing.lg,
+      borderRadius: BorderRadius.lg,
+      backgroundColor: Colors.background.elevated,
+      minWidth: 100,
+      gap: Spacing.sm,
+    },
+    binaryButtonActive: {
+      backgroundColor: `${Colors.semantic.success}20`,
+      borderWidth: 2,
+      borderColor: Colors.semantic.success,
+    },
+    binaryButtonInactive: {
+      backgroundColor: `${Colors.semantic.error}20`,
+      borderWidth: 2,
+      borderColor: Colors.semantic.error,
+    },
+    binaryButtonText: {
+      fontSize: Typography.fontSize.body,
+      fontWeight: '600',
+      color: Colors.text.muted,
+    },
+    binaryButtonTextActive: {
+      color: Colors.semantic.success,
+    },
+    binaryButtonTextInactive: {
+      color: Colors.semantic.error,
+    },
+  });
 
 export default AddSetModal;

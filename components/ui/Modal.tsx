@@ -12,7 +12,8 @@ import {
   ModalProps as RNModalProps,
 } from 'react-native';
 import { Feather } from '@expo/vector-icons';
-import { Colors, Typography, Spacing, BorderRadius } from '../../constants/theme';
+import { Typography, Spacing, BorderRadius } from '../../constants/theme';
+import { useColors } from '../../hooks/useColors';
 
 interface ModalProps extends Omit<RNModalProps, 'visible'> {
   visible: boolean;
@@ -34,6 +35,8 @@ export const Modal: React.FC<ModalProps> = ({
   position = 'center',
   ...props
 }) => {
+  const Colors = useColors();
+
   return (
     <RNModal
       visible={visible}
@@ -51,11 +54,12 @@ export const Modal: React.FC<ModalProps> = ({
                 styles.container,
                 styles[`size_${size}`],
                 position === 'bottom' && styles.containerBottom,
+                { backgroundColor: Colors.background.secondary },
               ]}
             >
               {(title || showCloseButton) && (
                 <View style={styles.header}>
-                  <Text style={styles.title}>{title}</Text>
+                  <Text style={[styles.title, { color: Colors.text.primary }]}>{title}</Text>
                   {showCloseButton && (
                     <TouchableOpacity onPress={onClose} style={styles.closeButton}>
                       <Feather name="x" size={24} color={Colors.text.secondary} />
@@ -100,23 +104,31 @@ export const ConfirmModal: React.FC<ConfirmModalProps> = ({
   cancelText = 'Cancel',
   variant = 'default',
 }) => {
+  const Colors = useColors();
+
   return (
     <Modal visible={visible} onClose={onClose} size="sm" showCloseButton={false}>
       <View style={styles.confirmContent}>
-        <Text style={styles.confirmTitle}>{title}</Text>
-        <Text style={styles.confirmMessage}>{message}</Text>
+        <Text style={[styles.confirmTitle, { color: Colors.text.primary }]}>{title}</Text>
+        <Text style={[styles.confirmMessage, { color: Colors.text.secondary }]}>{message}</Text>
         <View style={styles.confirmButtons}>
-          <TouchableOpacity style={styles.cancelButton} onPress={onClose}>
-            <Text style={styles.cancelButtonText}>{cancelText}</Text>
+          <TouchableOpacity
+            style={[styles.cancelButton, { backgroundColor: Colors.background.card }]}
+            onPress={onClose}
+          >
+            <Text style={[styles.buttonText, { color: Colors.text.secondary }]}>{cancelText}</Text>
           </TouchableOpacity>
           <TouchableOpacity
-            style={[styles.confirmButton, variant === 'danger' && styles.confirmButtonDanger]}
+            style={[
+              styles.confirmButton,
+              { backgroundColor: variant === 'danger' ? Colors.semantic.danger : Colors.accent.primary },
+            ]}
             onPress={() => {
               onConfirm();
               onClose();
             }}
           >
-            <Text style={styles.confirmButtonText}>{confirmText}</Text>
+            <Text style={[styles.buttonText, { color: Colors.text.inverse }]}>{confirmText}</Text>
           </TouchableOpacity>
         </View>
       </View>
@@ -137,7 +149,6 @@ const styles = StyleSheet.create({
     padding: 0,
   },
   container: {
-    backgroundColor: Colors.background.secondary,
     borderRadius: BorderRadius.xl,
     maxHeight: '90%',
     width: '100%',
@@ -149,7 +160,6 @@ const styles = StyleSheet.create({
     borderTopRightRadius: BorderRadius['2xl'],
     maxHeight: '85%',
   },
-
   size_sm: {
     maxWidth: 320,
   },
@@ -164,7 +174,6 @@ const styles = StyleSheet.create({
     height: '100%',
     borderRadius: 0,
   },
-
   header: {
     flexDirection: 'row',
     justifyContent: 'space-between',
@@ -176,7 +185,6 @@ const styles = StyleSheet.create({
   title: {
     fontSize: Typography.fontSize.h3,
     fontWeight: '600',
-    color: Colors.text.primary,
     flex: 1,
   },
   closeButton: {
@@ -190,7 +198,6 @@ const styles = StyleSheet.create({
     paddingHorizontal: Spacing.lg,
     paddingBottom: Spacing.lg,
   },
-
   confirmContent: {
     alignItems: 'center',
     paddingTop: Spacing.md,
@@ -198,13 +205,11 @@ const styles = StyleSheet.create({
   confirmTitle: {
     fontSize: Typography.fontSize.h3,
     fontWeight: '600',
-    color: Colors.text.primary,
     marginBottom: Spacing.sm,
     textAlign: 'center',
   },
   confirmMessage: {
     fontSize: Typography.fontSize.body,
-    color: Colors.text.secondary,
     textAlign: 'center',
     marginBottom: Spacing.lg,
   },
@@ -217,28 +222,17 @@ const styles = StyleSheet.create({
     flex: 1,
     paddingVertical: Spacing.sm + 4,
     borderRadius: BorderRadius.lg,
-    backgroundColor: Colors.background.card,
     alignItems: 'center',
-  },
-  cancelButtonText: {
-    fontSize: Typography.fontSize.body,
-    fontWeight: '600',
-    color: Colors.text.secondary,
   },
   confirmButton: {
     flex: 1,
     paddingVertical: Spacing.sm + 4,
     borderRadius: BorderRadius.lg,
-    backgroundColor: Colors.accent.primary,
     alignItems: 'center',
   },
-  confirmButtonDanger: {
-    backgroundColor: Colors.semantic.danger,
-  },
-  confirmButtonText: {
+  buttonText: {
     fontSize: Typography.fontSize.body,
     fontWeight: '600',
-    color: Colors.text.primary,
   },
 });
 

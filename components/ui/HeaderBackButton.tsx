@@ -2,11 +2,13 @@ import React from 'react';
 import { TouchableOpacity } from 'react-native';
 import { router } from 'expo-router';
 import { Feather } from '@expo/vector-icons';
-import { Colors, Spacing } from '../../constants/theme';
+import { Spacing } from '../../constants/theme';
 import { useTranslation } from '../../hooks/useTranslation';
+import { useColors } from '../../hooks/useColors';
 
 export const HeaderBackButton: React.FC = () => {
   const { isRTL } = useTranslation();
+  const Colors = useColors();
   return (
     <TouchableOpacity
       onPress={() => router.back()}

@@ -3,7 +3,8 @@ import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import { Feather } from '@expo/vector-icons';
 import { format, parseISO } from 'date-fns';
 import { Card } from '../ui';
-import { Colors, Typography, Spacing, BorderRadius } from '../../constants/theme';
+import { Typography, Spacing, BorderRadius } from '../../constants/theme';
+import { useColors } from '../../hooks/useColors';
 import { Session, SessionSet, IbadahType } from '../../types';
 import { useTranslation } from '../../hooks/useTranslation';
 
@@ -22,6 +23,7 @@ export const SessionListItem: React.FC<SessionListItemProps> = ({
   onPress,
   onDelete,
 }) => {
+  const Colors = useColors();
   const { t, isRTL } = useTranslation();
   const sessionDate = parseISO(session.sessionDate);
   const dateLabel = format(sessionDate, 'EEEE, MMMM d');
@@ -29,6 +31,8 @@ export const SessionListItem: React.FC<SessionListItemProps> = ({
   const uniqueIbadahIds = [...new Set(sets.map((s) => s.ibadahTypeId))];
   const displayedIbadah = uniqueIbadahIds.slice(0, 4);
   const extraCount = uniqueIbadahIds.length - 4;
+
+  const styles = makeStyles(Colors);
 
   return (
     <Card pressable onPress={onPress} style={styles.container}>
@@ -71,11 +75,11 @@ export const SessionListItem: React.FC<SessionListItemProps> = ({
         </View>
         <View style={styles.actions}>
           {onDelete && (
-            <TouchableOpacity 
+            <TouchableOpacity
               onPress={(e) => {
                 e.stopPropagation();
                 onDelete();
-              }} 
+              }}
               style={styles.deleteButton}
             >
               <Feather name="trash-2" size={18} color={Colors.semantic.danger} />
@@ -88,74 +92,75 @@ export const SessionListItem: React.FC<SessionListItemProps> = ({
   );
 };
 
-const styles = StyleSheet.create({
-  container: {
-    gap: Spacing.md,
-  },
-  header: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'flex-start',
-  },
-  date: {
-    fontSize: Typography.fontSize.body,
-    fontWeight: '600',
-    color: Colors.text.primary,
-  },
-  setCount: {
-    fontSize: Typography.fontSize.bodySmall,
-    color: Colors.text.muted,
-    marginTop: 2,
-  },
-  volumeContainer: {
-    alignItems: 'flex-end',
-  },
-  volume: {
-    fontSize: Typography.fontSize.h2,
-    fontWeight: '700',
-    color: Colors.accent.primary,
-  },
-  volumeLabel: {
-    fontSize: Typography.fontSize.caption,
-    color: Colors.text.muted,
-  },
-  footer: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-  },
-  ibadahIcons: {
-    flexDirection: 'row',
-    gap: Spacing.xs,
-  },
-  ibadahIcon: {
-    width: 28,
-    height: 28,
-    borderRadius: 14,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  extraCount: {
-    width: 28,
-    height: 28,
-    borderRadius: 14,
-    backgroundColor: Colors.background.elevated,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  extraCountText: {
-    fontSize: Typography.fontSize.caption,
-    color: Colors.text.muted,
-    fontWeight: '500',
-  },
-  actions: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: Spacing.sm,
-  },
-  deleteButton: {
-    padding: Spacing.xs,
-  },
-});
+const makeStyles = (Colors: ReturnType<typeof import('../../hooks/useColors').useColors>) =>
+  StyleSheet.create({
+    container: {
+      gap: Spacing.md,
+    },
+    header: {
+      flexDirection: 'row',
+      justifyContent: 'space-between',
+      alignItems: 'flex-start',
+    },
+    date: {
+      fontSize: Typography.fontSize.body,
+      fontWeight: '600',
+      color: Colors.text.primary,
+    },
+    setCount: {
+      fontSize: Typography.fontSize.bodySmall,
+      color: Colors.text.muted,
+      marginTop: 2,
+    },
+    volumeContainer: {
+      alignItems: 'flex-end',
+    },
+    volume: {
+      fontSize: Typography.fontSize.h2,
+      fontWeight: '700',
+      color: Colors.accent.primary,
+    },
+    volumeLabel: {
+      fontSize: Typography.fontSize.caption,
+      color: Colors.text.muted,
+    },
+    footer: {
+      flexDirection: 'row',
+      justifyContent: 'space-between',
+      alignItems: 'center',
+    },
+    ibadahIcons: {
+      flexDirection: 'row',
+      gap: Spacing.xs,
+    },
+    ibadahIcon: {
+      width: 28,
+      height: 28,
+      borderRadius: 14,
+      alignItems: 'center',
+      justifyContent: 'center',
+    },
+    extraCount: {
+      width: 28,
+      height: 28,
+      borderRadius: 14,
+      backgroundColor: Colors.background.elevated,
+      alignItems: 'center',
+      justifyContent: 'center',
+    },
+    extraCountText: {
+      fontSize: Typography.fontSize.caption,
+      color: Colors.text.muted,
+      fontWeight: '500',
+    },
+    actions: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      gap: Spacing.sm,
+    },
+    deleteButton: {
+      padding: Spacing.xs,
+    },
+  });
 
 export default SessionListItem;

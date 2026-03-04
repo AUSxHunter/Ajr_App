@@ -3,14 +3,16 @@ import { View, Text, StyleSheet, ScrollView } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Stack } from 'expo-router';
 import { Feather } from '@expo/vector-icons';
-import { Colors, Typography, Spacing, BorderRadius } from '../../constants/theme';
+import { Typography, Spacing } from '../../constants/theme';
 import { Card, NumberInput, Button } from '../../components/ui';
 import { useIbadahStore } from '../../store/ibadahStore';
 import { useSettingsStore } from '../../store/settingsStore';
 import { useTranslation } from '../../hooks/useTranslation';
+import { useColors } from '../../hooks/useColors';
 
 export default function MinimumViableDayScreen() {
   const { t, tUnit, isRTL } = useTranslation();
+  const Colors = useColors();
   const ibadahTypesRaw = useIbadahStore((state) => state.ibadahTypes);
   const ibadahTypes = useMemo(
     () =>
@@ -43,6 +45,8 @@ export default function MinimumViableDayScreen() {
     }
   };
 
+  const styles = makeStyles(Colors);
+
   return (
     <>
       <Stack.Screen options={{ title: t('mvd.title') }} />
@@ -52,7 +56,7 @@ export default function MinimumViableDayScreen() {
           contentContainerStyle={styles.content}
           showsVerticalScrollIndicator={false}
         >
-          <Card style={styles.infoCard}>
+          <Card style={[styles.infoCard, { backgroundColor: `${Colors.accent.primary}10`, borderColor: Colors.accent.muted }]}>
             <View style={styles.infoHeader}>
               <Feather name="info" size={20} color={Colors.accent.primary} />
               <Text style={styles.infoTitle}>{t('mvd.whatIsMVD')}</Text>
@@ -108,7 +112,7 @@ export default function MinimumViableDayScreen() {
             })}
           </View>
 
-          <Card style={styles.tipCard}>
+          <Card style={[styles.tipCard, { backgroundColor: `${Colors.semantic.warning}10`, borderColor: `${Colors.semantic.warning}30` }]}>
             <Feather name="sun" size={20} color={Colors.semantic.warning} />
             <Text style={styles.tipText}>{t('mvd.tip')}</Text>
           </Card>
@@ -118,95 +122,92 @@ export default function MinimumViableDayScreen() {
   );
 }
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: Colors.background.primary,
-  },
-  scrollView: {
-    flex: 1,
-  },
-  content: {
-    padding: Spacing.md,
-    gap: Spacing.lg,
-  },
-  infoCard: {
-    gap: Spacing.sm,
-    backgroundColor: `${Colors.accent.primary}10`,
-    borderWidth: 1,
-    borderColor: Colors.accent.muted,
-  },
-  infoHeader: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: Spacing.sm,
-  },
-  infoTitle: {
-    fontSize: Typography.fontSize.body,
-    fontWeight: '600',
-    color: Colors.accent.primary,
-  },
-  infoText: {
-    fontSize: Typography.fontSize.body,
-    color: Colors.text.secondary,
-    lineHeight: Typography.fontSize.body * 1.5,
-  },
-  sectionTitle: {
-    fontSize: Typography.fontSize.h3,
-    fontWeight: '600',
-    color: Colors.text.primary,
-  },
-  list: {
-    gap: Spacing.md,
-  },
-  ibadahCard: {
-    gap: Spacing.md,
-  },
-  ibadahHeader: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: Spacing.sm,
-  },
-  iconContainer: {
-    width: 36,
-    height: 36,
-    borderRadius: 18,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  ibadahName: {
-    fontSize: Typography.fontSize.body,
-    fontWeight: '600',
-    color: Colors.text.primary,
-  },
-  inputRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: Spacing.sm,
-  },
-  inputWrapper: {
-    width: 80,
-  },
-  unitLabel: {
-    flex: 1,
-    fontSize: Typography.fontSize.body,
-    color: Colors.text.muted,
-  },
-  currentValue: {
-    fontSize: Typography.fontSize.caption,
-    color: Colors.semantic.success,
-  },
-  tipCard: {
-    flexDirection: 'row',
-    gap: Spacing.md,
-    backgroundColor: `${Colors.semantic.warning}10`,
-    borderWidth: 1,
-    borderColor: `${Colors.semantic.warning}30`,
-  },
-  tipText: {
-    flex: 1,
-    fontSize: Typography.fontSize.bodySmall,
-    color: Colors.text.secondary,
-    lineHeight: Typography.fontSize.bodySmall * 1.5,
-  },
-});
+const makeStyles = (Colors: ReturnType<typeof import('../../hooks/useColors').useColors>) =>
+  StyleSheet.create({
+    container: {
+      flex: 1,
+      backgroundColor: Colors.background.primary,
+    },
+    scrollView: {
+      flex: 1,
+    },
+    content: {
+      padding: Spacing.md,
+      gap: Spacing.lg,
+    },
+    infoCard: {
+      gap: Spacing.sm,
+      borderWidth: 1,
+    },
+    infoHeader: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      gap: Spacing.sm,
+    },
+    infoTitle: {
+      fontSize: Typography.fontSize.body,
+      fontWeight: '600',
+      color: Colors.accent.primary,
+    },
+    infoText: {
+      fontSize: Typography.fontSize.body,
+      color: Colors.text.secondary,
+      lineHeight: Typography.fontSize.body * 1.5,
+    },
+    sectionTitle: {
+      fontSize: Typography.fontSize.h3,
+      fontWeight: '600',
+      color: Colors.text.primary,
+    },
+    list: {
+      gap: Spacing.md,
+    },
+    ibadahCard: {
+      gap: Spacing.md,
+    },
+    ibadahHeader: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      gap: Spacing.sm,
+    },
+    iconContainer: {
+      width: 36,
+      height: 36,
+      borderRadius: 18,
+      alignItems: 'center',
+      justifyContent: 'center',
+    },
+    ibadahName: {
+      fontSize: Typography.fontSize.body,
+      fontWeight: '600',
+      color: Colors.text.primary,
+    },
+    inputRow: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      gap: Spacing.sm,
+    },
+    inputWrapper: {
+      width: 80,
+    },
+    unitLabel: {
+      flex: 1,
+      fontSize: Typography.fontSize.body,
+      color: Colors.text.muted,
+    },
+    currentValue: {
+      fontSize: Typography.fontSize.caption,
+      color: Colors.semantic.success,
+    },
+    tipCard: {
+      flexDirection: 'row',
+      gap: Spacing.md,
+      borderWidth: 1,
+    },
+    tipText: {
+      flex: 1,
+      fontSize: Typography.fontSize.bodySmall,
+      color: Colors.text.secondary,
+      lineHeight: Typography.fontSize.bodySmall * 1.5,
+    },
+  });
