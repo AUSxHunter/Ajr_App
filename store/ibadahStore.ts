@@ -8,6 +8,7 @@ import { generateId } from '../utils/id';
 interface IbadahState {
   ibadahTypes: IbadahType[];
   isLoaded: boolean;
+  sortMigrated: boolean;
 }
 
 interface IbadahActions {
@@ -38,6 +39,7 @@ export const useIbadahStore = create<IbadahState & IbadahActions>()(
     (set, get) => ({
       ibadahTypes: [],
       isLoaded: false,
+      sortMigrated: false,
 
       initializeDefaults: () => {
         const { ibadahTypes } = get();
@@ -120,10 +122,22 @@ export const useIbadahStore = create<IbadahState & IbadahActions>()(
             return type;
           });
 
+          // One-time migration: apply new default sort order
+          if (!get().sortMigrated) {
+            updatedTypes = updatedTypes.map((type) => {
+              const defaultType = DEFAULT_IBADAH_TYPES.find((d) => d.id === type.id);
+              if (defaultType) {
+                return { ...type, sortOrder: defaultType.sortOrder, updatedAt: now };
+              }
+              return type;
+            });
+            needsUpdate = true;
+          }
+
           if (needsUpdate) {
-            set({ ibadahTypes: updatedTypes, isLoaded: true });
+            set({ ibadahTypes: updatedTypes, isLoaded: true, sortMigrated: true });
           } else {
-            set({ isLoaded: true });
+            set({ isLoaded: true, sortMigrated: true });
           }
         }
       },
@@ -220,7 +234,7 @@ export const useIbadahStore = create<IbadahState & IbadahActions>()(
     {
       name: 'ajr-ibadah-storage',
       storage: createJSONStorage(() => AsyncStorage),
-      partialize: (state) => ({ ibadahTypes: state.ibadahTypes }),
+      partialize: (state) => ({ ibadahTypes: state.ibadahTypes, sortMigrated: state.sortMigrated }),
     }
   )
 );

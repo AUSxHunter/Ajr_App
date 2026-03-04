@@ -70,6 +70,7 @@ export default function ManageIbadahScreen() {
   const archiveIbadahType = useIbadahStore((state) => state.archiveIbadahType);
   const restoreIbadahType = useIbadahStore((state) => state.restoreIbadahType);
   const deleteIbadahType = useIbadahStore((state) => state.deleteIbadahType);
+  const reorderIbadahTypes = useIbadahStore((state) => state.reorderIbadahTypes);
   const ibadahTypes = useMemo(
     () =>
       ibadahTypesRaw.filter((type) => !type.isArchived).sort((a, b) => a.sortOrder - b.sortOrder),
@@ -104,6 +105,20 @@ export default function ManageIbadahScreen() {
     setDeleteConfirmId(id);
   };
 
+  const moveUp = (index: number) => {
+    if (index === 0) return;
+    const newOrder = [...ibadahTypes];
+    [newOrder[index - 1], newOrder[index]] = [newOrder[index], newOrder[index - 1]];
+    reorderIbadahTypes(newOrder.map((t) => t.id));
+  };
+
+  const moveDown = (index: number) => {
+    if (index === ibadahTypes.length - 1) return;
+    const newOrder = [...ibadahTypes];
+    [newOrder[index], newOrder[index + 1]] = [newOrder[index + 1], newOrder[index]];
+    reorderIbadahTypes(newOrder.map((t) => t.id));
+  };
+
   return (
     <>
       <Stack.Screen options={{ title: t('manageIbadah.title') }} />
@@ -115,9 +130,33 @@ export default function ManageIbadahScreen() {
         >
           <Text style={styles.sectionTitle}>{t('manageIbadah.activeTypes')}</Text>
           <View style={styles.list}>
-            {ibadahTypes.map((type) => (
+            {ibadahTypes.map((type, index) => (
               <Card key={type.id} style={styles.ibadahCard}>
                 <View style={styles.ibadahRow}>
+                  <View style={styles.reorderButtons}>
+                    <TouchableOpacity
+                      onPress={() => moveUp(index)}
+                      style={styles.reorderButton}
+                      disabled={index === 0}
+                    >
+                      <Feather
+                        name="chevron-up"
+                        size={16}
+                        color={index === 0 ? Colors.text.muted + '40' : Colors.text.muted}
+                      />
+                    </TouchableOpacity>
+                    <TouchableOpacity
+                      onPress={() => moveDown(index)}
+                      style={styles.reorderButton}
+                      disabled={index === ibadahTypes.length - 1}
+                    >
+                      <Feather
+                        name="chevron-down"
+                        size={16}
+                        color={index === ibadahTypes.length - 1 ? Colors.text.muted + '40' : Colors.text.muted}
+                      />
+                    </TouchableOpacity>
+                  </View>
                   <View style={[styles.iconContainer, { backgroundColor: `${type.color}20` }]}>
                     <Feather
                       name={type.icon as keyof typeof Feather.glyphMap}
@@ -394,6 +433,13 @@ const styles = StyleSheet.create({
     fontSize: Typography.fontSize.caption,
     color: Colors.accent.primary,
     marginTop: 2,
+  },
+  reorderButtons: {
+    alignItems: 'center',
+    gap: 0,
+  },
+  reorderButton: {
+    padding: 2,
   },
   actionButtons: {
     flexDirection: 'row',
