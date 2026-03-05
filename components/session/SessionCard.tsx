@@ -261,12 +261,10 @@ export const SessionCard: React.FC<SessionCardProps> = ({
             </View>
           )}
 
-          {ibadahType.unit !== 'minutes' || sets.length === 0 ? (
-            <TouchableOpacity style={styles.addButton} onPress={onAddSet}>
-              <Feather name="plus" size={18} color={Colors.accent.primary} />
-              <Text style={styles.addButtonText}>{getAddLabel()}</Text>
-            </TouchableOpacity>
-          ) : null}
+          <TouchableOpacity style={styles.addButton} onPress={onAddSet}>
+            <Feather name="plus" size={18} color={Colors.accent.primary} />
+            <Text style={styles.addButtonText}>{getAddLabel()}</Text>
+          </TouchableOpacity>
         </View>
       )}
 

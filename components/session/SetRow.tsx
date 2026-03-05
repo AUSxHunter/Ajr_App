@@ -16,9 +16,11 @@ interface SetRowProps {
   onDelete?: () => void;
 }
 
+const DHIKR_KEYS = new Set(['tasbih', 'tahmid', 'takbir', 'istighfar', 'custom']);
+
 export const SetRow: React.FC<SetRowProps> = ({ set, ibadahType, index, onEdit, onDelete }) => {
   const Colors = useColors();
-  const { t } = useTranslation();
+  const { t, isRTL } = useTranslation();
   const unitLabel = UNIT_LABELS[ibadahType.unit];
 
   let displayValue: string;
@@ -32,11 +34,18 @@ export const SetRow: React.FC<SetRowProps> = ({ set, ibadahType, index, onEdit, 
     displayValue = `${set.value} ${set.value === 1 ? unitLabel.singular : unitLabel.plural}`;
   }
 
-  // For dhikr, append the type name from notes (capitalize first letter)
-  const dhikrLabel =
-    ibadahType.id === 'dhikr' && set.notes
-      ? ` · ${set.notes.charAt(0).toUpperCase()}${set.notes.slice(1)}`
-      : '';
+  // For dhikr, append the type name from notes
+  const getDhikrLabel = (): string => {
+    if (!set.notes) return '';
+    if (DHIKR_KEYS.has(set.notes)) {
+      // Use translated label (includes Arabic in both locales)
+      return ` · ${t(`dhikr.${set.notes as 'tasbih' | 'tahmid' | 'takbir' | 'istighfar' | 'custom'}`)}`;
+    }
+    // Custom name — capitalize first letter only when LTR
+    const name = isRTL ? set.notes : `${set.notes.charAt(0).toUpperCase()}${set.notes.slice(1)}`;
+    return ` · ${name}`;
+  };
+  const dhikrLabel = ibadahType.id === 'dhikr' ? getDhikrLabel() : '';
 
   const styles = makeStyles(Colors);
 

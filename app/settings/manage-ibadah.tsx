@@ -147,21 +147,19 @@ export default function ManageIbadahScreen() {
                   color={type.reminderEnabled ? Colors.accent.primary : Colors.text.muted}
                 />
               </TouchableOpacity>
+              <TouchableOpacity
+                onPress={() => setArchiveConfirmId(type.id)}
+                style={styles.actionButton}
+              >
+                <Feather name="archive" size={18} color={Colors.text.muted} />
+              </TouchableOpacity>
               {!type.isDefault && (
-                <>
-                  <TouchableOpacity
-                    onPress={() => setArchiveConfirmId(type.id)}
-                    style={styles.actionButton}
-                  >
-                    <Feather name="archive" size={18} color={Colors.text.muted} />
-                  </TouchableOpacity>
-                  <TouchableOpacity
-                    onPress={() => setDeleteConfirmId(type.id)}
-                    style={styles.actionButton}
-                  >
-                    <Feather name="trash-2" size={18} color={Colors.semantic.error} />
-                  </TouchableOpacity>
-                </>
+                <TouchableOpacity
+                  onPress={() => setDeleteConfirmId(type.id)}
+                  style={styles.actionButton}
+                >
+                  <Feather name="trash-2" size={18} color={Colors.semantic.error} />
+                </TouchableOpacity>
               )}
             </View>
           </View>

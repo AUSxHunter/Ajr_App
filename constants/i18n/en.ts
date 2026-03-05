@@ -289,9 +289,9 @@ export const en = {
     description:
       'Ajr is a personal ibadah tracker designed to help you build consistent spiritual habits through mindful tracking and progressive growth.',
     developerLabel: 'Developer',
-    developerName: '[Developer Name]',
+    developerName: 'Ahmed Tarek',
     contactLabel: 'Contact',
-    contactEmail: '[support@example.com]',
+    contactEmail: 'ahmedhunt30@gmail.com',
     privacyPolicy: 'Privacy Policy',
   },
   privacy: {
@@ -313,7 +313,7 @@ export const en = {
       'The app does not require internet access. All features work fully offline.',
     contactTitle: 'Questions?',
     contactBody: 'If you have any questions about this privacy policy, contact us at:',
-    contactEmail: '[support@example.com]',
+    contactEmail: 'ahmedhunt30@gmail.com',
   },
 };
 

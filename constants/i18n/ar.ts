@@ -285,9 +285,9 @@ export const ar: Translations = {
     description:
       'أجر هو تطبيق شخصي لتتبّع العبادة، صُمِّم لمساعدتك على بناء عادات روحية ثابتة من خلال التتبّع الواعي والنمو التدريجي.',
     developerLabel: 'المطوّر',
-    developerName: '[اسم المطوّر]',
+    developerName: 'أحمد طارق',
     contactLabel: 'التواصل',
-    contactEmail: '[support@example.com]',
+    contactEmail: 'ahmedhunt30@gmail.com',
     privacyPolicy: 'سياسة الخصوصية',
   },
   privacy: {
@@ -308,6 +308,6 @@ export const ar: Translations = {
       'لا يتطلب التطبيق اتصالاً بالإنترنت. جميع الميزات تعمل بشكل كامل دون اتصال.',
     contactTitle: 'لديك سؤال؟',
     contactBody: 'إذا كان لديك أي استفسار حول سياسة الخصوصية، تواصل معنا على:',
-    contactEmail: '[support@example.com]',
+    contactEmail: 'ahmedhunt30@gmail.com',
   },
 };
