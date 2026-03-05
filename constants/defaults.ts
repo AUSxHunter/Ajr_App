@@ -118,7 +118,7 @@ export const UNIT_LABELS: Record<
   pages: { singular: 'page', plural: 'pages', abbreviation: 'pg' },
   minutes: { singular: 'minute', plural: 'minutes', abbreviation: 'min' },
   count: { singular: 'time', plural: 'times', abbreviation: 'x' },
-  currency: { singular: 'AED', plural: 'AED', abbreviation: 'AED' },
+  currency: { singular: '', plural: '', abbreviation: '' },
   binary: { singular: 'day', plural: 'days', abbreviation: '' },
   ayat: { singular: 'ayah', plural: 'ayat', abbreviation: 'ayat' },
   adhkar: { singular: 'session', plural: 'sessions', abbreviation: '' },

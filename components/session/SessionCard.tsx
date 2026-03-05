@@ -55,7 +55,7 @@ export const SessionCard: React.FC<SessionCardProps> = ({
 
   const formatTotal = () => {
     if (ibadahType.unit === 'currency') {
-      return `${totalValue.toFixed(0)} AED`;
+      return `${totalValue.toFixed(0)}`;
     }
     if (ibadahType.unit === 'binary') {
       return totalValue >= 1 ? t('sessionCard.fasted') : t('sessionCard.notLogged');

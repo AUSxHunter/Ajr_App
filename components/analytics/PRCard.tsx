@@ -18,7 +18,7 @@ export const PRCard: React.FC<PRCardProps> = ({ record, ibadahType }) => {
   const { t, tUnit, isRTL } = useTranslation();
   const formattedValue =
     ibadahType.unit === 'currency'
-      ? `${record.value.toFixed(0)} AED`
+      ? `${record.value.toFixed(0)}`
       : `${record.value} ${tUnit(ibadahType.unit, record.value)}`;
 
   const recordTypeLabel = record.recordType === 'daily_volume' ? t('analytics.bestDay') : t('analytics.bestSet');

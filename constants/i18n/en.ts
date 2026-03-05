@@ -250,7 +250,7 @@ export const en = {
     pages: { singular: 'page', plural: 'pages' },
     minutes: { singular: 'minute', plural: 'minutes' },
     count: { singular: 'time', plural: 'times' },
-    currency: { singular: 'AED', plural: 'AED' },
+    currency: { singular: '', plural: '' },
     binary: { singular: 'day', plural: 'days' },
     ayat: { singular: 'ayah', plural: 'ayat' },
     adhkar: { singular: 'session', plural: 'sessions' },

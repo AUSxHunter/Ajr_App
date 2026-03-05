@@ -62,7 +62,7 @@ export const IbadahBreakdown: React.FC<IbadahBreakdownProps> = ({ ibadahTypes, s
         {breakdown.map((item) => {
           let displayValue: string;
           if (item.ibadahType.unit === 'currency') {
-            displayValue = `${item.totalValue.toFixed(0)} AED`;
+            displayValue = `${item.totalValue.toFixed(0)}`;
           } else if (item.ibadahType.unit === 'binary') {
             displayValue = `${item.totalValue} ${tUnit('binary', item.totalValue)}`;
           } else {

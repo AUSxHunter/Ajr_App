@@ -25,7 +25,7 @@ export const SetRow: React.FC<SetRowProps> = ({ set, ibadahType, index, onEdit, 
 
   let displayValue: string;
   if (ibadahType.unit === 'currency') {
-    displayValue = `${set.value.toFixed(0)} AED`;
+    displayValue = `${set.value.toFixed(0)}`;
   } else if (ibadahType.unit === 'binary') {
     displayValue = set.value >= 1 ? 'Fasted' : 'Not fasted';
   } else if (ibadahType.unit === 'yesno') {

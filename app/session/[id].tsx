@@ -117,7 +117,7 @@ export default function SessionDetailScreen() {
               const ibadahType = getIbadahTypeById(set.ibadahTypeId);
               const displayValue =
                 ibadahType?.unit === 'currency'
-                  ? `${set.value.toFixed(0)} AED`
+                  ? `${set.value.toFixed(0)}`
                   : `${set.value} ${ibadahType ? tUnit(ibadahType.unit, set.value) : ''}`;
 
               return (
