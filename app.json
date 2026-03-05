@@ -1,10 +1,10 @@
 {
   "expo": {
     "name": "Ajr",
-    "slug": "ajr-app",
+    "slug": "ajr",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/images/icon.png",
+    "icon": "./assets/images/Ajr_logo.png",
     "scheme": "ajr",
     "userInterfaceStyle": "dark",
     "splash": {
@@ -14,16 +14,18 @@
     },
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "com.ajr.app"
+      "bundleIdentifier": "com.ahmed.ajr",
+      "infoPlist": {
+        "ITSAppUsesNonExemptEncryption": false
+      }
     },
     "android": {
       "adaptiveIcon": {
         "backgroundColor": "#000000",
-        "foregroundImage": "./assets/images/android-icon-foreground.png",
-        "backgroundImage": "./assets/images/android-icon-background.png",
-        "monochromeImage": "./assets/images/android-icon-monochrome.png"
+        "foregroundImage": "./assets/images/Ajr_logo.png",
+        "monochromeImage": "./assets/images/Ajr_logo.png"
       },
-      "package": "com.ajr.app"
+      "package": "com.ahmed.ajr"
     },
     "web": {
       "bundler": "metro",
@@ -47,6 +49,13 @@
     ],
     "experiments": {
       "typedRoutes": true
-    }
+    },
+    "extra": {
+      "router": {},
+      "eas": {
+        "projectId": "ea454170-fc8b-4a70-ab6f-66bb1e34c677"
+      }
+    },
+    "owner": "ahmed-tarek"
   }
 }
