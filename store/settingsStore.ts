@@ -21,6 +21,7 @@ interface SettingsActions {
   setMinimumViableDay: (ibadahTypeId: string, minimumValue: number) => void;
   removeMinimumViableDay: (ibadahTypeId: string) => void;
   getMinimumViableDay: (ibadahTypeId: string) => number | undefined;
+  setLastDayStarted: (date: string) => void;
   resetSettings: () => void;
 }
 
@@ -36,6 +37,7 @@ const DEFAULT_SETTINGS: UserSettings = {
   onboardingCompleted: false,
   language: 'en',
   theme: 'dark',
+  lastDayStarted: '',
 };
 
 export const useSettingsStore = create<SettingsState & SettingsActions>()(
@@ -115,6 +117,10 @@ export const useSettingsStore = create<SettingsState & SettingsActions>()(
         return mvd?.minimumValue;
       },
 
+      setLastDayStarted: (date) => {
+        set({ lastDayStarted: date });
+      },
+
       resetSettings: () => {
         set({ ...DEFAULT_SETTINGS, isLoaded: true });
       },
@@ -134,6 +140,7 @@ export const useSettingsStore = create<SettingsState & SettingsActions>()(
         onboardingCompleted: state.onboardingCompleted,
         language: state.language,
         theme: state.theme,
+        lastDayStarted: state.lastDayStarted,
       }),
     }
   )

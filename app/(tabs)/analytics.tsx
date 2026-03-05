@@ -93,8 +93,8 @@ export default function AnalyticsScreen() {
   }, [sessions, sessionSets, ibadahTypes]);
 
   const personalRecords = useMemo(() => {
-    return findPersonalRecords(sessions, sessionSets);
-  }, [sessions, sessionSets]);
+    return findPersonalRecords(sessions, sessionSets, ibadahTypes);
+  }, [sessions, sessionSets, ibadahTypes]);
 
   const dailyVolumeRecords = personalRecords.filter((pr) => pr.recordType === 'daily_volume');
 

@@ -183,6 +183,7 @@ export const ar: Translations = {
     done: 'تم',
     start: 'ابدأ',
     complete: 'مكتمل',
+    markComplete: 'اكتمل',
   },
   sessionCard: {
     addSet: 'إضافة جلسة',
@@ -198,6 +199,13 @@ export const ar: Translations = {
     removeFastingMessage: 'هل أنت متأكد أنك تريد إزالة تسجيل صيام اليوم؟',
     deleteSet: 'حذف الجلسة',
     deleteSetMessage: 'هل أنت متأكد أنك تريد حذف هذه الجلسة؟',
+  },
+  dhikr: {
+    tasbih: 'تسبيح (سبحان الله)',
+    tahmid: 'تحميد (الحمد لله)',
+    takbir: 'تكبير (الله أكبر)',
+    istighfar: 'استغفار (أستغفر الله)',
+    custom: 'أخرى',
   },
   addSetModal: {
     logTitle: 'تسجيل {name}',
@@ -258,6 +266,11 @@ export const ar: Translations = {
     time: 'الوقت',
     setTime: 'تعيين الوقت',
     exactAlarmRequired: 'التذكيرات المحددة بوقت تحتاج إذن "التنبيهات والتذكيرات". اضغط للتفعيل من الإعدادات.',
+  },
+  bismillah: {
+    title: 'بسم الله',
+    subtitle: 'ابدأ يومك باسم الله',
+    begin: 'ابدأ',
   },
   about: {
     title: 'حول أجر',

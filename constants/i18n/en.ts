@@ -71,7 +71,7 @@ export const en = {
     ibadah: 'Ibadah',
     manageIbadahTypes: 'Manage Ibadah',
     addCustomIbadah: 'Add Custom Ibadah',
-    minimumViableDay: 'Minimum Viable Day',
+    minimumViableDay: 'Daily Minimum',
     preferences: 'Preferences',
     notifications: 'Notifications',
     language: 'Language',
@@ -126,10 +126,10 @@ export const en = {
     },
   },
   mvd: {
-    title: 'Minimum Viable Day',
-    whatIsMVD: 'What is MVD?',
+    title: 'Daily Minimum',
+    whatIsMVD: 'What is Daily Minimum?',
     mvdExplanation:
-      'Your Minimum Viable Day is the absolute minimum ibadah you commit to, even on your worst days. This ensures consistency even when motivation is low.',
+      'Your Daily Minimum is the absolute minimum ibadah you commit to, even on your worst days. This ensures consistency even when motivation is low.',
     setYourMinimums: 'Set Your Minimums',
     current: 'Current: {value} {unit}',
     save: 'Save',
@@ -187,6 +187,7 @@ export const en = {
     done: 'Done',
     start: 'Start',
     complete: 'Complete',
+    markComplete: 'Mark as Completed',
   },
   sessionCard: {
     addSet: 'Add Set',
@@ -202,6 +203,13 @@ export const en = {
     removeFastingMessage: "Are you sure you want to remove today's fasting log?",
     deleteSet: 'Delete Set',
     deleteSetMessage: 'Are you sure you want to delete this set?',
+  },
+  dhikr: {
+    tasbih: 'Tasbih (سبحان الله)',
+    tahmid: 'Tahmid (الحمد لله)',
+    takbir: 'Takbir (الله أكبر)',
+    istighfar: 'Istighfar (أستغفر الله)',
+    custom: 'Custom',
   },
   addSetModal: {
     logTitle: 'Log {name}',
@@ -262,6 +270,11 @@ export const en = {
     time: 'Time',
     setTime: 'Set Time',
     exactAlarmRequired: 'Timed reminders need "Alarms & reminders" permission. Tap to enable in Settings.',
+  },
+  bismillah: {
+    title: 'Bismillah',
+    subtitle: 'Start your day with the name of Allah',
+    begin: 'Begin',
   },
   about: {
     title: 'About Ajr',

@@ -128,8 +128,14 @@ export const calculateStreak = (sessions: Session[]): number => {
 
 export const findPersonalRecords = (
   sessions: Session[],
-  allSets: SessionSet[]
+  allSets: SessionSet[],
+  ibadahTypes?: { id: string; unit: string }[]
 ): PersonalRecord[] => {
+  const UNMEASURABLE_UNITS = new Set(['binary', 'yesno', 'adhkar']);
+  const skippedIds = ibadahTypes
+    ? new Set(ibadahTypes.filter((t) => UNMEASURABLE_UNITS.has(t.unit)).map((t) => t.id))
+    : new Set<string>();
+
   const records: PersonalRecord[] = [];
   const ibadahBests: Map<string, { value: number; date: string }> = new Map();
   const dailyBests: Map<string, { value: number; date: string }> = new Map();
@@ -139,6 +145,8 @@ export const findPersonalRecords = (
 
     const ibadahTotals: Map<string, number> = new Map();
     sessionSets.forEach((set) => {
+      if (skippedIds.has(set.ibadahTypeId)) return;
+
       const current = ibadahTotals.get(set.ibadahTypeId) || 0;
       ibadahTotals.set(set.ibadahTypeId, current + set.value);
 

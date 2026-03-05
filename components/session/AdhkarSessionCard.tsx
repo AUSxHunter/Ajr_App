@@ -8,6 +8,7 @@ import { Typography, Spacing, BorderRadius } from '../../constants/theme';
 import { useColors } from '../../hooks/useColors';
 import { IbadahType } from '../../types';
 import { useAdhkarStore } from '../../store/adhkarStore';
+import { useSessionStore } from '../../store/sessionStore';
 import { AdhkarType } from '../../constants/adhkar';
 import { IbadahStreakDots } from './IbadahStreakDots';
 import { useTranslation } from '../../hooks/useTranslation';
@@ -29,9 +30,34 @@ const AdhkarRow: React.FC<AdhkarRowProps> = ({ type, label, labelArabic, icon })
   const router = useRouter();
   const isCompleted = useAdhkarStore((state) => state.isCompleted(type));
   const { completed, total } = useAdhkarStore(useShallow((state) => state.getTotalProgress(type)));
+  const markComplete = useAdhkarStore((state) => state.markComplete);
+  const sessions = useSessionStore((state) => state.sessions);
+  const addSet = useSessionStore((state) => state.addSet);
+  const startSession = useSessionStore((state) => state.startSession);
 
   const handlePress = () => {
     router.push({ pathname: '/adhkar/[type]', params: { type } });
+  };
+
+  const handleMarkComplete = () => {
+    markComplete(type);
+
+    const todayDateString = new Date().toISOString().split('T')[0];
+    let todaySession = sessions.find((s) => s.sessionDate === todayDateString && !s.completedAt);
+    if (!todaySession) {
+      todaySession = sessions.find((s) => s.sessionDate === todayDateString);
+    }
+    if (!todaySession) {
+      todaySession = startSession();
+    }
+    if (todaySession) {
+      addSet({
+        sessionId: todaySession.id,
+        ibadahTypeId: 'adhkar',
+        value: 1,
+        notes: type === 'sabah' ? t('adhkarReader.morningAdhkar') : t('adhkarReader.eveningAdhkar'),
+      });
+    }
   };
 
   const progressPercent = total > 0 ? (completed / total) * 100 : 0;
@@ -40,43 +66,52 @@ const AdhkarRow: React.FC<AdhkarRowProps> = ({ type, label, labelArabic, icon })
   const styles = makeStyles(Colors);
 
   return (
-    <TouchableOpacity style={styles.adhkarRow} onPress={handlePress} activeOpacity={0.7}>
-      <View style={styles.rowLeft}>
-        <View style={[styles.rowIcon, isCompleted && styles.rowIconCompleted]}>
-          <Feather
-            name={icon}
-            size={18}
-            color={isCompleted ? Colors.semantic.success : Colors.ibadah.adhkar}
-          />
+    <View>
+      <TouchableOpacity style={styles.adhkarRow} onPress={handlePress} activeOpacity={0.7}>
+        <View style={styles.rowLeft}>
+          <View style={[styles.rowIcon, isCompleted && styles.rowIconCompleted]}>
+            <Feather
+              name={icon}
+              size={18}
+              color={isCompleted ? Colors.semantic.success : Colors.ibadah.adhkar}
+            />
+          </View>
+          <View style={styles.rowInfo}>
+            <Text style={styles.rowLabel}>{isRTL ? labelArabic : label}</Text>
+            {!isRTL && <Text style={styles.rowLabelArabic}>{labelArabic}</Text>}
+          </View>
         </View>
-        <View style={styles.rowInfo}>
-          <Text style={styles.rowLabel}>{isRTL ? labelArabic : label}</Text>
-          {!isRTL && <Text style={styles.rowLabelArabic}>{labelArabic}</Text>}
-        </View>
-      </View>
 
-      <View style={styles.rowRight}>
-        {isCompleted ? (
-          <View style={styles.completedBadge}>
-            <Feather name="check" size={14} color={Colors.semantic.success} />
-            <Text style={styles.completedText}>{t('adhkarCard.done')}</Text>
-          </View>
-        ) : hasStarted ? (
-          <View style={styles.progressContainer}>
-            <Text style={styles.progressText}>{completed}/{total}</Text>
-            <View style={styles.progressBar}>
-              <View style={[styles.progressFill, { width: `${progressPercent}%` }]} />
+        <View style={styles.rowRight}>
+          {isCompleted ? (
+            <View style={styles.completedBadge}>
+              <Feather name="check" size={14} color={Colors.semantic.success} />
+              <Text style={styles.completedText}>{t('adhkarCard.done')}</Text>
             </View>
-          </View>
-        ) : (
-          <View style={styles.startButton}>
-            <Feather name="play" size={14} color={Colors.ibadah.adhkar} />
-            <Text style={styles.startText}>{t('adhkarCard.start')}</Text>
-          </View>
-        )}
-        <Feather name={isRTL ? 'chevron-left' : 'chevron-right'} size={20} color={Colors.text.muted} />
-      </View>
-    </TouchableOpacity>
+          ) : hasStarted ? (
+            <View style={styles.progressContainer}>
+              <Text style={styles.progressText}>{completed}/{total}</Text>
+              <View style={styles.progressBar}>
+                <View style={[styles.progressFill, { width: `${progressPercent}%` }]} />
+              </View>
+            </View>
+          ) : (
+            <View style={styles.startButton}>
+              <Feather name="play" size={14} color={Colors.ibadah.adhkar} />
+              <Text style={styles.startText}>{t('adhkarCard.start')}</Text>
+            </View>
+          )}
+          <Feather name={isRTL ? 'chevron-left' : 'chevron-right'} size={20} color={Colors.text.muted} />
+        </View>
+      </TouchableOpacity>
+
+      {!isCompleted && (
+        <TouchableOpacity style={styles.markCompleteButton} onPress={handleMarkComplete}>
+          <Feather name="check-circle" size={13} color={Colors.text.muted} />
+          <Text style={styles.markCompleteText}>{t('adhkarCard.markComplete')}</Text>
+        </TouchableOpacity>
+      )}
+    </View>
   );
 };
 
@@ -297,6 +332,18 @@ const makeStyles = (Colors: ReturnType<typeof import('../../hooks/useColors').us
       backgroundColor: Colors.border.default,
       marginVertical: Spacing.xs,
       marginLeft: 52,
+    },
+    markCompleteButton: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      gap: 4,
+      paddingHorizontal: Spacing.sm,
+      paddingBottom: Spacing.xs,
+      paddingLeft: 52,
+    },
+    markCompleteText: {
+      fontSize: Typography.fontSize.caption,
+      color: Colors.text.muted,
     },
   });
 

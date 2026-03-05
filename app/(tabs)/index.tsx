@@ -4,10 +4,11 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { Feather } from '@expo/vector-icons';
 import { format, subDays } from 'date-fns';
 import { Typography, Spacing, BorderRadius } from '../../constants/theme';
-import { Card, EmptyState } from '../../components/ui';
+import { Card, EmptyState, Modal, Button } from '../../components/ui';
 import { SessionCard, AddSetModal, ManageIbadahModal, AdhkarSessionCard } from '../../components/session';
 import { useSessionStore } from '../../store/sessionStore';
 import { useIbadahStore } from '../../store/ibadahStore';
+import { useSettingsStore } from '../../store/settingsStore';
 import { IbadahType, SessionSet } from '../../types';
 import { useTranslation } from '../../hooks/useTranslation';
 import { useColors } from '../../hooks/useColors';
@@ -20,6 +21,9 @@ export default function TodayScreen() {
   const [selectedIbadah, setSelectedIbadah] = useState<IbadahType | null>(null);
   const [editingSet, setEditingSet] = useState<SessionSet | null>(null);
   const hasCheckedExpiry = useRef(false);
+
+  const lastDayStarted = useSettingsStore((state) => state.lastDayStarted);
+  const setLastDayStarted = useSettingsStore((state) => state.setLastDayStarted);
 
   const sessions = useSessionStore((state) => state.sessions);
   const sessionSetsAll = useSessionStore((state) => state.sessionSets);
@@ -50,6 +54,9 @@ export default function TodayScreen() {
 
   const todayDateString = format(new Date(), 'yyyy-MM-dd');
   const yesterdayDateString = format(subDays(new Date(), 1), 'yyyy-MM-dd');
+
+  const showBismillah = lastDayStarted !== todayDateString;
+  const handleBegin = () => setLastDayStarted(todayDateString);
 
   const activeSession = useMemo(
     () => sessions.find((s) => s.sessionDate === todayDateString && !s.completedAt),
@@ -342,6 +349,20 @@ export default function TodayScreen() {
         onClose={() => setManageModalVisible(false)}
         ibadahTypes={allActiveIbadahTypes}
       />
+
+      <Modal visible={showBismillah} onClose={handleBegin} position="center">
+        <View style={styles.bismillahContent}>
+          <Text style={styles.bismillahTitle}>{t('bismillah.title')}</Text>
+          <Text style={styles.bismillahSubtitle}>{t('bismillah.subtitle')}</Text>
+          <Button
+            title={t('bismillah.begin')}
+            variant="primary"
+            size="lg"
+            fullWidth
+            onPress={handleBegin}
+          />
+        </View>
+      </Modal>
     </SafeAreaView>
   );
 }
@@ -488,5 +509,22 @@ const makeStyles = (Colors: ReturnType<typeof import('../../hooks/useColors').us
       fontSize: Typography.fontSize.body,
       fontWeight: '600',
       color: Colors.text.primary,
+    },
+    bismillahContent: {
+      alignItems: 'center',
+      gap: Spacing.lg,
+      paddingVertical: Spacing.md,
+    },
+    bismillahTitle: {
+      fontSize: Typography.fontSize.displayLarge,
+      fontWeight: '700',
+      color: Colors.text.primary,
+      textAlign: 'center',
+    },
+    bismillahSubtitle: {
+      fontSize: Typography.fontSize.body,
+      color: Colors.text.secondary,
+      textAlign: 'center',
+      lineHeight: Typography.fontSize.body * 1.5,
     },
   });

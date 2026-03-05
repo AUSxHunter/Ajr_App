@@ -29,6 +29,7 @@ export const AddSetModal: React.FC<AddSetModalProps> = ({
   const Colors = useColors();
   const [value, setValue] = useState('');
   const [binaryValue, setBinaryValue] = useState<boolean | null>(null);
+  const [dhikrType, setDhikrType] = useState<string>('');
 
   useEffect(() => {
     if (visible) {
@@ -45,6 +46,7 @@ export const AddSetModal: React.FC<AddSetModalProps> = ({
         setValue('');
         setBinaryValue(null);
       }
+      setDhikrType('');
     }
   }, [visible, initialValue, timerSeconds, ibadahType]);
 
@@ -65,11 +67,23 @@ export const AddSetModal: React.FC<AddSetModalProps> = ({
     }
     const numValue = parseFloat(value);
     if (isNaN(numValue) || numValue <= 0) return;
-    onSave(numValue, undefined, timerSeconds);
+    const notes = dhikrType || undefined;
+    onSave(numValue, notes, timerSeconds);
     onClose();
   };
 
   const presetValues = getPresetValues(ibadahType.unit);
+  const isDhikr = ibadahType.id === 'dhikr';
+
+  const dhikrOptions = isDhikr
+    ? [
+        { key: 'tasbih', label: t('dhikr.tasbih') },
+        { key: 'tahmid', label: t('dhikr.tahmid') },
+        { key: 'takbir', label: t('dhikr.takbir') },
+        { key: 'istighfar', label: t('dhikr.istighfar') },
+        { key: 'custom', label: t('dhikr.custom') },
+      ]
+    : [];
 
   const styles = makeStyles(Colors);
 
@@ -131,6 +145,31 @@ export const AddSetModal: React.FC<AddSetModalProps> = ({
       position="bottom"
     >
       <View style={styles.content}>
+        {isDhikr && (
+          <View style={styles.dhikrChips}>
+            {dhikrOptions.map((option) => (
+              <TouchableOpacity
+                key={option.key}
+                style={[
+                  styles.dhikrChip,
+                  dhikrType === option.key && styles.dhikrChipActive,
+                ]}
+                onPress={() => setDhikrType(dhikrType === option.key ? '' : option.key)}
+              >
+                <Text
+                  style={[
+                    styles.dhikrChipText,
+                    dhikrType === option.key && styles.dhikrChipTextActive,
+                  ]}
+                  numberOfLines={1}
+                >
+                  {option.label}
+                </Text>
+              </TouchableOpacity>
+            ))}
+          </View>
+        )}
+
         <View style={styles.inputSection}>
           <View style={styles.inputRow}>
             <TouchableOpacity
@@ -320,6 +359,31 @@ const makeStyles = (Colors: ReturnType<typeof import('../../hooks/useColors').us
       justifyContent: 'center',
       gap: Spacing.xl,
       marginBottom: Spacing.lg,
+    },
+    dhikrChips: {
+      flexDirection: 'row',
+      flexWrap: 'wrap',
+      gap: Spacing.sm,
+    },
+    dhikrChip: {
+      paddingVertical: Spacing.xs,
+      paddingHorizontal: Spacing.sm,
+      borderRadius: BorderRadius.md,
+      backgroundColor: Colors.background.elevated,
+      borderWidth: 1,
+      borderColor: Colors.border.default,
+    },
+    dhikrChipActive: {
+      backgroundColor: `${Colors.ibadah.dhikr}20`,
+      borderColor: Colors.ibadah.dhikr,
+    },
+    dhikrChipText: {
+      fontSize: Typography.fontSize.caption,
+      color: Colors.text.secondary,
+    },
+    dhikrChipTextActive: {
+      color: Colors.ibadah.dhikr,
+      fontWeight: '600',
     },
     binaryButton: {
       alignItems: 'center',

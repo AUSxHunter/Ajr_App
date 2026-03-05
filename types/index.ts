@@ -70,6 +70,7 @@ export interface UserSettings {
   onboardingCompleted: boolean;
   language: 'en' | 'ar';
   theme: 'dark' | 'light';
+  lastDayStarted: string;
 }
 
 export interface SessionWithSets extends Session {
