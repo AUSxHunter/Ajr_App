@@ -32,6 +32,9 @@ export const SetRow: React.FC<SetRowProps> = ({ set, ibadahType, index, onEdit, 
     displayValue = `${set.value} ${set.value === 1 ? unitLabel.singular : unitLabel.plural}`;
   }
 
+  // For dhikr, append the type name from notes
+  const dhikrLabel = ibadahType.id === 'dhikr' && set.notes ? ` · ${set.notes}` : '';
+
   const styles = makeStyles(Colors);
 
   return (
@@ -41,7 +44,7 @@ export const SetRow: React.FC<SetRowProps> = ({ set, ibadahType, index, onEdit, 
           <Text style={[styles.setNumberText, { color: ibadahType.color }]}>{index + 1}</Text>
         </View>
         <View style={styles.setInfo}>
-          <Text style={styles.value}>{displayValue}</Text>
+          <Text style={styles.value}>{displayValue}{dhikrLabel}</Text>
           {set.durationSeconds && set.durationSeconds > 0 && (
             <Text style={styles.duration}>{formatDuration(set.durationSeconds)}</Text>
           )}

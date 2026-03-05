@@ -51,6 +51,7 @@ export const ar: Translations = {
   },
   analytics: {
     dayStreak: 'سلسلة الأيام',
+    globalStreak: 'السلسلة الكلية',
     sessions: 'الجلسات',
     weeklyVolume: 'الحجم الأسبوعي',
     avgPerDay: 'متوسط / يوم',
@@ -187,6 +188,10 @@ export const ar: Translations = {
   },
   sessionCard: {
     addSet: 'إضافة جلسة',
+    addPages: 'إضافة صفحات',
+    addMinutes: 'إضافة دقائق',
+    addAmount: 'إضافة مبلغ',
+    addCount: 'إضافة عدد',
     fasted: 'صائم',
     notLogged: 'لم يُسجَّل',
     log: 'تسجيل',
@@ -206,6 +211,7 @@ export const ar: Translations = {
     takbir: 'تكبير (الله أكبر)',
     istighfar: 'استغفار (أستغفر الله)',
     custom: 'أخرى',
+    customPlaceholder: 'أدخل اسم الذكر…',
   },
   addSetModal: {
     logTitle: 'تسجيل {name}',

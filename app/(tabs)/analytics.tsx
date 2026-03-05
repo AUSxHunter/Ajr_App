@@ -9,7 +9,7 @@ import { WeeklyChart, PRCard, IbadahBreakdown } from '../../components/analytics
 import { SuggestionCard, BurnoutWarningCard } from '../../components/insights';
 import { useSessionStore } from '../../store/sessionStore';
 import { useIbadahStore } from '../../store/ibadahStore';
-import { calculateStreak, findPersonalRecords } from '../../utils/calculations';
+import { calculateStreak, findPersonalRecords, calculateGlobalStreak } from '../../utils/calculations';
 import { generateOverloadSuggestions } from '../../utils/suggestions';
 import { detectBurnout } from '../../utils/burnout';
 import { DailyStats } from '../../types';
@@ -24,9 +24,13 @@ export default function AnalyticsScreen() {
 
   const sessions = useSessionStore((state) => state.sessions);
   const sessionSets = useSessionStore((state) => state.sessionSets);
+  const hiddenIbadahTypeIds = useSessionStore((state) => state.hiddenIbadahTypeIds);
   const ibadahTypes = useIbadahStore((state) => state.ibadahTypes);
 
+  const activeIbadahTypes = ibadahTypes.filter((t) => !t.isArchived);
+
   const streak = calculateStreak(sessions);
+  const globalStreak = calculateGlobalStreak(sessions, sessionSets, activeIbadahTypes, hiddenIbadahTypeIds);
   const totalSessions = sessions.length;
   const totalVolume = sessions.reduce((sum, s) => sum + s.totalVolume, 0);
   const totalSets = sessionSets.length;
@@ -139,6 +143,12 @@ export default function AnalyticsScreen() {
             <Feather name="zap" size={24} color={Colors.semantic.warning} />
             <Text style={styles.statValue}>{streak}</Text>
             <Text style={styles.statLabel}>{t('analytics.dayStreak')}</Text>
+          </Card>
+
+          <Card style={styles.statCard}>
+            <Feather name="award" size={24} color={Colors.ibadah.adhkar} />
+            <Text style={styles.statValue}>{globalStreak}</Text>
+            <Text style={styles.statLabel}>{t('analytics.globalStreak')}</Text>
           </Card>
 
           <Card style={styles.statCard}>

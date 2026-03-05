@@ -14,7 +14,6 @@ interface SessionState {
   sessionSets: SessionSet[];
   activeSessionId: string | null;
   hiddenIbadahTypeIds: string[];
-  qiyamAyatCount: number;
   isLoaded: boolean;
 }
 
@@ -45,9 +44,6 @@ interface SessionActions {
   toggleIbadahTypeVisibility: (ibadahTypeId: string) => void;
   isIbadahTypeHidden: (ibadahTypeId: string) => boolean;
   resetHiddenIbadahTypes: () => void;
-  setQiyamAyatCount: (count: number) => void;
-  addQiyamAyat: (count: number) => void;
-  resetQiyamAyatCount: () => void;
 }
 
 const getTodayDateString = () => format(new Date(), 'yyyy-MM-dd');
@@ -68,7 +64,6 @@ export const useSessionStore = create<SessionState & SessionActions>()(
       sessionSets: [],
       activeSessionId: null,
       hiddenIbadahTypeIds: [],
-      qiyamAyatCount: 0,
       isLoaded: false,
 
       startSession: () => {
@@ -350,17 +345,6 @@ export const useSessionStore = create<SessionState & SessionActions>()(
         set({ hiddenIbadahTypeIds: [] });
       },
 
-      setQiyamAyatCount: (count) => {
-        set({ qiyamAyatCount: Math.max(0, count) });
-      },
-
-      addQiyamAyat: (count) => {
-        set((state) => ({ qiyamAyatCount: state.qiyamAyatCount + count }));
-      },
-
-      resetQiyamAyatCount: () => {
-        set({ qiyamAyatCount: 0 });
-      },
     }),
     {
       name: 'ajr-session-storage',
@@ -369,7 +353,6 @@ export const useSessionStore = create<SessionState & SessionActions>()(
         sessions: state.sessions,
         sessionSets: state.sessionSets,
         hiddenIbadahTypeIds: state.hiddenIbadahTypeIds,
-        qiyamAyatCount: state.qiyamAyatCount,
       }),
     }
   )

@@ -1,10 +1,10 @@
 import React, { useState, useMemo, useEffect, useRef } from 'react';
-import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Alert } from 'react-native';
+import { View, Text, StyleSheet, ScrollView, TouchableOpacity } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Feather } from '@expo/vector-icons';
 import { format, subDays } from 'date-fns';
 import { Typography, Spacing, BorderRadius } from '../../constants/theme';
-import { Card, EmptyState, Modal, Button } from '../../components/ui';
+import { Card, Modal, Button } from '../../components/ui';
 import { SessionCard, AddSetModal, ManageIbadahModal, AdhkarSessionCard } from '../../components/session';
 import { useSessionStore } from '../../store/sessionStore';
 import { useIbadahStore } from '../../store/ibadahStore';
@@ -31,8 +31,6 @@ export default function TodayScreen() {
   const updateSet = useSessionStore((state) => state.updateSet);
   const deleteSet = useSessionStore((state) => state.deleteSet);
   const startSession = useSessionStore((state) => state.startSession);
-  const continueSession = useSessionStore((state) => state.continueSession);
-  const endSession = useSessionStore((state) => state.endSession);
   const hiddenIbadahTypeIds = useSessionStore((state) => state.hiddenIbadahTypeIds);
 
   const ibadahTypesRaw = useIbadahStore((state) => state.ibadahTypes);
@@ -58,13 +56,9 @@ export default function TodayScreen() {
   const showBismillah = lastDayStarted !== todayDateString;
   const handleBegin = () => setLastDayStarted(todayDateString);
 
-  const activeSession = useMemo(
-    () => sessions.find((s) => s.sessionDate === todayDateString && !s.completedAt),
-    [sessions, todayDateString]
-  );
-
-  const completedTodaySession = useMemo(
-    () => sessions.find((s) => s.sessionDate === todayDateString && s.completedAt),
+  // Find today's session (any status)
+  const todaySession = useMemo(
+    () => sessions.find((s) => s.sessionDate === todayDateString),
     [sessions, todayDateString]
   );
 
@@ -72,10 +66,6 @@ export default function TodayScreen() {
     () => sessions.find((s) => s.sessionDate === yesterdayDateString),
     [sessions, yesterdayDateString]
   );
-
-  const todaySession = activeSession;
-  const hasActiveSession = !!activeSession;
-  const canContinueSession = !hasActiveSession && !!completedTodaySession;
 
   const sessionSets = useMemo(
     () =>
@@ -102,35 +92,6 @@ export default function TodayScreen() {
   const yesterdayVolume = yesterdaySession?.totalVolume || 0;
   const volumeDiff = yesterdayVolume > 0 ? ((totalVolume - yesterdayVolume) / yesterdayVolume) * 100 : 0;
 
-  const handleStartSession = () => {
-    startSession();
-  };
-
-  const handleContinueSession = () => {
-    if (completedTodaySession) {
-      continueSession(completedTodaySession.id);
-    }
-  };
-
-  const handleEndSession = () => {
-    if (!todaySession) return;
-
-    Alert.alert(
-      t('today.endSessionTitle'),
-      t('today.endSessionMessage'),
-      [
-        { text: t('common.cancel'), style: 'cancel' },
-        {
-          text: t('today.endSession'),
-          style: 'destructive',
-          onPress: () => {
-            endSession(todaySession.id);
-          },
-        },
-      ]
-    );
-  };
-
   const getOrCreateTodaySession = () => {
     if (todaySession) return todaySession;
     return startSession();
@@ -140,6 +101,15 @@ export default function TodayScreen() {
     setSelectedIbadah(ibadahType);
     setEditingSet(null);
     setAddSetModalVisible(true);
+  };
+
+  const handleDirectSave = (ibadahType: IbadahType, value: number) => {
+    const session = getOrCreateTodaySession();
+    addSet({
+      sessionId: session.id,
+      ibadahTypeId: ibadahType.id,
+      value,
+    });
   };
 
   const handleEditSet = (set: SessionSet) => {
@@ -186,25 +156,15 @@ export default function TodayScreen() {
             <Text style={styles.greeting}>{t('today.greeting')}</Text>
             <Text style={styles.date}>{todayDate}</Text>
           </View>
-          <View style={styles.headerButtons}>
-            {hasActiveSession && (
-              <TouchableOpacity
-                style={styles.manageButton}
-                onPress={() => setManageModalVisible(true)}
-              >
-                <Feather name="sliders" size={16} color={Colors.accent.primary} />
-              </TouchableOpacity>
-            )}
-            {hasActiveSession && (
-              <TouchableOpacity style={styles.endSessionButton} onPress={handleEndSession}>
-                <Feather name="check-circle" size={16} color={Colors.semantic.error} />
-                <Text style={styles.endSessionText}>{t('today.end')}</Text>
-              </TouchableOpacity>
-            )}
-          </View>
+          <TouchableOpacity
+            style={styles.manageButton}
+            onPress={() => setManageModalVisible(true)}
+          >
+            <Feather name="sliders" size={16} color={Colors.accent.primary} />
+          </TouchableOpacity>
         </View>
 
-        {hasActiveSession && (
+        {totalSets > 0 && (
           <Card style={styles.summaryCard}>
             <View style={styles.summaryRow}>
               <View style={styles.summaryStat}>
@@ -247,88 +207,56 @@ export default function TodayScreen() {
           </Card>
         )}
 
-        {!hasActiveSession ? (
-          <View style={styles.emptyContainer}>
-            {canContinueSession ? (
-              <EmptyState
-                icon="play"
-                title={t('today.continueSessionTitle')}
-                description={t('today.continueSessionDesc', {
-                  volume: Math.round(completedTodaySession?.totalVolume || 0),
-                })}
-                actionLabel={t('today.continueSession')}
-                onAction={handleContinueSession}
-              />
-            ) : (
-              <EmptyState
-                icon="sun"
-                title={t('today.readyToBegin')}
-                description={t('today.readyToBeginDesc')}
-                actionLabel={t('today.beginSession')}
-                onAction={handleStartSession}
-              />
-            )}
-          </View>
-        ) : (
-          <View style={styles.cardsContainer}>
-            {ibadahTypes.map((ibadahType) => {
-              if (ibadahType.unit === 'adhkar') {
-                return (
-                  <AdhkarSessionCard
-                    key={ibadahType.id}
-                    ibadahType={ibadahType}
-                  />
-                );
-              }
-
-              const sets = ibadahSetsMap.get(ibadahType.id) || [];
+        <View style={styles.cardsContainer}>
+          {ibadahTypes.map((ibadahType) => {
+            if (ibadahType.unit === 'adhkar') {
               return (
-                <SessionCard
+                <AdhkarSessionCard
                   key={ibadahType.id}
                   ibadahType={ibadahType}
-                  sets={sets}
-                  onAddSet={() => handleAddSet(ibadahType)}
-                  onEditSet={handleEditSet}
-                  onDeleteSet={handleDeleteSet}
                 />
               );
-            })}
-          </View>
-        )}
+            }
 
-        {hasActiveSession && (
-          <View style={styles.quickAddSection}>
-            <Text style={styles.quickAddTitle}>{t('today.quickAdd')}</Text>
-            <ScrollView
-              horizontal
-              showsHorizontalScrollIndicator={false}
-              contentContainerStyle={styles.quickAddButtons}
-            >
-              {ibadahTypes
-                .filter((type) => type.unit !== 'adhkar')
-                .map((ibadahType) => (
-                  <TouchableOpacity
-                    key={ibadahType.id}
-                    style={[styles.quickAddButton, { backgroundColor: `${ibadahType.color}20` }]}
-                    onPress={() => handleAddSet(ibadahType)}
-                  >
-                    <Feather
-                      name={ibadahType.icon as keyof typeof Feather.glyphMap}
-                      size={18}
-                      color={ibadahType.color}
-                    />
-                  </TouchableOpacity>
-                ))}
-            </ScrollView>
-          </View>
-        )}
+            const sets = ibadahSetsMap.get(ibadahType.id) || [];
+            return (
+              <SessionCard
+                key={ibadahType.id}
+                ibadahType={ibadahType}
+                sets={sets}
+                onAddSet={() => handleAddSet(ibadahType)}
+                onDirectSave={(value) => handleDirectSave(ibadahType, value)}
+                onEditSet={handleEditSet}
+                onDeleteSet={handleDeleteSet}
+              />
+            );
+          })}
+        </View>
 
-        {hasActiveSession && (
-          <TouchableOpacity style={styles.finishSessionButton} onPress={handleEndSession}>
-            <Feather name="check-circle" size={20} color={Colors.text.primary} />
-            <Text style={styles.finishSessionText}>{t('today.finishSession')}</Text>
-          </TouchableOpacity>
-        )}
+        <View style={styles.quickAddSection}>
+          <Text style={styles.quickAddTitle}>{t('today.quickAdd')}</Text>
+          <ScrollView
+            horizontal
+            showsHorizontalScrollIndicator={false}
+            contentContainerStyle={styles.quickAddButtons}
+          >
+            {ibadahTypes
+              .filter((type) => type.unit !== 'adhkar' && type.unit !== 'binary' && type.unit !== 'yesno')
+              .map((ibadahType) => (
+                <TouchableOpacity
+                  key={ibadahType.id}
+                  style={[styles.quickAddButton, { backgroundColor: `${ibadahType.color}20` }]}
+                  onPress={() => handleAddSet(ibadahType)}
+                >
+                  <Feather
+                    name={ibadahType.icon as keyof typeof Feather.glyphMap}
+                    size={18}
+                    color={ibadahType.color}
+                  />
+                </TouchableOpacity>
+              ))}
+          </ScrollView>
+        </View>
       </ScrollView>
 
       <AddSetModal
@@ -386,11 +314,6 @@ const makeStyles = (Colors: ReturnType<typeof import('../../hooks/useColors').us
       alignItems: 'flex-start',
       marginBottom: Spacing.lg,
     },
-    headerButtons: {
-      flexDirection: 'row',
-      alignItems: 'center',
-      gap: Spacing.sm,
-    },
     greeting: {
       fontSize: Typography.fontSize.h1,
       fontWeight: '700',
@@ -408,22 +331,6 @@ const makeStyles = (Colors: ReturnType<typeof import('../../hooks/useColors').us
       backgroundColor: `${Colors.accent.primary}15`,
       alignItems: 'center',
       justifyContent: 'center',
-    },
-    endSessionButton: {
-      flexDirection: 'row',
-      alignItems: 'center',
-      gap: Spacing.xs,
-      paddingHorizontal: Spacing.md,
-      paddingVertical: Spacing.sm,
-      backgroundColor: `${Colors.semantic.error}15`,
-      borderRadius: BorderRadius.md,
-      borderWidth: 1,
-      borderColor: `${Colors.semantic.error}30`,
-    },
-    endSessionText: {
-      fontSize: Typography.fontSize.bodySmall,
-      fontWeight: '600',
-      color: Colors.semantic.error,
     },
     summaryCard: {
       marginBottom: Spacing.lg,
@@ -452,11 +359,6 @@ const makeStyles = (Colors: ReturnType<typeof import('../../hooks/useColors').us
       width: 1,
       height: 40,
       backgroundColor: Colors.border.default,
-    },
-    emptyContainer: {
-      flex: 1,
-      justifyContent: 'center',
-      paddingVertical: Spacing['2xl'],
     },
     cardsContainer: {
       gap: Spacing.md,
@@ -494,21 +396,6 @@ const makeStyles = (Colors: ReturnType<typeof import('../../hooks/useColors').us
     comparisonText: {
       fontSize: Typography.fontSize.caption,
       fontWeight: '500',
-    },
-    finishSessionButton: {
-      flexDirection: 'row',
-      alignItems: 'center',
-      justifyContent: 'center',
-      gap: Spacing.sm,
-      marginTop: Spacing.xl,
-      paddingVertical: Spacing.md,
-      backgroundColor: Colors.accent.primary,
-      borderRadius: BorderRadius.lg,
-    },
-    finishSessionText: {
-      fontSize: Typography.fontSize.body,
-      fontWeight: '600',
-      color: Colors.text.primary,
     },
     bismillahContent: {
       alignItems: 'center',

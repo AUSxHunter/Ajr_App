@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, TextInput } from 'react-native';
 import { Feather } from '@expo/vector-icons';
 import { Modal, Button, NumberInput } from '../ui';
 import { Typography, Spacing, BorderRadius } from '../../constants/theme';
@@ -30,6 +30,7 @@ export const AddSetModal: React.FC<AddSetModalProps> = ({
   const [value, setValue] = useState('');
   const [binaryValue, setBinaryValue] = useState<boolean | null>(null);
   const [dhikrType, setDhikrType] = useState<string>('');
+  const [customDhikrName, setCustomDhikrName] = useState<string>('');
 
   useEffect(() => {
     if (visible) {
@@ -47,6 +48,7 @@ export const AddSetModal: React.FC<AddSetModalProps> = ({
         setBinaryValue(null);
       }
       setDhikrType('');
+      setCustomDhikrName('');
     }
   }, [visible, initialValue, timerSeconds, ibadahType]);
 
@@ -67,7 +69,12 @@ export const AddSetModal: React.FC<AddSetModalProps> = ({
     }
     const numValue = parseFloat(value);
     if (isNaN(numValue) || numValue <= 0) return;
-    const notes = dhikrType || undefined;
+    let notes: string | undefined;
+    if (dhikrType === 'custom') {
+      notes = customDhikrName.trim() || undefined;
+    } else if (dhikrType) {
+      notes = dhikrType;
+    }
     onSave(numValue, notes, timerSeconds);
     onClose();
   };
@@ -146,27 +153,39 @@ export const AddSetModal: React.FC<AddSetModalProps> = ({
     >
       <View style={styles.content}>
         {isDhikr && (
-          <View style={styles.dhikrChips}>
-            {dhikrOptions.map((option) => (
-              <TouchableOpacity
-                key={option.key}
-                style={[
-                  styles.dhikrChip,
-                  dhikrType === option.key && styles.dhikrChipActive,
-                ]}
-                onPress={() => setDhikrType(dhikrType === option.key ? '' : option.key)}
-              >
-                <Text
+          <View style={styles.dhikrSection}>
+            <View style={styles.dhikrChips}>
+              {dhikrOptions.map((option) => (
+                <TouchableOpacity
+                  key={option.key}
                   style={[
-                    styles.dhikrChipText,
-                    dhikrType === option.key && styles.dhikrChipTextActive,
+                    styles.dhikrChip,
+                    dhikrType === option.key && styles.dhikrChipActive,
                   ]}
-                  numberOfLines={1}
+                  onPress={() => setDhikrType(dhikrType === option.key ? '' : option.key)}
                 >
-                  {option.label}
-                </Text>
-              </TouchableOpacity>
-            ))}
+                  <Text
+                    style={[
+                      styles.dhikrChipText,
+                      dhikrType === option.key && styles.dhikrChipTextActive,
+                    ]}
+                    numberOfLines={1}
+                  >
+                    {option.label}
+                  </Text>
+                </TouchableOpacity>
+              ))}
+            </View>
+            {dhikrType === 'custom' && (
+              <TextInput
+                style={[styles.customDhikrInput, { color: Colors.text.primary, borderColor: Colors.border.default }]}
+                placeholder={t('dhikr.customPlaceholder')}
+                placeholderTextColor={Colors.text.muted}
+                value={customDhikrName}
+                onChangeText={setCustomDhikrName}
+                autoFocus
+              />
+            )}
           </View>
         )}
 
@@ -360,10 +379,20 @@ const makeStyles = (Colors: ReturnType<typeof import('../../hooks/useColors').us
       gap: Spacing.xl,
       marginBottom: Spacing.lg,
     },
+    dhikrSection: {
+      gap: Spacing.sm,
+    },
     dhikrChips: {
       flexDirection: 'row',
       flexWrap: 'wrap',
       gap: Spacing.sm,
+    },
+    customDhikrInput: {
+      borderWidth: 1,
+      borderRadius: BorderRadius.md,
+      paddingHorizontal: Spacing.md,
+      paddingVertical: Spacing.sm,
+      fontSize: Typography.fontSize.body,
     },
     dhikrChip: {
       paddingVertical: Spacing.xs,

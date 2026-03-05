@@ -51,6 +51,7 @@ export const en = {
   },
   analytics: {
     dayStreak: 'Day Streak',
+    globalStreak: 'Global Streak',
     sessions: 'Sessions',
     weeklyVolume: 'Weekly Volume',
     avgPerDay: 'Avg / Day',
@@ -191,6 +192,10 @@ export const en = {
   },
   sessionCard: {
     addSet: 'Add Set',
+    addPages: 'Add Pages',
+    addMinutes: 'Add Minutes',
+    addAmount: 'Add Amount',
+    addCount: 'Add Count',
     fasted: 'Fasted',
     notLogged: 'Not logged',
     log: 'Log',
@@ -210,6 +215,7 @@ export const en = {
     takbir: 'Takbir (الله أكبر)',
     istighfar: 'Istighfar (أستغفر الله)',
     custom: 'Custom',
+    customPlaceholder: 'Enter dhikr name…',
   },
   addSetModal: {
     logTitle: 'Log {name}',

@@ -4,12 +4,10 @@ import { Feather } from '@expo/vector-icons';
 import Animated, { useAnimatedStyle, useSharedValue, withTiming } from 'react-native-reanimated';
 import { Card, ConfirmModal } from '../ui';
 import { SetRow } from './SetRow';
-import { QiyamAyatTracker } from './QiyamAyatTracker';
 import { Typography, Spacing, BorderRadius } from '../../constants/theme';
 import { useColors } from '../../hooks/useColors';
 import { IbadahType, SessionSet } from '../../types';
 import { useSettingsStore } from '../../store/settingsStore';
-import { useSessionStore } from '../../store/sessionStore';
 import { IbadahStreakDots } from './IbadahStreakDots';
 import { useTranslation } from '../../hooks/useTranslation';
 
@@ -17,6 +15,7 @@ interface SessionCardProps {
   ibadahType: IbadahType;
   sets: SessionSet[];
   onAddSet: () => void;
+  onDirectSave?: (value: number) => void;
   onEditSet: (set: SessionSet) => void;
   onDeleteSet: (setId: string) => void;
 }
@@ -25,6 +24,7 @@ export const SessionCard: React.FC<SessionCardProps> = ({
   ibadahType,
   sets,
   onAddSet,
+  onDirectSave,
   onEditSet,
   onDeleteSet,
 }) => {
@@ -39,13 +39,9 @@ export const SessionCard: React.FC<SessionCardProps> = ({
   const isYesNo = ibadahType.unit === 'yesno';
   const hasFasted = isBinary && totalValue >= 1;
   const hasAnsweredYes = isYesNo && totalValue >= 1;
-  const isQiyam = ibadahType.id === 'qiyam';
 
   const mvdValue = useSettingsStore((state) => state.getMinimumViableDay(ibadahType.id));
   const mvdMet = mvdValue !== undefined && totalValue >= mvdValue;
-
-  const qiyamAyatCount = useSessionStore((state) => state.qiyamAyatCount);
-  const setQiyamAyatCount = useSessionStore((state) => state.setQiyamAyatCount);
 
   const toggleExpand = () => {
     if (isBinary || isYesNo) return;
@@ -73,6 +69,8 @@ export const SessionCard: React.FC<SessionCardProps> = ({
   const handleBinaryToggle = () => {
     if (hasFasted && sets.length > 0) {
       setDeleteConfirmId(sets[0].id);
+    } else if (onDirectSave) {
+      onDirectSave(1);
     } else {
       onAddSet();
     }
@@ -81,8 +79,19 @@ export const SessionCard: React.FC<SessionCardProps> = ({
   const handleYesNoToggle = () => {
     if (hasAnsweredYes && sets.length > 0) {
       setDeleteConfirmId(sets[0].id);
+    } else if (onDirectSave) {
+      onDirectSave(1);
     } else {
       onAddSet();
+    }
+  };
+
+  const getAddLabel = () => {
+    switch (ibadahType.unit) {
+      case 'pages': return t('sessionCard.addPages');
+      case 'minutes': return t('sessionCard.addMinutes');
+      case 'currency': return t('sessionCard.addAmount');
+      default: return t('sessionCard.addCount');
     }
   };
 
@@ -284,15 +293,8 @@ export const SessionCard: React.FC<SessionCardProps> = ({
 
           <TouchableOpacity style={styles.addButton} onPress={onAddSet}>
             <Feather name="plus" size={18} color={Colors.accent.primary} />
-            <Text style={styles.addButtonText}>{t('sessionCard.addSet')}</Text>
+            <Text style={styles.addButtonText}>{getAddLabel()}</Text>
           </TouchableOpacity>
-
-          {isQiyam && (
-            <QiyamAyatTracker
-              ayatCount={qiyamAyatCount}
-              onAyatCountChange={setQiyamAyatCount}
-            />
-          )}
         </View>
       )}
 

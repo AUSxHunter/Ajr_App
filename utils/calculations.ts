@@ -126,6 +126,52 @@ export const calculateStreak = (sessions: Session[]): number => {
   return streak;
 };
 
+export const calculateGlobalStreak = (
+  sessions: Session[],
+  allSets: SessionSet[],
+  ibadahTypes: { id: string; unit: string }[],
+  hiddenIds: string[]
+): number => {
+  if (sessions.length === 0 || ibadahTypes.length === 0) return 0;
+
+  const visibleTypes = ibadahTypes.filter((t) => !hiddenIds.includes(t.id));
+  if (visibleTypes.length === 0) return 0;
+
+  const hasLogOnDate = (dateStr: string, typeId: string): boolean => {
+    const session = sessions.find((s) => s.sessionDate === dateStr);
+    if (!session) return false;
+    return allSets.some((ss) => ss.sessionId === session.id && ss.ibadahTypeId === typeId);
+  };
+
+  const allTypesLoggedOnDate = (dateStr: string): boolean =>
+    visibleTypes.every((t) => hasLogOnDate(dateStr, t.id));
+
+  const today = format(new Date(), 'yyyy-MM-dd');
+  let streak = 0;
+  let checkDay = new Date();
+
+  // Allow today to not break the streak
+  let checkedToday = false;
+  while (true) {
+    const dateStr = format(checkDay, 'yyyy-MM-dd');
+    if (allTypesLoggedOnDate(dateStr)) {
+      streak++;
+      checkDay = new Date(checkDay);
+      checkDay.setDate(checkDay.getDate() - 1);
+    } else {
+      if (dateStr === today && !checkedToday) {
+        checkedToday = true;
+        checkDay = new Date(checkDay);
+        checkDay.setDate(checkDay.getDate() - 1);
+        continue;
+      }
+      break;
+    }
+  }
+
+  return streak;
+};
+
 export const findPersonalRecords = (
   sessions: Session[],
   allSets: SessionSet[],
