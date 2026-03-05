@@ -225,30 +225,6 @@ export default function TodayScreen() {
           })}
         </View>
 
-        <View style={styles.quickAddSection}>
-          <Text style={styles.quickAddTitle}>{t('today.quickAdd')}</Text>
-          <ScrollView
-            horizontal
-            showsHorizontalScrollIndicator={false}
-            contentContainerStyle={styles.quickAddButtons}
-          >
-            {ibadahTypes
-              .filter((type) => type.unit !== 'adhkar' && type.unit !== 'binary' && type.unit !== 'yesno')
-              .map((ibadahType) => (
-                <TouchableOpacity
-                  key={ibadahType.id}
-                  style={[styles.quickAddButton, { backgroundColor: `${ibadahType.color}20` }]}
-                  onPress={() => handleAddSet(ibadahType)}
-                >
-                  <Feather
-                    name={ibadahType.icon as keyof typeof Feather.glyphMap}
-                    size={18}
-                    color={ibadahType.color}
-                  />
-                </TouchableOpacity>
-              ))}
-          </ScrollView>
-        </View>
       </ScrollView>
 
       <AddSetModal
