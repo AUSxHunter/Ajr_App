@@ -44,7 +44,7 @@ export const SessionListItem: React.FC<SessionListItemProps> = ({
           </Text>
         </View>
         <View style={styles.volumeContainer}>
-          <Text style={styles.volume}>{session.totalVolume}</Text>
+          <Text style={styles.volume}>{Math.round(session.totalVolume)}</Text>
           <Text style={styles.volumeLabel}>{t('today.volume')}</Text>
         </View>
       </View>

@@ -40,7 +40,7 @@ export const WeeklyChart: React.FC<WeeklyChartProps> = ({ dailyStats, title = 'T
                 />
               </View>
               <Text style={[styles.dayLabel, isToday && styles.dayLabelToday]}>{dayLabel}</Text>
-              <Text style={styles.volumeLabel}>{day.totalVolume > 0 ? day.totalVolume : '-'}</Text>
+              <Text style={styles.volumeLabel}>{day.totalVolume > 0 ? Math.round(day.totalVolume) : '-'}</Text>
             </View>
           );
         })}
