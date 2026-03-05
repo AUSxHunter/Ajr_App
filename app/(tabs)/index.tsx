@@ -220,6 +220,7 @@ export default function TodayScreen() {
                 onDirectSave={(value) => handleDirectSave(ibadahType, value)}
                 onEditSet={handleEditSet}
                 onDeleteSet={handleDeleteSet}
+                maxSets={ibadahType.id === 'qiyam' ? 1 : undefined}
               />
             );
           })}

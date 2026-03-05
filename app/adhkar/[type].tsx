@@ -8,6 +8,7 @@ import {
   Dimensions,
   Vibration,
   Alert,
+  Platform,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useLocalSearchParams, useRouter, Stack } from 'expo-router';
@@ -35,13 +36,16 @@ import { useTranslation } from '../../hooks/useTranslation';
 
 const { width: SCREEN_WIDTH } = Dimensions.get('window');
 
+const ARABIC_DIGITS = ['٠', '١', '٢', '٣', '٤', '٥', '٦', '٧', '٨', '٩'];
+function toArabicNum(n: number): string {
+  return String(n).split('').map(c => ARABIC_DIGITS[parseInt(c)] ?? c).join('');
+}
+
 function addAyahNumbers(arabic: string): string {
   let count = 0;
   return arabic.replace(/۝/g, () => {
     count++;
-    const digits = ['٠', '١', '٢', '٣', '٤', '٥', '٦', '٧', '٨', '٩'];
-    const num = String(count).split('').map(c => digits[parseInt(c)] ?? c).join('');
-    return '۝' + num;
+    return ' \uFD3F' + toArabicNum(count) + '\uFD3E ';
   });
 }
 
@@ -423,7 +427,7 @@ const makeStyles = (Colors: ReturnType<typeof import('../../hooks/useColors').us
       fontWeight: '700',
       color: Colors.text.primary,
       textAlign: 'center',
-      lineHeight: 30,
+      ...(Platform.OS === 'ios' ? { includeFontPadding: false } : { lineHeight: 30 }),
     },
     adhkarCard: {
       padding: Spacing.lg,

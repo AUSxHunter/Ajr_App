@@ -310,6 +310,7 @@ const makeStyles = (Colors: ReturnType<typeof import('../../hooks/useColors').us
       flexDirection: 'row',
       alignItems: 'center',
       gap: Spacing.lg,
+      width: '100%',
     },
     adjustButton: {
       width: 56,
@@ -321,16 +322,17 @@ const makeStyles = (Colors: ReturnType<typeof import('../../hooks/useColors').us
     },
     valueContainer: {
       alignItems: 'center',
-      minWidth: 120,
+      flex: 1,
     },
     valueInput: {
-      fontSize: Typography.fontSize.displayLarge,
+      fontSize: Typography.fontSize.display,
       fontWeight: '700',
       color: Colors.text.primary,
       textAlign: 'center',
       backgroundColor: 'transparent',
       borderWidth: 0,
       padding: 0,
+      width: '100%',
     },
     unitLabel: {
       fontSize: Typography.fontSize.body,

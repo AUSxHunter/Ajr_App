@@ -18,6 +18,7 @@ interface SessionCardProps {
   onDirectSave?: (value: number) => void;
   onEditSet: (set: SessionSet) => void;
   onDeleteSet: (setId: string) => void;
+  maxSets?: number;
 }
 
 export const SessionCard: React.FC<SessionCardProps> = ({
@@ -27,6 +28,7 @@ export const SessionCard: React.FC<SessionCardProps> = ({
   onDirectSave,
   onEditSet,
   onDeleteSet,
+  maxSets,
 }) => {
   const Colors = useColors();
   const { t, tUnit, isRTL } = useTranslation();
@@ -261,10 +263,12 @@ export const SessionCard: React.FC<SessionCardProps> = ({
             </View>
           )}
 
-          <TouchableOpacity style={styles.addButton} onPress={onAddSet}>
-            <Feather name="plus" size={18} color={Colors.accent.primary} />
-            <Text style={styles.addButtonText}>{getAddLabel()}</Text>
-          </TouchableOpacity>
+          {(maxSets === undefined || sets.length < maxSets) && (
+            <TouchableOpacity style={styles.addButton} onPress={onAddSet}>
+              <Feather name="plus" size={18} color={Colors.accent.primary} />
+              <Text style={styles.addButtonText}>{getAddLabel()}</Text>
+            </TouchableOpacity>
+          )}
         </View>
       )}
 
