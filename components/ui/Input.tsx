@@ -73,7 +73,8 @@ export const Input: React.FC<InputProps> = ({
           ]}
           placeholderTextColor={Colors.text.muted}
           adjustsFontSizeToFit
-          minimumFontScale={0.75}
+          minimumFontScale={0.5}
+          numberOfLines={1}
           onFocus={handleFocus}
           onBlur={handleBlur}
           {...props}

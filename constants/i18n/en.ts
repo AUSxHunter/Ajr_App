@@ -189,6 +189,7 @@ export const en = {
     start: 'Start',
     complete: 'Complete',
     markComplete: 'Mark as Completed',
+    undo: 'Undo',
   },
   sessionCard: {
     addSet: 'Add Set',

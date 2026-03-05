@@ -31,13 +31,18 @@ const AdhkarRow: React.FC<AdhkarRowProps> = ({ type, label, labelArabic, icon })
   const isCompleted = useAdhkarStore((state) => state.isCompleted(type));
   const { completed, total } = useAdhkarStore(useShallow((state) => state.getTotalProgress(type)));
   const markComplete = useAdhkarStore((state) => state.markComplete);
+  const resetProgress = useAdhkarStore((state) => state.resetProgress);
   const sessions = useSessionStore((state) => state.sessions);
+  const sessionSets = useSessionStore((state) => state.sessionSets);
   const addSet = useSessionStore((state) => state.addSet);
+  const deleteSet = useSessionStore((state) => state.deleteSet);
   const startSession = useSessionStore((state) => state.startSession);
 
   const handlePress = () => {
     router.push({ pathname: '/adhkar/[type]', params: { type } });
   };
+
+  const adhkarNotes = type === 'sabah' ? t('adhkarReader.morningAdhkar') : t('adhkarReader.eveningAdhkar');
 
   const handleMarkComplete = () => {
     markComplete(type);
@@ -55,8 +60,23 @@ const AdhkarRow: React.FC<AdhkarRowProps> = ({ type, label, labelArabic, icon })
         sessionId: todaySession.id,
         ibadahTypeId: 'adhkar',
         value: 1,
-        notes: type === 'sabah' ? t('adhkarReader.morningAdhkar') : t('adhkarReader.eveningAdhkar'),
+        notes: adhkarNotes,
       });
+    }
+  };
+
+  const handleUndo = () => {
+    resetProgress(type);
+
+    const todayDateString = new Date().toISOString().split('T')[0];
+    const todaySession = sessions.find((s) => s.sessionDate === todayDateString);
+    if (todaySession) {
+      const matchingSet = sessionSets.find(
+        (s) => s.sessionId === todaySession.id && s.ibadahTypeId === 'adhkar' && s.notes === adhkarNotes
+      );
+      if (matchingSet) {
+        deleteSet(matchingSet.id);
+      }
     }
   };
 
@@ -105,7 +125,12 @@ const AdhkarRow: React.FC<AdhkarRowProps> = ({ type, label, labelArabic, icon })
         </View>
       </TouchableOpacity>
 
-      {!isCompleted && (
+      {isCompleted ? (
+        <TouchableOpacity style={styles.markCompleteButton} onPress={handleUndo}>
+          <Feather name="rotate-ccw" size={13} color={Colors.text.muted} />
+          <Text style={styles.markCompleteText}>{t('adhkarCard.undo')}</Text>
+        </TouchableOpacity>
+      ) : (
         <TouchableOpacity style={styles.markCompleteButton} onPress={handleMarkComplete}>
           <Feather name="check-circle" size={13} color={Colors.text.muted} />
           <Text style={styles.markCompleteText}>{t('adhkarCard.markComplete')}</Text>

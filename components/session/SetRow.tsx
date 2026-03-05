@@ -32,8 +32,11 @@ export const SetRow: React.FC<SetRowProps> = ({ set, ibadahType, index, onEdit, 
     displayValue = `${set.value} ${set.value === 1 ? unitLabel.singular : unitLabel.plural}`;
   }
 
-  // For dhikr, append the type name from notes
-  const dhikrLabel = ibadahType.id === 'dhikr' && set.notes ? ` · ${set.notes}` : '';
+  // For dhikr, append the type name from notes (capitalize first letter)
+  const dhikrLabel =
+    ibadahType.id === 'dhikr' && set.notes
+      ? ` · ${set.notes.charAt(0).toUpperCase()}${set.notes.slice(1)}`
+      : '';
 
   const styles = makeStyles(Colors);
 

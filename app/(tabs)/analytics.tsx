@@ -9,7 +9,7 @@ import { WeeklyChart, PRCard, IbadahBreakdown } from '../../components/analytics
 import { SuggestionCard, BurnoutWarningCard } from '../../components/insights';
 import { useSessionStore } from '../../store/sessionStore';
 import { useIbadahStore } from '../../store/ibadahStore';
-import { calculateStreak, findPersonalRecords, calculateGlobalStreak } from '../../utils/calculations';
+import { findPersonalRecords, calculateGlobalStreak } from '../../utils/calculations';
 import { generateOverloadSuggestions } from '../../utils/suggestions';
 import { detectBurnout } from '../../utils/burnout';
 import { DailyStats } from '../../types';
@@ -29,7 +29,6 @@ export default function AnalyticsScreen() {
 
   const activeIbadahTypes = ibadahTypes.filter((t) => !t.isArchived);
 
-  const streak = calculateStreak(sessions);
   const globalStreak = calculateGlobalStreak(sessions, sessionSets, activeIbadahTypes, hiddenIbadahTypeIds);
   const totalSessions = sessions.length;
   const totalVolume = sessions.reduce((sum, s) => sum + s.totalVolume, 0);
@@ -141,14 +140,8 @@ export default function AnalyticsScreen() {
         <View style={styles.statsGrid}>
           <Card style={styles.statCard}>
             <Feather name="zap" size={24} color={Colors.semantic.warning} />
-            <Text style={styles.statValue}>{streak}</Text>
-            <Text style={styles.statLabel}>{t('analytics.dayStreak')}</Text>
-          </Card>
-
-          <Card style={styles.statCard}>
-            <Feather name="award" size={24} color={Colors.ibadah.adhkar} />
             <Text style={styles.statValue}>{globalStreak}</Text>
-            <Text style={styles.statLabel}>{t('analytics.globalStreak')}</Text>
+            <Text style={styles.statLabel}>{t('analytics.dayStreak')}</Text>
           </Card>
 
           <Card style={styles.statCard}>
@@ -193,10 +186,10 @@ export default function AnalyticsScreen() {
             <Text style={[styles.insightTitle, { color: Colors.accent.primary }]}>{t('analytics.insight')}</Text>
           </View>
           <Text style={styles.insightText}>
-            {streak >= 7
-              ? t('analytics.insightStreak7', { streak })
-              : streak >= 3
-                ? t('analytics.insightStreak3', { remaining: 7 - streak })
+            {globalStreak >= 7
+              ? t('analytics.insightStreak7', { streak: globalStreak })
+              : globalStreak >= 3
+                ? t('analytics.insightStreak3', { remaining: 7 - globalStreak })
                 : totalSessions > 0
                   ? t('analytics.insightStartStreak')
                   : t('analytics.insightBeginJourney')}

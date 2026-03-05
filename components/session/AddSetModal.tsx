@@ -52,7 +52,7 @@ export const AddSetModal: React.FC<AddSetModalProps> = ({
     }
   }, [visible, initialValue, timerSeconds, ibadahType]);
 
-  const { t, tUnit } = useTranslation();
+  const { t, tUnit, isRTL } = useTranslation();
 
   if (!ibadahType) return null;
 
@@ -104,7 +104,7 @@ export const AddSetModal: React.FC<AddSetModalProps> = ({
       <Modal
         visible={visible}
         onClose={onClose}
-        title={t('addSetModal.logTitle', { name: ibadahType.name })}
+        title={isRTL ? (ibadahType.nameArabic || ibadahType.name) : ibadahType.name}
         position="bottom"
       >
         <View style={styles.content}>
@@ -148,7 +148,7 @@ export const AddSetModal: React.FC<AddSetModalProps> = ({
     <Modal
       visible={visible}
       onClose={onClose}
-      title={isEditing ? t('addSetModal.editTitle') : t('addSetModal.logTitle', { name: ibadahType.name })}
+      title={isRTL ? (ibadahType.nameArabic || ibadahType.name) : ibadahType.name}
       position="bottom"
     >
       <View style={styles.content}>
@@ -256,7 +256,7 @@ export const AddSetModal: React.FC<AddSetModalProps> = ({
         )}
 
         <Button
-          title={isEditing ? t('addSetModal.updateSet') : t('addSetModal.logSet')}
+          title={isEditing ? t('addSetModal.updateSet') : getSaveLabel(ibadahType.unit, t)}
           variant="primary"
           size="lg"
           fullWidth
@@ -266,6 +266,15 @@ export const AddSetModal: React.FC<AddSetModalProps> = ({
       </View>
     </Modal>
   );
+};
+
+const getSaveLabel = (unit: string, t: (key: string) => string): string => {
+  switch (unit) {
+    case 'pages': return t('sessionCard.addPages');
+    case 'minutes': return t('sessionCard.addMinutes');
+    case 'currency': return t('sessionCard.addAmount');
+    default: return t('sessionCard.addCount');
+  }
 };
 
 const getPresetValues = (unit: string): number[] => {

@@ -174,14 +174,6 @@ export default function TodayScreen() {
                   <Text style={styles.summaryLabel}>{t('today.volume')}</Text>
                 </View>
               </View>
-              <View style={styles.divider} />
-              <View style={styles.summaryStat}>
-                <Feather name="layers" size={20} color={Colors.semantic.success} />
-                <View>
-                  <Text style={styles.summaryValue}>{totalSets}</Text>
-                  <Text style={styles.summaryLabel}>{t('today.sets')}</Text>
-                </View>
-              </View>
             </View>
             {yesterdayVolume > 0 && (
               <View style={styles.comparisonRow}>

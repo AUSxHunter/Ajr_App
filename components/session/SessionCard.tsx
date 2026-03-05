@@ -68,7 +68,7 @@ export const SessionCard: React.FC<SessionCardProps> = ({
 
   const handleBinaryToggle = () => {
     if (hasFasted && sets.length > 0) {
-      setDeleteConfirmId(sets[0].id);
+      onDeleteSet(sets[0].id);
     } else if (onDirectSave) {
       onDirectSave(1);
     } else {
@@ -78,7 +78,7 @@ export const SessionCard: React.FC<SessionCardProps> = ({
 
   const handleYesNoToggle = () => {
     if (hasAnsweredYes && sets.length > 0) {
-      setDeleteConfirmId(sets[0].id);
+      onDeleteSet(sets[0].id);
     } else if (onDirectSave) {
       onDirectSave(1);
     } else {
@@ -143,21 +143,6 @@ export const SessionCard: React.FC<SessionCardProps> = ({
         </View>
 
         <IbadahStreakDots ibadahTypeId={ibadahType.id} color={ibadahType.color} />
-
-        <ConfirmModal
-          visible={deleteConfirmId !== null}
-          onClose={() => setDeleteConfirmId(null)}
-          onConfirm={() => {
-            if (deleteConfirmId) {
-              onDeleteSet(deleteConfirmId);
-              setDeleteConfirmId(null);
-            }
-          }}
-          title={t('sessionCard.deleteSet')}
-          message={t('sessionCard.deleteSetMessage')}
-          confirmText={t('common.remove')}
-          variant="danger"
-        />
       </Card>
     );
   }
@@ -208,21 +193,6 @@ export const SessionCard: React.FC<SessionCardProps> = ({
         </View>
 
         <IbadahStreakDots ibadahTypeId={ibadahType.id} color={ibadahType.color} />
-
-        <ConfirmModal
-          visible={deleteConfirmId !== null}
-          onClose={() => setDeleteConfirmId(null)}
-          onConfirm={() => {
-            if (deleteConfirmId) {
-              onDeleteSet(deleteConfirmId);
-              setDeleteConfirmId(null);
-            }
-          }}
-          title={t('sessionCard.removeFasting')}
-          message={t('sessionCard.removeFastingMessage')}
-          confirmText={t('common.remove')}
-          variant="danger"
-        />
       </Card>
     );
   }
@@ -291,10 +261,12 @@ export const SessionCard: React.FC<SessionCardProps> = ({
             </View>
           )}
 
-          <TouchableOpacity style={styles.addButton} onPress={onAddSet}>
-            <Feather name="plus" size={18} color={Colors.accent.primary} />
-            <Text style={styles.addButtonText}>{getAddLabel()}</Text>
-          </TouchableOpacity>
+          {ibadahType.unit !== 'minutes' || sets.length === 0 ? (
+            <TouchableOpacity style={styles.addButton} onPress={onAddSet}>
+              <Feather name="plus" size={18} color={Colors.accent.primary} />
+              <Text style={styles.addButtonText}>{getAddLabel()}</Text>
+            </TouchableOpacity>
+          ) : null}
         </View>
       )}
 

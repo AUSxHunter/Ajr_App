@@ -185,6 +185,7 @@ export const ar: Translations = {
     start: 'ابدأ',
     complete: 'مكتمل',
     markComplete: 'اكتمل',
+    undo: 'تراجع',
   },
   sessionCard: {
     addSet: 'إضافة جلسة',
